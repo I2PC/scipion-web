@@ -28,23 +28,14 @@
 Launch main project window 
 """
 
-import os
 import sys
 from collections import OrderedDict
 
 import pyworkflow.tests as tests
 from pyworkflow.manager import Manager
 import pyworkflow.utils as pwutils
+from pyworkflow.utils.utils import getWorkflow
 from pyworkflow.gui.project import ProjectWindow
-
-
-def getWorkflow(workflow):
-    """ Return the full workflow path from
-    the Scipion folder + config/workflows/
-    """
-    return os.path.join(os.environ['SCIPION_HOME'], 
-                        'config', 'workflows', workflow)
-    
 
 class Tutorial():
     """ Base class to implement some common functionalities. """

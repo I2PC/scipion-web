@@ -42,6 +42,7 @@ import pyworkflow.object as pwobj
 import pyworkflow.utils as pwutils
 from pyworkflow.mapper import SqliteMapper
 from pyworkflow.protocol.constants import MODE_RESTART
+from pyworkflow.utils.utils import getWorkflow
 
 PROJECT_DBNAME = 'project.sqlite'
 PROJECT_LOGS = 'Logs'
@@ -305,7 +306,7 @@ class Project(object):
         
         return self._protocolViews[viewKey]          
         
-    def create(self, runsView=1, readOnly=False, hostsConf=None, protocolsConf=None, chdir=True):
+    def create(self, runsView=1, readOnly=False, hostsConf=None, protocolsConf=None, chdir=True, workflow=None):
         """Prepare all required paths and files to create a new project.
         Params:
          hosts: a list of configuration hosts associated to this projects (class ExecutionHostConfig)
@@ -337,6 +338,10 @@ class Project(object):
         self._loadHosts(hostsConf)
         
         self._loadProtocols(protocolsConf)
+
+        # Initialize the project with a workflow if required
+        if workflow is not None:
+            self.loadProtocols(workflow=workflow)
 
     def _cleanData(self):
         """Clean all project data"""
@@ -677,13 +682,14 @@ class Project(object):
                            indent=4, separators=(',', ': ')) + '\n')
         f.close()
         
-    def loadProtocols(self, filename=None, jsonStr=None):
+    def loadProtocols(self, workflow=None):
         """ Load protocols generated in the same format as self.exportProtocols.
         Params:
-            filename: the path of the file where to read the workflow.
-            jsonStr: read the protocols from a string instead of file.
-        Note: either filename or jsonStr should be not None.
+            workflow: the path of the file where to read the workflow or a valid JSON string
         """
+
+        filename = getWorkflow(workflow)
+
         f = open(filename)
         protocolsList = json.load(f)
         

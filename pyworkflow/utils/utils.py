@@ -26,10 +26,11 @@
 """
 This module contains utilities functions and classes.
 """
-
+import json
 import sys
 import os
 import re
+import tempfile
 from datetime import datetime
 import traceback
 
@@ -615,3 +616,39 @@ def readProperties(propsFile):
             k, v = line.split("=", 1)
             myprops[k] = v
     return myprops
+
+def getWorkflow(workflow):
+    """ Return the full workflow path from
+    the Scipion folder + config/workflows/, the full path or creates a JSON file when the parameter is a JSON string
+
+    Parameters
+    ----------
+    workflow can be:
+      . Filename: a json file under the scipion workflow folder.
+      . Full file name: an absolute path to a JSON file.
+      . JSON String: in this case it a json file will be generated
+
+    """
+
+    # Check if it exists as a file:
+    if os.path.isfile(workflow):
+        return workflow
+
+    # Try if it's a name of a workflow in the workflow's folder
+    fileName = os.path.join(os.environ['SCIPION_HOME'],
+                        'config', 'workflows', workflow)
+
+    if os.path.isfile(fileName):
+        return fileName
+
+    # Lastly...it can be a JSON string
+    try:
+        json.loads(workflow)
+        f = tempfile.NamedTemporaryFile(delete=False)
+        f.write(workflow)
+        f.close()
+        return f.name
+
+    except ValueError, e:
+        raise ValueError(workflow + ' is not a full path filename, nor is a file name in our workflows repository, nor text can be parsed into a JSON object.')
+

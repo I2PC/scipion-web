@@ -57,6 +57,7 @@ CTX_PROJECT_PATH = 'projectPath'
 # REQUEST PARAMS
 PROJECT_NAME = 'p'
 SERVICE_NAME = 's'
+WORKFLOW = 'w'
 
 iconDict = {
     'logo_scipion': 'scipion_logo_small_web.png',

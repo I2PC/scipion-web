@@ -29,7 +29,7 @@ import json
 from views_base import base_grid, base_flex
 from views_util import loadProject, loadProjectFromPath, getResourceCss, getResourceIcon, getResourceJs, \
     getServiceManager, PROJECT_NAME, SERVICE_NAME, \
-    getVarFromRequest, CTX_PROJECT_PATH, CTX_PROJECT_NAME
+    getVarFromRequest, CTX_PROJECT_PATH, CTX_PROJECT_NAME, WORKFLOW
 from views_tree import loadProtTree
 from pyworkflow.manager import Manager
 from pyworkflow.utils.path import copyFile
@@ -67,7 +67,8 @@ def create_project(request):
 
     if request.is_ajax():
         projectName = getVarFromRequest(request, PROJECT_NAME)
-        manager.createProject(projectName, chdir=False)
+        workflow = getVarFromRequest(request, WORKFLOW)
+        manager.createProject(projectName, chdir=False, workflow=workflow)
 
     return HttpResponse(mimetype='application/javascript')
 

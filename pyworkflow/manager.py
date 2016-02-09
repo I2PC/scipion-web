@@ -79,7 +79,7 @@ class Manager(object):
         return projList
     
     def createProject(self, projectName, runsView=1, 
-                      hostsConf=None, protocolsConf=None, location=None, chdir=True):
+                      hostsConf=None, protocolsConf=None, location=None, chdir=True, workflow=None):
         """Create a new project.
         confs dict can contains customs .conf files 
         for: menus, protocols, or hosts
@@ -95,7 +95,8 @@ class Manager(object):
         project.create(runsView=runsView, 
                        hostsConf=hostsConf, 
                        protocolsConf=protocolsConf,
-                       chdir=chdir)
+                       chdir=chdir,
+                       workflow=workflow)
 
         # If location is not the default one create a symlink on self.PROJECTS directory
         if projectPath != self.getProjectPath(projectName):
