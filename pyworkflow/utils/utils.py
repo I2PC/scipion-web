@@ -617,6 +617,12 @@ def readProperties(propsFile):
             myprops[k] = v
     return myprops
 
+
+def getWorkflowFolder():
+    return os.path.join (os.environ['SCIPION_HOME'],
+                        'config', 'workflows')
+
+
 def getWorkflow(workflow):
     """ Return the full workflow path from
     the Scipion folder + config/workflows/, the full path or creates a JSON file when the parameter is a JSON string
@@ -635,8 +641,7 @@ def getWorkflow(workflow):
         return workflow
 
     # Try if it's a name of a workflow in the workflow's folder
-    fileName = os.path.join(os.environ['SCIPION_HOME'],
-                        'config', 'workflows', workflow)
+    fileName = os.path.join(getWorkflowFolder(), workflow)
 
     if os.path.isfile(fileName):
         return fileName
@@ -652,3 +657,35 @@ def getWorkflow(workflow):
     except ValueError, e:
         raise ValueError(workflow + ' is not a full path filename, nor is a file name in our workflows repository, nor text can be parsed into a JSON object.')
 
+
+def getWorkflowsList():
+
+    workflowFolder = getWorkflowFolder()
+
+    workflows = []
+
+    for fn in os.listdir(workflowFolder):
+        if fn.endswith('.json'):
+
+            workflow = {}
+
+            # Workflow name
+            cleanName = fn.replace("_", " ")
+            cleanName = cleanName.replace('.json', '')
+            cleanName = cleanName.replace('workflow', '')
+            cleanName = cleanName.strip()
+            workflow['name']= cleanName
+
+            # Workflow file
+            workflow['file'] = fn
+            workflow['hash'] = getShaHash(fn)
+
+            workflows.append(workflow)
+
+    return workflows
+
+def getShaHash(text):
+
+    import hashlib
+    sha = hashlib.sha1(text)
+    return sha.hexdigest()

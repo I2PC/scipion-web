@@ -7,7 +7,9 @@
 			{% endblock %}
 					<img class="logo" src="{{logo_scipion}}" alt="Scipion logo">
 				</a>
-				<span class="projectHeader">Project {{projectName}}</span>
+				{% if projectName != None and projectName != ''%}
+					<span class="projectHeader">Project {{projectName}}</span>
+				{% endif %}
 		{% endblock %}
 		
 		<div id="headerRightContainer">

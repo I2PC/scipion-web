@@ -36,9 +36,12 @@
  * 	->	Dialog web form based in messi.js to verify the option to create a project.
  * 		A name for the project is asked. 
  * 
- * function createProject(elm)
- *  ->	Method to execute the creation for a project.
+ * function createProjectFromPopup(elm)
+ *  ->	Method to call createProject receiving element from the popup (input from the user)
  *  
+ * function createProject(projectName, workflow)
+ *  ->	Method to execute the creation for a project.
+ *
  * function deleteProjectForm(projName)
  *  ->	Dialog web form based in messi.js to verify the option to delete a project.
  *  
@@ -55,18 +58,47 @@
 
 function createProjectForm(title, msg) {
 	var msg = msg +"<input type='text' id='newProjName' class='content'/>";
-	var funcName = 'createProject';
+	if (workflows !== undefined && workflows.length > 0){
+
+		var workflowsForm = "<br/>";
+
+		workflowsForm += "<label for='workflow'>Template: </label>";
+		workflowsForm += "<select id='workflow' name='workflow' class='content' style='float: right; width: 59%;'>";
+			workflowsForm += "<option value=''>None</option>";
+
+			for (var index in workflows){
+				var workflow = workflows[index];
+				workflowsForm += "<option value='" + workflow.file + "'>" + workflow.name + "</option>";
+			}
+
+		workflowsForm += "</select>";
+		msg += workflowsForm;
+	}
+
+	var funcName = 'createProjectFromPopup';
 	warningPopup(title, msg, funcName);
 }
 
-function createProject(elm) {
-	var projName = elm.val();
-	var URL = getSubDomainURL() + "/create_project/?p=" + projName
+ function createProjectFromPopup(elm) {
+	var projName = elm[0].value;
+ 	var workflow = elm[1].value;
+
+ 	createProject(projName, workflow);
+ }
+
+function createProject(projectName, workflow) {
+
+	var URL = getSubDomainURL() + "/create_project/?p=" + projectName
+
+	if (workflow != '') {
+		URL += '&w=' + workflow;
+	}
+
 	$.ajax({
 		type : "GET",
 		url : URL,
 		success : function() {
-			var URL2 = getSubDomainURL() + "/project_content/?p="+projName
+			var URL2 = getSubDomainURL() + "/project_content/?p="+projectName
 			window.location.href = URL2;
 		}
 	});

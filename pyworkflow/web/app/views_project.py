@@ -24,19 +24,19 @@
 # *
 # **************************************************************************
 
-from os.path import exists, join, basename
 import json
+
+from django.http import HttpResponse
+from django.shortcuts import render_to_response
+
+from pyworkflow.em import getProtocols
+from pyworkflow.manager import Manager
+from pyworkflow.utils import getWorkflowsList
 from views_base import base_grid, base_flex
-from views_util import loadProject, loadProjectFromPath, getResourceCss, getResourceIcon, getResourceJs, \
+from views_tree import loadProtTree
+from views_util import loadProject, getResourceCss, getResourceIcon, getResourceJs, \
     getServiceManager, PROJECT_NAME, SERVICE_NAME, \
     getVarFromRequest, CTX_PROJECT_PATH, CTX_PROJECT_NAME, WORKFLOW
-from views_tree import loadProtTree
-from pyworkflow.manager import Manager
-from pyworkflow.utils.path import copyFile
-from django.http import HttpResponse, HttpRequest
-from django.shortcuts import render_to_response
-import pyworkflow
-from pyworkflow.em import getProtocols
 
 
 def projects(request):
@@ -55,11 +55,37 @@ def projects(request):
     context = {'projects': projectsList,
                'projects_css': getResourceCss('projects'),
                'project_utils_js': getResourceJs('project_utils'),
+               'workflows': json.dumps(getWorkflowsList())
                }
 
     context = base_grid(request, context)
 
     return render_to_response('projects.html', context)
+
+
+def workflows(request):
+
+    workflows = getWorkflowsList()
+
+    # Annotate existence of projects (hashed)
+    manager = getServiceManager(None)
+
+    for workflow in workflows:
+
+        # Project for the workflow should be the hashed value
+        if manager.hasProject(workflow['hash']):
+            workflow['exists'] = True
+        else:
+            workflow['exists'] = False
+
+    context = {'projects_css': getResourceCss('projects'),
+               'project_utils_js': getResourceJs('project_utils'),
+               'workflows': workflows
+               }
+
+    context = base_grid(request, context)
+
+    return render_to_response('workflows.html', context)
 
 
 def create_project(request):
