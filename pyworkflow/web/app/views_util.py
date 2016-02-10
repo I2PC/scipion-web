@@ -58,6 +58,7 @@ CTX_PROJECT_PATH = 'projectPath'
 PROJECT_NAME = 'p'
 SERVICE_NAME = 's'
 WORKFLOW = 'w'
+MODE = 'm'
 
 iconDict = {
     'logo_scipion': 'scipion_logo_small_web.png',
@@ -1103,3 +1104,7 @@ def zipdir(dirPath=None, zipFilePath=None, includeDirInZip=True):
             # Here to allow for inserting an empty directory.  Still TBD/TODO.
             outFile.writestr(zipInfo, "")
     outFile.close()
+
+
+MODE_SERVICE = 'service'
+MODE_WORKFLOW = 'workflow'

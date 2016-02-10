@@ -1,5 +1,12 @@
 {% extends 'base_flex.html' %}
-{% block title %} - {{msg.LABEL_PROJECT}}{{projectName}}{% endblock %}
+{% block title %}
+	{% if mode == 'workflow' %}
+		{{msg.LABEL_WORKFLOW}}
+	{% else %}
+		{{msg.LABEL_PROJECT}}
+	{% endif %}
+	{{projectName}}
+{% endblock %}
 
 {% block head %}
 <!-- CSS -->
@@ -98,7 +105,7 @@
 	{% include "project_content/tree_prot_view.html" %}
 	</div>
 </div>
-{% endblock %} 
+{% endblock %}
 
 {% block headerNorth %}
 <div id="headerToolbar">

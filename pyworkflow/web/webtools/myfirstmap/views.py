@@ -28,7 +28,7 @@ from os.path import exists, join, basename
 from pyworkflow.web.app.views_util import (getResourceCss, getResourceJs, getResourceIcon,
                                            getServiceManager, getImageFullPath, loadProtocolConf, SERVICE_NAME,
                                            CTX_PROJECT_PATH, CTX_PROJECT_NAME, PROJECT_NAME, getVarFromRequest,
-                                           getResource, getAbsoluteURL)
+                                           getResource, getAbsoluteURL, MODE_SERVICE)
 from pyworkflow.web.app.views_base import base_grid
 from pyworkflow.web.app.views_project import contentContext
 from pyworkflow.web.app.views_protocol import contextForm
@@ -229,7 +229,7 @@ def service_content(request):
                     'alignVol': path_files + 'alignVol.png',
                     'download': path_files + 'download.png',
                     'formUrl': 'my_form',
-                    'mode':'service',
+                    'mode': MODE_SERVICE,
                     'daysLeft': daysLeft
                     })
     

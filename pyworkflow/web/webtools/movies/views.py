@@ -23,23 +23,22 @@
 # *  e-mail address 'jmdelarosa@cnb.csic.es'
 # *
 # **************************************************************************
-import urlparse
-from os.path import exists, join, basename
-from pyworkflow.web.app.views_util import (getResourceCss, getResourceJs, getResourceIcon, getServiceManager,
-                                           loadProtocolConf, SERVICE_NAME, getVarFromRequest, PROJECT_NAME,
-                                           CTX_PROJECT_PATH, CTX_PROJECT_NAME, getResource, getAbsoluteURL)
-from pyworkflow.web.app.views_base import base_grid, base_flex, base_form
+from os.path import exists
+
+from django.http import HttpResponse
+from django.shortcuts import render_to_response
+
+import pyworkflow.utils as pwutils
+from pyworkflow.tests.tests import DataSet
+from pyworkflow.utils.utils import prettyDelta
+from pyworkflow.web.app.views_base import base_grid, base_form
 from pyworkflow.web.app.views_project import contentContext
 from pyworkflow.web.app.views_protocol import contextForm
-from django.shortcuts import render_to_response
+from pyworkflow.web.app.views_util import (getResourceCss, getResourceJs, getResourceIcon, getServiceManager,
+                                           loadProtocolConf, getVarFromRequest, PROJECT_NAME,
+                                           CTX_PROJECT_PATH, CTX_PROJECT_NAME, getResource, getAbsoluteURL,
+                                           MODE_SERVICE)
 from pyworkflow.web.pages import settings as django_settings
-from pyworkflow.manager import Manager
-from django.http import HttpResponse
-from pyworkflow.tests.tests import DataSet
-from pyworkflow.utils import copyFile
-import pyworkflow.utils as pwutils
-from pyworkflow.utils.utils import prettyDelta
-from django.contrib.sites.models import Site
 
 MOVIES_SERVICE = 'movies'
 
@@ -189,7 +188,7 @@ def movies_content(request):
     context.update({
         # MODE
         'formUrl': 'mov_form',
-        'mode': 'service',
+        'mode': MODE_SERVICE,
         # IMAGES
         'importMovies': path_files + 'importMovies.png',
         'movieAlignment': path_files + 'movieAlignment.png',

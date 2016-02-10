@@ -32,11 +32,12 @@ from django.shortcuts import render_to_response
 from pyworkflow.em import getProtocols
 from pyworkflow.manager import Manager
 from pyworkflow.utils import getWorkflowsList
+from pyworkflow.web.app.views_util import MODE_WORKFLOW
 from views_base import base_grid, base_flex
 from views_tree import loadProtTree
 from views_util import loadProject, getResourceCss, getResourceIcon, getResourceJs, \
     getServiceManager, PROJECT_NAME, SERVICE_NAME, \
-    getVarFromRequest, CTX_PROJECT_PATH, CTX_PROJECT_NAME, WORKFLOW
+    getVarFromRequest, CTX_PROJECT_PATH, CTX_PROJECT_NAME, WORKFLOW, MODE
 
 
 def projects(request):
@@ -245,10 +246,15 @@ def formatProvider(provider, mode):
 
 def project_content(request):
     projectName = getVarFromRequest(request, PROJECT_NAME)
+    mode = getVarFromRequest(request, MODE)
     project = Manager().loadProject(projectName, chdir=False)
     context = contentContext(request, project)
-    context.update({'mode': None,
+    context.update({'mode': mode,
                     'formUrl': 'form'})
+
+    if mode == MODE_WORKFLOW:
+        context.update({'nowest': True})
+
     return render_to_response('project_content/project_content.html', context)
 
 

@@ -36,9 +36,9 @@ from pyworkflow.utils.utils import prettyDelta
 from pyworkflow.web.app.views_base import base_grid
 from pyworkflow.web.app.views_project import contentContext
 from pyworkflow.web.app.views_protocol import contextForm
-from pyworkflow.web.app.views_util import ( getResourceCss, getResourceJs, getResourceIcon, getServiceManager,
-                                            loadProtocolConf, CTX_PROJECT_PATH, CTX_PROJECT_NAME, PROJECT_NAME,
-                                            getResource, getAbsoluteURL)
+from pyworkflow.web.app.views_util import (getResourceCss, getResourceJs, getResourceIcon, getServiceManager,
+                                           loadProtocolConf, CTX_PROJECT_PATH, CTX_PROJECT_NAME, PROJECT_NAME,
+                                           getResource, getAbsoluteURL, MODE_SERVICE)
 from pyworkflow.web.pages import settings as django_settings
 
 MYPVAL_SERVICE = 'mypval'
@@ -221,7 +221,7 @@ def particlevalidation_content(request):
 
     # Resources for the help - guide, to be done.
     context.update({'formUrl': MYPVAL_FORM_URL,
-                    'mode': 'service',
+                    'mode': MODE_SERVICE,
                     'daysLeft': daysLeft
                     })
 

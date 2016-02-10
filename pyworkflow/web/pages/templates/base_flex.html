@@ -43,11 +43,13 @@ $('#widget').draggable();
 		{% block header %}	
 			{% include "header.html" %}
 		{% endblock %}
-		
+
+		{% if not nowest %}
 		<aside class="west">
 			{% block sideLeft %}	
 			{% endblock %}
 		</aside>
+		{% endif %}
 		
 		<section class="center layout-inner" data-layout='{"type": "border", "hgap": 1, "vgap": 1}'>
 			
