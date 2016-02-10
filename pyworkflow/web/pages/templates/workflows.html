@@ -48,9 +48,9 @@
 		<li class="projList">
 			<strong>
 				{% if workflow.exists %}
-					<a href="{{abs_url}}project_content/?p={{workflow.hash}}" class="projName">{{workflow.name}}</a>
+					<a href="{{abs_url}}project_content/?p={{workflow.project}}" class="projName">{{workflow.name}}</a>
 				{% else %}
-					<a href="#" class="projName" onclick="javascript:createProject('{{workflow.hash}}','{{workflow.file}}')">{{workflow.name}}</a>
+					<a href="#" class="projName" onclick="javascript:createProject('{{workflow.project}}','{{workflow.file}}')">{{workflow.name}}</a>
 				{% endif %}
 			</strong>
 		</li>

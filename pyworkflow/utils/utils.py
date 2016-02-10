@@ -633,15 +633,28 @@ def getWorkflow(workflow):
       . Filename: a json file under the scipion workflow folder.
       . Full file name: an absolute path to a JSON file.
       . JSON String: in this case it a json file will be generated
+      . URL: with a workflow
 
     """
 
+    # If it's a URL
+    if workflow.startswith('http'):
+        print 'It''s a remote resource'
+        import urllib
+
+        remoteWorkflow = urllib.URLopener()
+        localFile = tempfile.NamedTemporaryFile(delete=False)
+        remoteWorkflow.retrieve(str(workflow), localFile.name)
+        workflowFile = localFile.name
+    else:
+        workflowFile = workflow
+
     # Check if it exists as a file:
-    if os.path.isfile(workflow):
-        return workflow
+    if os.path.isfile(workflowFile):
+        return workflowFile
 
     # Try if it's a name of a workflow in the workflow's folder
-    fileName = os.path.join(getWorkflowFolder(), workflow)
+    fileName = os.path.join(getWorkflowFolder(), workflowFile)
 
     if os.path.isfile(fileName):
         return fileName
@@ -679,6 +692,7 @@ def getWorkflowsList():
             # Workflow file
             workflow['file'] = fn
             workflow['hash'] = getShaHash(fn)
+            workflow['project'] = cleanName
 
             workflows.append(workflow)
 

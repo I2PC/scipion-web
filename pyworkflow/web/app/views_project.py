@@ -73,7 +73,7 @@ def workflows(request):
     for workflow in workflows:
 
         # Project for the workflow should be the hashed value
-        if manager.hasProject(workflow['hash']):
+        if manager.hasProject(workflow['project']):
             workflow['exists'] = True
         else:
             workflow['exists'] = False
