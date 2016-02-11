@@ -41,6 +41,7 @@ from pyworkflow.web.app.views_util import (getResourceCss, getResourceJs, getRes
 from pyworkflow.web.pages import settings as django_settings
 
 MOVIES_SERVICE = 'movies'
+MOVIES_SERVICE_URL = 'mymovies'
 
 
 def service_movies(request):
