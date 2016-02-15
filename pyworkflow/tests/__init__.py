@@ -262,11 +262,11 @@ DataSet(name='xmipp_programs', folder='xmipp_programs', files={})
 #               }
 #        )
 
-DataSet(name='pval', folder='pval',
-        files={'pval_vol': 'volume_iter050.vol',
-               'pval_part': 'particles_iter_004.sqlite'
-               }
-        )
+DataSet(name='particle_validation', folder='pval',
+        files={
+               'betagal_part_164': '01nov26b.016.009.001.002_part.mrc',
+               'betagal_vol_1': 'emd_1569_rs.mrc'
+                })
 
 DataSet(name='resmap',  folder='resmap',
         files={'betagal': 'betaGal.mrc',

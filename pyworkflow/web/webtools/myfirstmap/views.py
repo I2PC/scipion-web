@@ -170,23 +170,11 @@ def create_service_project(request):
         protJoin.inputVolumes.append(p1)
         protJoin.inputVolumes.append(p2)
         protJoin.inputVolumes.append(p3)
-#         protJoin.inputVolumes.append(p4)
+
         project.saveProtocol(protJoin)
         
-#         protValidate = project.newProtocol(XmippProtValidateNonTilt)
-#         protValidate.setObjLabel('validate nontilt')
-#         protValidate.inputVolumes.set(protJoin)
-#         protValidate.inputVolumes.setExtended('outputVolumes')
-#         protValidate.inputParticles.set(protImport)
-#         protValidate.inputParticles.setExtended('outputAverages')
-#         protValidate.numberOfThreads.set(8)
-#         if testDataKey :
-#             setProtocolParams(protValidate, testDataKey)
-# #         protJoin.inputVolumes.append(p4)
-#         project.saveProtocol(protValidate)
-        
-        
     return HttpResponse(mimetype='application/javascript')
+
 
 def get_testdata(request):
     # Filename to use as test data 

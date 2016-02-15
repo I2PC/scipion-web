@@ -30,6 +30,7 @@ from django.http import HttpResponse
 from django.shortcuts import render_to_response
 
 import pyworkflow.utils as pwutils
+from pyworkflow.em.packages.xmipp3 import XmippProtProjMatch, XmippProtReconstructSignificant
 from pyworkflow.em.packages.xmipp3.protocol_validate_overfitting import XmippProtValidateOverfitting
 from pyworkflow.tests.tests import DataSet
 from pyworkflow.utils.utils import prettyDelta
@@ -71,12 +72,16 @@ def writeCustomMenu(customMenu):
         f.write('''
 [PROTOCOLS]
 
-Local_Resolution = [
+Reliability tools = [
     {"tag": "section", "text": "2. Import your data", "children": [
         {"tag": "protocol", "value": "ProtImportVolumes", "text": "import volumes", "icon": "bookmark.png"},
         {"tag": "protocol", "value": "ProtImportParticles", "text": "import particles", "icon": "bookmark.png"}]
     },
-    {"tag": "section", "text": "3. Validation", "children": [
+    {"tag": "section", "text": "3. 3D initial volume", "children": [
+        {"tag": "protocol", "value": "XmippProtReconstructSignificant", "text": "xmipp3 - reconstruct significant"}
+        ]
+    },
+    {"tag": "section", "text": "4. Validate", "children": [
         {"tag": "protocol", "value": "XmippProtValidateOverfitting", "text": "xmipp3 - validate overfitting"}]
     }]
     ''')
@@ -87,7 +92,6 @@ def create_particlevalidation_project(request):
     if request.is_ajax():
         from pyworkflow.em.protocol import ProtImportVolumes
         from pyworkflow.em.protocol import ProtImportParticles
-        from pyworkflow.em.packages.resmap.protocol_resmap import ProtResMap
 
         # Create a new project
         projectName = request.GET.get(PROJECT_NAME)
@@ -155,16 +159,49 @@ def create_particlevalidation_project(request):
             protImportParticles = project.newProtocol(ProtImportParticles, objLabel='import particles')
             project.saveProtocol(protImportParticles)
 
-        # 3. Validation
+
+        # 2 Significant
+        protSignificant = project.newProtocol(XmippProtReconstructSignificant)
+        protSignificant.setObjLabel('xmipp - significant')
+
+        # 2 Input particles
+        protSignificant.inputSet.set(protImportParticles)
+        protSignificant.inputSet.setExtended('outputParticles')
+
+        # 2 Input volume
+        protSignificant.thereisRefVolume.set(True)
+        protSignificant.refVolume.set(protImportVol)
+
+        setProtocolParams(protSignificant, testDataKey)
+        project.saveProtocol(protSignificant)
+
+        # # 3a. Angular reliability
+        # protValidation1 = project.newProtocol(XmippProtValidateOverfitting)
+        # protValidation1.setObjLabel('angular reliability')
+        #
+        # # link Input volumes
+        # protValidation1.input3DReference.set(protSignificant)
+        # protValidation1.input3DReference.setExtended('outputVolume')
+        #
+        # # Input particles from significant
+        # protValidation1.inputParticles.set(protSignificant)
+        # protValidation1.inputParticles.setExtended('outputParticles')
+        #
+        # # Load additional configuration
+        # loadProtocolConf(protValidation1)
+        # project.saveProtocol(protValidation1)
+
+
+        # 3b. Validation
         protValidation = project.newProtocol(XmippProtValidateOverfitting)
         protValidation.setObjLabel('xmipp3 - validate overfitting')
 
-        # Input volumes
-        protValidation.input3DReference.set(protImportVol)
+        # link Input volumes
+        protValidation.input3DReference.set(protSignificant)
         protValidation.input3DReference.setExtended('outputVolume')
 
-        # Input particles
-        protValidation.inputParticles.set(protImportParticles)
+        # Input particles from significant
+        protValidation.inputParticles.set(protSignificant)
         protValidation.inputParticles.setExtended('outputParticles')
 
         # Load additional configuration
@@ -223,3 +260,20 @@ def particlevalidation_content(request):
                     })
 
     return render_to_response('pval_content.html', context)
+
+
+def setProtocolParams(protocol, key):
+    # Here we set protocol parameters for each test data
+    if key:
+        cls = type(protocol)
+
+        if issubclass(cls, XmippProtReconstructSignificant):
+            if(key == "betagal"):
+                attrs = {"symmetryGroup" : "i1",
+                         "alpha0": 99.5,
+                         "alphaF": 99.5}
+
+        for key,value in attrs.iteritems():
+            getattr(protocol, key).set(value)
+
+    loadProtocolConf(protocol)
