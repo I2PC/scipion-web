@@ -145,7 +145,7 @@ def create_movies_project(request):
         loadProtocolConf(protMovAlign)
         project.saveProtocol(protMovAlign)
 
-    return HttpResponse(mimetype='application/javascript')
+    return HttpResponse(content_type='application/javascript')
 
 
 def getAttrTestFile(key):
