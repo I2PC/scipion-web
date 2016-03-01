@@ -4,25 +4,22 @@ import pyworkflow as pw
 from django.conf.urls import patterns, include, url
 # Uncomment the next two lines to enable the admin:
 from django.contrib import admin
+
+from pyworkflow.web import app
+from pyworkflow.web.app import views_util
+from pyworkflow.web.app.views_management import ScipionResumableUploadView
+
 admin.autodiscover()
 from django.conf import settings
 from pyworkflow.web.pages.settings import WS_ROOT, serviceFolders
 from django.views.generic import TemplateView
 
-#===============================================================================
+# ===============================================================================
 # URL ASSOCIATION
-#===============================================================================
+# ===============================================================================
 
 mainUrls = ['',
-    # To serve different static files
-    (r'^resources/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.MEDIA_ROOT}),
-    (r'^static/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.STATIC_ROOT}),
-
     url(r'^admin/', include(admin.site.urls)),
-    # url(r'^pages/doc/', include('django.contrib.admindocs.urls')),
-
-    # If no path given, load the projects view
-#     url(r'^$', 'app.views_project.projects'),
     url(r'^$', 'app.views_home.home'),
     url(r'^services/', 'app.views_project.webservice_projects'),
     url(r'^intro/', 'app.views_project.webservice_projects'),
@@ -31,8 +28,6 @@ mainUrls = ['',
     url(r'^projects/', 'app.views_project.projects'),
     url(r'^create_project/$', 'app.views_project.create_project'),
     url(r'^workflows/', 'app.views_project.workflows'),
-
-    # url(r'^check_project_id/$', 'app.views_project.check_project_id'),
     url(r'^delete_project/$', 'app.views_project.delete_project'),
     url(r'^project_content/$', 'app.views_project.project_content'),
     url(r'^get_protocols/$', 'app.views_project.get_protocols'),
@@ -98,26 +93,33 @@ mainUrls = ['',
     url(r'^get_chimera_html/$', 'app.views_showj.get_chimera_html'),
 
     #BROWSER & UPLOAD FILES
-    url(r'^upload/', 'app.views_management.upload', name='upload'),
-    url(r'^doUpload/', 'app.views_management.doUpload'),
+    url(r'^upload/', 'app.views_management.upload'),
+    url(r'^doUpload', 'app.views_management.doUpload'),
     url(r'^getPath/', 'app.views_management.getPath'),
     url(r'^getExtIcon/$', 'app.views_management.getExtIcon'),
     url(r'^get_file/$', 'app.views_util.get_file'),
     url(r'^get_image_dim/$', 'app.views_util.get_image_dim'),
+    url(r'^uploadr/$', ScipionResumableUploadView.as_view(), name='uploadr'),
+    url(r'^deletefile$', views_util.delete_file),
 
-    #TESTING
-#    url(r'^testingSSH/', 'app.views_showj.testingSSH'), #Load web
-
+    # MANAGEMENT
+    url(r'^health$', app.views_management.health),
 
     url(r'^home/', 'app.views_home.home'),
     url(r'^download_form/', 'app.views_home.download_form'),
     url(r'^startdownload/', 'app.views_home.startDownload'),
     url(r'^download/', 'app.views_home.doDownload'),
 
+    # To serve different static files
+    (r'^resources/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.MEDIA_ROOT}),
+    (r'^static/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.STATIC_ROOT}),
+
+
 ]
 
 # Load URLS for webtools
 from pyworkflow.utils.reflection import getModules
+
 toolModules = getModules(WS_ROOT)
 
 for tm in toolModules.values():
@@ -127,4 +129,3 @@ handler404 = "app.views_util.handle404error"
 handler500 = "app.views_util.handle500error"
 
 urlpatterns = patterns(*mainUrls)
-

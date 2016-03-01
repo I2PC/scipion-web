@@ -96,7 +96,7 @@ def launch_viewer(request):
 
     jsonStr = json.dumps(urls, ensure_ascii=False)
 
-    return HttpResponse(jsonStr, mimetype='application/javascript')
+    return HttpResponse(jsonStr, content_type='application/javascript')
 
 
 def viewerForm(project, protocol, viewer, request):
@@ -114,7 +114,7 @@ def viewToUrl(request, view):
 
     # PLOT
     if isinstance(view, Plotter):
-        url = 'url::' + savePlot(request, view)
+        url = 'url::' + savePlot(request, view, close=True)
 
     # IMAGE
     elif isinstance(view, ImageView):
@@ -176,4 +176,4 @@ def viewer_element(request):
                 urls.append(viewToUrl(request, v))
 
         jsonStr = json.dumps(urls, ensure_ascii=False)
-    return HttpResponse(jsonStr, mimetype='application/javascript')
+    return HttpResponse(jsonStr, content_type='application/javascript')

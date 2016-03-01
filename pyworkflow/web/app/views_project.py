@@ -97,7 +97,7 @@ def create_project(request):
         workflow = getVarFromRequest(request, WORKFLOW)
         manager.createProject(projectName, chdir=False, workflow=workflow)
 
-    return HttpResponse(mimetype='application/javascript')
+    return HttpResponse(content_type='application/javascript')
 
 
 def delete_project(request):
@@ -107,7 +107,7 @@ def delete_project(request):
         projectName = getVarFromRequest(request, PROJECT_NAME)
         manager.deleteProject(projectName)
 
-    return HttpResponse(mimetype='application/javascript')
+    return HttpResponse(content_type='application/javascript')
 
 
 def getNodeStateColor(node):
@@ -133,7 +133,7 @@ def update_prot_tree(request):
     project_settings.setProtocolView(views[int(index)])
     project_settings.write()
 
-    return HttpResponse(mimetype='application/javascript')
+    return HttpResponse(content_type='application/javascript')
 
 
 def update_graph_view(request):
@@ -144,7 +144,7 @@ def update_graph_view(request):
     project_settings.runsView.set(int(status))
 
     project_settings.write()
-    return HttpResponse(mimetype='application/javascript')
+    return HttpResponse(content_type='application/javascript')
 
 
 def save_selection(request):
@@ -159,7 +159,7 @@ def save_selection(request):
 
         project_settings.write()
 
-    return HttpResponse(mimetype='application/javascript')
+    return HttpResponse(content_type='application/javascript')
 
 
 def tree_prot_view(request):
@@ -214,14 +214,14 @@ def run_table_graph(request):
         elif listNewElm:
             request.session['runs'] = runsNew
             jsonStr = json.dumps(listNewElm, ensure_ascii=False)
-            return HttpResponse(jsonStr, mimetype='application/json')
+            return HttpResponse(jsonStr, content_type='application/json')
 
         else:
-            return HttpResponse("ok", mimetype='text/plain')
+            return HttpResponse("ok", content_type='text/plain')
 
     except Exception:
         print "Stopped script"
-        return HttpResponse("stop", mimetype='text/plain')
+        return HttpResponse("stop", content_type='text/plain')
 
 
 def formatProvider(provider, mode):
@@ -274,7 +274,7 @@ def get_protocols(request):
             result.append((label, className))
 
     jsonStr = json.dumps(result, ensure_ascii=False)
-    return HttpResponse(jsonStr, mimetype='application/javascript')
+    return HttpResponse(jsonStr, content_type='application/javascript')
 
 
 def contentContext(request, project, serviceName=None):
@@ -390,7 +390,7 @@ def protocol_info(request):
             #        print "ioDict: ", ioDict
             jsonStr = json.dumps(ioDict, ensure_ascii=False)
 
-    return HttpResponse(jsonStr, mimetype='application/javascript')
+    return HttpResponse(jsonStr, content_type='application/javascript')
 
 
 def webservice_projects(request):

@@ -1,38 +1,35 @@
+{% load staticfiles %}
 <div class="box">
-	<form id="uploadForm" action="{{abs_url}}doUpload/" method="post" enctype="multipart/form-data">
+
 	{% csrf_token %}
-		<input type="hidden" id="project_folder" name="project_folder" value="{{project_folder}}"/>
-		<input type="hidden" name="p" value="{{projectName}}"/>
-		<input type="hidden" name="s" value="{{s}}"/>
-		<p>
-<!-- 			<strong>{{relative_path}}</strong> -->
-		</p>
-		<table class="section">
-			<tr>
-				<td id="inputName" class="normal">
-					<img src="{{abs_url}}resources/{{icon.ACTION_BROWSE}}">&nbsp;
-					<strong>{{form.docfile.label_tag}}</strong>
-				</td>
-				<td colspan="3">
-					<p>{{form.non_field_errors}}</p>
-					<p>{{form.docfile.help_text}}</p>
-					<p>
-						{{form.docfile.errors}}
-						{{form.docfile}}
-					</p>
-				</td>
-				<td class="ico">
-					<a class="fa fa-question-circle" href="javascript:infoPopup('Documentation','{{msg.TEXT_HELP}}');"></a>
-				</td>
-			</tr>
-		</table>
-		{% if mode != "service" %}
-		<div style="float:right;">
-			<a href="javascript:launchUpload();" class="btn button2 secondary_inv">
-				<i class="fa fa-cogs"></i>
-				Upload
-			</a>
-		</div>
-		{% endif %}
-	</form>
+	<!--{{ form.as_p }}-->
+	<br/>
+	<input type="file" name="file"  data-upload-url="{{abs_url}}uploadr/" id="id_file" value="Choose a file"/>
+	<input type="hidden" id="project_folder" name="project_folder" value="{{project_folder}}"/>
+
+	<script type="text/javascript" src="http://cdn.rawgit.com/23/resumable.js/master/resumable.js"></script>
+	<script type="text/javascript" src="/{% static 'js/django-resumable.js' %}"></script>
+	<script>
+		document.addEventListener("DOMContentLoaded", function () {
+			"use strict";
+
+			var dj;
+			if (new Resumable().support) {
+
+				var resumableOptions =  {
+					query: {
+						'p': '{{projectName}}',
+						's': '{{s}}'
+					}
+				};
+
+				var djangoResummableOpts = {
+					progressDisplay: 'flex',
+					resumableOptions: resumableOptions
+				}
+
+				dj = new DjangoResumable(djangoResummableOpts);
+			}
+		});
+	</script>
 </div>
