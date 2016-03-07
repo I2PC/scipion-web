@@ -257,9 +257,9 @@ DataSet(name='xmipp_programs', folder='xmipp_programs', files={})
 
 DataSet(name='particle_validation', folder='pvalidation',
         files={
-               'pabloVolume': 'relion_it000_half1_class001.mrc',
-               'pabloParticles': 'BPV_1386.stk',
-               'pabloStarFile': 'relion_it000_data.star'
+               'betagal_volume': 'betagal_volume.vol',
+               'betagal_particles': 'betagal_particles.stk',
+               'betagal_meta': 'betagal_relion_angles_data.star'
                 })
 
 DataSet(name='resmap',  folder='resmap',

@@ -226,18 +226,18 @@ def create_particlevalidation_project(request):
 def getAttrTestFile(key):
     pval = DataSet.getDataSet('particle_validation')
 
-    if key == "pablo":
+    if key == "betagal":
 
         attr = {"path": pval.getPath(),
-                "volume": pval.getFile("pabloVolume"),
-                "samplingRate": 3.54,
-                "particles": pval.getFile("pabloParticles"),
-                "starFile": pval.getFile("pabloStarFile"),
+                "volume": pval.getFile("betagal_volume"),
+                "samplingRate": 3.98,
+                "particles": pval.getFile("betagal_particles"),
+                "starFile": pval.getFile("betagal_meta"),
                 "microscopeVoltage": 300,
                 "sphericalAberration": 2,
                 "amplitudeContrast": 0.1,
                 "magnificationRate": 50000,
-                "particlesSamplingRate": 3.54
+                "particlesSamplingRate": 3.98
                 }
 
     return attr
