@@ -30,7 +30,8 @@ from django.http import HttpResponse
 from django.shortcuts import render_to_response
 
 import pyworkflow.utils as pwutils
-from pyworkflow.em.packages.xmipp3 import XmippProtProjMatch, XmippProtReconstructSignificant
+from pyworkflow.em.packages.xmipp3 import XmippProtReconstructSignificant, \
+    XmippProtCropResizeParticles, XmippProtCropResizeVolumes, XmippProtValidateNonTilt
 from pyworkflow.em.packages.xmipp3.protocol_validate_overfitting import XmippProtValidateOverfitting
 from pyworkflow.tests.tests import DataSet
 from pyworkflow.utils.utils import prettyDelta
@@ -73,16 +74,19 @@ def writeCustomMenu(customMenu):
 [PROTOCOLS]
 
 Reliability tools = [
-    {"tag": "section", "text": "2. Import your data", "children": [
+    {"tag": "section", "text": "1. Import your data", "children": [
         {"tag": "protocol", "value": "ProtImportVolumes", "text": "import volumes", "icon": "bookmark.png"},
         {"tag": "protocol", "value": "ProtImportParticles", "text": "import particles", "icon": "bookmark.png"}]
     },
-    {"tag": "section", "text": "3. 3D initial volume", "children": [
-        {"tag": "protocol", "value": "XmippProtReconstructSignificant", "text": "xmipp3 - reconstruct significant"}
+    {"tag": "section", "text": "2. Downsample", "children": [
+        {"tag": "protocol", "value": "XmippProtCropResizeVolumes", "text": "xmipp3 - crop/resize volumes"},
+        {"tag": "protocol", "value": "XmippProtCropResizeParticles", "text": "xmipp3 - crop/resize particles"}
         ]
     },
-    {"tag": "section", "text": "4. Validate", "children": [
-        {"tag": "protocol", "value": "XmippProtValidateOverfitting", "text": "xmipp3 - validate overfitting"}]
+    {"tag": "section", "text": "3. Validate", "children": [
+        {"tag": "protocol", "value": "XmippProtValidateOverfitting", "text": "xmipp3 - validate overfitting"},
+        {"tag": "protocol", "value": "XmippProtValidateNonTilt", "text": "xmipp3 - validate nontilt"}
+        ]
     }]
     ''')
         f.close()
@@ -140,7 +144,13 @@ def create_particlevalidation_project(request):
 
             protImportParticles.filesPath.set(dest)
 
+            source = attr['starFile']
+            dest = os.path.join(projectPath, 'Uploads', basename(source))
+            pwutils.createLink(source, dest)
+
             # Set import particle attributes
+            protImportParticles.importFrom.set(ProtImportParticles.IMPORT_FROM_RELION)
+            protImportParticles.starFile.set(dest)
             protImportParticles.voltage.set(attr["microscopeVoltage"])
             protImportParticles.sphericalAberration.set(attr["sphericalAberration"])
             protImportParticles.amplitudeContrast.set(attr["amplitudeContrast"])
@@ -159,49 +169,51 @@ def create_particlevalidation_project(request):
             protImportParticles = project.newProtocol(ProtImportParticles, objLabel='import particles')
             project.saveProtocol(protImportParticles)
 
+        # Downsample both inputs
+        # 2a Downsample particles
+        downSamplingParticles = project.newProtocol(XmippProtCropResizeParticles)
+        downSamplingParticles.setObjLabel('xmipp - downsampling particles')
+        downSamplingParticles.inputParticles.set(protImportParticles)
+        downSamplingParticles.inputParticles.setExtended('outputParticles')
+        project.saveProtocol(downSamplingParticles)
 
-        # 2 Significant
-        protSignificant = project.newProtocol(XmippProtReconstructSignificant)
-        protSignificant.setObjLabel('xmipp - significant')
-
-        # 2 Input particles
-        protSignificant.inputSet.set(protImportParticles)
-        protSignificant.inputSet.setExtended('outputParticles')
-
-        # 2 Input volume
-        protSignificant.thereisRefVolume.set(True)
-        protSignificant.refVolume.set(protImportVol)
-
-        setProtocolParams(protSignificant, testDataKey)
-        project.saveProtocol(protSignificant)
-
-        # # 3a. Angular reliability
-        # protValidation1 = project.newProtocol(XmippProtValidateOverfitting)
-        # protValidation1.setObjLabel('angular reliability')
-        #
-        # # link Input volumes
-        # protValidation1.input3DReference.set(protSignificant)
-        # protValidation1.input3DReference.setExtended('outputVolume')
-        #
-        # # Input particles from significant
-        # protValidation1.inputParticles.set(protSignificant)
-        # protValidation1.inputParticles.setExtended('outputParticles')
-        #
-        # # Load additional configuration
-        # loadProtocolConf(protValidation1)
-        # project.saveProtocol(protValidation1)
+        # 2b Downsample volume
+        downSamplingVolumes = project.newProtocol(XmippProtCropResizeVolumes)
+        downSamplingVolumes.setObjLabel('xmipp - downsampling volumes')
+        downSamplingVolumes.inputVolumes.set(protImportVol)
+        downSamplingVolumes.inputVolumes.setExtended('outputVolumes')
+        project.saveProtocol(downSamplingVolumes)
 
 
-        # 3b. Validation
+        # 3a. Validate non tilt
+        protNonTilt = project.newProtocol(XmippProtValidateNonTilt)
+        protNonTilt.setObjLabel('xmipp3 - validate non tilt')
+
+        # link Input volumes
+        protNonTilt.inputVolumes.set(downSamplingVolumes)
+        protNonTilt.inputVolumes.setExtended('outputVolume')
+
+        # Input particles
+        protNonTilt.inputParticles.set(downSamplingParticles)
+        protNonTilt.inputParticles.setExtended('outputParticles')
+
+        # Load additional configuration
+        loadProtocolConf(protNonTilt)
+        project.saveProtocol(protNonTilt)
+
+
+
+
+        # 3b. Validation overfitting
         protValidation = project.newProtocol(XmippProtValidateOverfitting)
         protValidation.setObjLabel('xmipp3 - validate overfitting')
 
         # link Input volumes
-        protValidation.input3DReference.set(protSignificant)
+        protValidation.input3DReference.set(protImportVol)
         protValidation.input3DReference.setExtended('outputVolume')
 
-        # Input particles from significant
-        protValidation.inputParticles.set(protSignificant)
+        # Input particles
+        protValidation.inputParticles.set(protImportParticles)
         protValidation.inputParticles.setExtended('outputParticles')
 
         # Load additional configuration
@@ -212,12 +224,15 @@ def create_particlevalidation_project(request):
 
 
 def getAttrTestFile(key):
-    pval = DataSet.getDataSet('pval')
+    pval = DataSet.getDataSet('particle_validation')
 
-    if key == "pval":
-        attr = {"volume": pval.getFile("pval_vol"),
+    if key == "pablo":
+
+        attr = {"path": pval.getPath(),
+                "volume": pval.getFile("pabloVolume"),
                 "samplingRate": 3.54,
-                "particles": pval.getFile("pval_part"),
+                "particles": pval.getFile("pabloParticles"),
+                "starFile": pval.getFile("pabloStarFile"),
                 "microscopeVoltage": 300,
                 "sphericalAberration": 2,
                 "amplitudeContrast": 0.1,

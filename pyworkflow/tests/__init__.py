@@ -255,17 +255,11 @@ DataSet(name='SymVirus', folder='SymVirus',
 
 DataSet(name='xmipp_programs', folder='xmipp_programs', files={})
 
-#DataSet(name='resmap', folder='resmap',
-#        files={'fcv': 'fcv.map',
-#               'mito_ribo': 'mito_ribosome.map',
-#               't20s': 't20s_proteasome.map'
-#               }
-#        )
-
-DataSet(name='particle_validation', folder='pval',
+DataSet(name='particle_validation', folder='pvalidation',
         files={
-               'betagal_part_164': '01nov26b.016.009.001.002_part.mrc',
-               'betagal_vol_1': 'emd_1569_rs.mrc'
+               'pabloVolume': 'relion_it000_half1_class001.mrc',
+               'pabloParticles': 'BPV_1386.stk',
+               'pabloStarFile': 'relion_it000_data.star'
                 })
 
 DataSet(name='resmap',  folder='resmap',

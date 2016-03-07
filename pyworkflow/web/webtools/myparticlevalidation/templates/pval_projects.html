@@ -1,6 +1,6 @@
 {% extends "layouts/100.html" %}
 
-{% block title %}Scipion - My quality{% endblock %}
+{% block title %}Scipion - My reliability tool{% endblock %}
 
 {% block css %}
     {{ block.super }}
@@ -26,7 +26,9 @@
 		<h4 style="text-align:justify;">
 			This tool will provide you with 2 methods to assess the reliability of your images:
 			<br/><br/>
-			JAVI's method short description.
+			The non-tilt validation method will evaluate the consistency between a raw 3D density map with respect to a set of 2D projection images
+ 			that were used to reconstruct a volume obtaining the alignment precision of each particle
+			(<a href="https://doi.org/10.1038/srep21626" target="_blank"><strong>Vargas, J. et al., Sci. Rep., 2016</strong></a>).
 			<br/><br/>
 			The overfitting method will
 			assess the validity of a reconstruction from micrograph images of presumably identical particles based on aligned noise.

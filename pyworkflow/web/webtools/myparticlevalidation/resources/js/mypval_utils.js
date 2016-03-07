@@ -49,6 +49,10 @@ function serviceTestDataForm(){
 		dialog += '&nbsp;&nbsp;&nbsp;<input type="radio" name="data" value="pval" checked>';
 		dialog += '&nbsp;&nbsp;' + getRefTestData("pval");
 		dialog += '<br />';
+		dialog += '&nbsp;&nbsp;&nbsp;<input type="radio" name="data" value="pablo" checked>';
+		dialog += '&nbsp;&nbsp;' + getRefTestData("pablo");
+		dialog += '<br />';
+
 		dialog += "</div>";
 		dialog += "<br />";
 
@@ -134,6 +138,10 @@ function getRefTestData(id){
 		case "pval":
 			ref = "<strong>β-galactosidase</strong> (Resolution 2.8 Å , <a href='http://dx.doi.org/10.1016%2Fj.str.2014.01.011' style='color:firebrick;' target='_blank'>from Vinothkumar et al. Cell PRESS, 2014</a>)"
 			break;
+		case "pablo":
+			ref = "<strong>Prubeas pablo</strong>)"
+			break;
+
 	}
 	return ref;
 }

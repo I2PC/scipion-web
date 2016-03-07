@@ -10,7 +10,7 @@ urls = [
      'django.views.static.serve',
      {'document_root': MEDIA_MYPARTICLE_VALIDATION}
      ),
-    url('^' + MYPVAL_SERVICE + '/', 'app.views_webtools.particlevalidation_projects'),
+    url('^' + MYPVAL_SERVICE + '$', 'app.views_webtools.particlevalidation_projects'),
     url(r'^create_pval_project/$', 'app.views_webtools.create_particlevalidation_project'),
     url('^' + MYPVAL_FORM_URL + '/$', 'app.views_webtools.particlevalidation_form'),
     url(r'^p_content/$', 'app.views_webtools.particlevalidation_content')
