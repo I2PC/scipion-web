@@ -4,7 +4,22 @@
 	{% include "webtool_header.html" %}
 {% endblock %}
 
+{% block css %}
+	{{ block.super }}
+	<link rel="stylesheet" href="{{css_root}}pageguide.css">
+{% endblock %}
+
+{% block js %}
+	{{ block.super }}
+	<script type="text/javascript" src="{{js_root}}pageguide.js"></script>
+{% endblock %}
+
 {% block service %}
 	{% include "configPvalHidden.html" %}
-	{% include "helpPvalPopup.html" %}
 {% endblock %}
+
+{% block bodyend %}
+	{{ block.super }}
+	{% include "helpPvalJoyride.html" %}
+{% endblock %}
+

@@ -9,8 +9,14 @@
 {% endblock %}
 
 {% block head %}
+
+
 <!-- CSS -->
-<link href={{project_content_css}} rel="stylesheet" type="text/css">
+{% block css %}
+    {{ block.super }}
+	<link href={{project_content_css}} rel="stylesheet" type="text/css">
+{% endblock %}
+
 <style type="text/css">
 
 .ui-state-active {

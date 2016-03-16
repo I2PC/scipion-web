@@ -472,6 +472,12 @@ function updateTabs(id) {
 	 * Fill the content of the summary tab for a protocol run selected (Data /
 	 * Summary / Methods / Status)
 	 */
+
+	//if id is not a number (when nothing is selected id = [], and isNaN(id) = false!!.
+	if (isNaN(parseInt(id))) {
+		return;
+	}
+
 	var URL = getSubDomainURL() + '/protocol_info/?protocolId=' + id + projectToGETParams()
 	$.ajax({
 		type : "GET",
@@ -499,16 +505,16 @@ function updateTabs(id) {
 				$("span#buttonAnalyzeResult").hide();
 				$("span#stopTool").show();
 				$("a#stopTool").attr('href',
-						'javascript:stopProtocolForm("' + id + '")');
+						'javascript:stopProtocolForm("' + id + '");');
 			} else {
 				// Action Analyze Result Button
 				$("span#stopTool").hide();
 				// $("span#analyzeTool").show();
 				$("span#buttonAnalyzeResult").show();
 				$("a#analyzeTool").attr('href',
-						'javascript:launchViewer("' + id + '")');
+						'javascript:launchViewer("' + id + '");');
 				$("a#downloadTool").attr('href',
-						'javascript:downloadOutput("' + id + '")');
+						'javascript:downloadOutput("' + id + '");');
 			}
 
 			// LOGS

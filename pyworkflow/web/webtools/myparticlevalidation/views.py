@@ -116,6 +116,13 @@ def create_particlevalidation_project(request):
 
         projectPath = manager.getProjectPath(projectName)
 
+        inputVolumeProtocol = None
+        inputVolumeExtended = ''
+
+        inputParticlesProtocol = None
+        inputParticlesExtended = ''
+
+
         # If we need to import test data...
         if testDataKey:
 
@@ -159,6 +166,12 @@ def create_particlevalidation_project(request):
 
             project.launchProtocol(protImportParticles, wait=True, chdir=False)
 
+            inputVolumeProtocol = protImportVol
+            inputVolumeExtended = 'outputVolumes'
+
+            inputParticlesProtocol = protImportParticles
+            inputParticlesExtended = 'outputParticles'
+
         else:
 
             # Empty import volumes protocol
@@ -169,20 +182,26 @@ def create_particlevalidation_project(request):
             protImportParticles = project.newProtocol(ProtImportParticles, objLabel='import particles')
             project.saveProtocol(protImportParticles)
 
-        # Downsample both inputs
-        # 2a Downsample particles
-        downSamplingParticles = project.newProtocol(XmippProtCropResizeParticles)
-        downSamplingParticles.setObjLabel('xmipp - downsampling particles')
-        downSamplingParticles.inputParticles.set(protImportParticles)
-        downSamplingParticles.inputParticles.setExtended('outputParticles')
-        project.saveProtocol(downSamplingParticles)
+            # Downsample both inputs
+            # 2a Downsample particles
+            downSamplingParticles = project.newProtocol(XmippProtCropResizeParticles)
+            downSamplingParticles.setObjLabel('xmipp - downsampling particles')
+            downSamplingParticles.inputParticles.set(protImportParticles)
+            downSamplingParticles.inputParticles.setExtended('outputParticles')
+            project.saveProtocol(downSamplingParticles)
 
-        # 2b Downsample volume
-        downSamplingVolumes = project.newProtocol(XmippProtCropResizeVolumes)
-        downSamplingVolumes.setObjLabel('xmipp - downsampling volumes')
-        downSamplingVolumes.inputVolumes.set(protImportVol)
-        downSamplingVolumes.inputVolumes.setExtended('outputVolumes')
-        project.saveProtocol(downSamplingVolumes)
+            # 2b Downsample volume
+            downSamplingVolumes = project.newProtocol(XmippProtCropResizeVolumes)
+            downSamplingVolumes.setObjLabel('xmipp - downsampling volumes')
+            downSamplingVolumes.inputVolumes.set(protImportVol)
+            downSamplingVolumes.inputVolumes.setExtended('outputVolumes')
+            project.saveProtocol(downSamplingVolumes)
+
+            inputVolumeProtocol = downSamplingVolumes
+            inputVolumeExtended = 'outputVolume'
+
+            inputParticlesProtocol = downSamplingParticles
+            inputParticlesExtended = 'outputParticles'
 
 
         # 3a. Validate non tilt
@@ -190,18 +209,16 @@ def create_particlevalidation_project(request):
         protNonTilt.setObjLabel('xmipp3 - validate non tilt')
 
         # link Input volumes
-        protNonTilt.inputVolumes.set(downSamplingVolumes)
-        protNonTilt.inputVolumes.setExtended('outputVolume')
+        protNonTilt.inputVolumes.set(inputVolumeProtocol)
+        protNonTilt.inputVolumes.setExtended(inputVolumeExtended)
 
         # Input particles
-        protNonTilt.inputParticles.set(downSamplingParticles)
-        protNonTilt.inputParticles.setExtended('outputParticles')
+        protNonTilt.inputParticles.set(inputParticlesProtocol)
+        protNonTilt.inputParticles.setExtended(inputParticlesExtended)
 
         # Load additional configuration
         loadProtocolConf(protNonTilt)
         project.saveProtocol(protNonTilt)
-
-
 
 
         # 3b. Validation overfitting
@@ -209,12 +226,12 @@ def create_particlevalidation_project(request):
         protValidation.setObjLabel('xmipp3 - validate overfitting')
 
         # link Input volumes
-        protValidation.input3DReference.set(protImportVol)
-        protValidation.input3DReference.setExtended('outputVolume')
+        protValidation.input3DReference.set(inputVolumeProtocol)
+        protValidation.input3DReference.setExtended(inputVolumeExtended)
 
         # Input particles
-        protValidation.inputParticles.set(protImportParticles)
-        protValidation.inputParticles.setExtended('outputParticles')
+        protValidation.inputParticles.set(inputParticlesProtocol)
+        protValidation.inputParticles.setExtended(inputParticlesExtended)
 
         # Load additional configuration
         loadProtocolConf(protValidation)
