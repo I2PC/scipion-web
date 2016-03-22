@@ -1,25 +1,59 @@
-{% extends 'project_content/project_content.html' %}
-
-{% block header %}	
-	{% include "webtool_header.html" %}
-{% endblock %}
-
-{% block css %}
-	{{ block.super }}
-	<link rel="stylesheet" href="{{css_root}}pageguide.css">
-{% endblock %}
-
-{% block js %}
-	{{ block.super }}
-	<script type="text/javascript" src="{{js_root}}pageguide.js"></script>
-{% endblock %}
-
-{% block service %}
-	{% include "configPvalHidden.html" %}
-{% endblock %}
+{% extends 'project_content/_service_content.html' %}
+{% load staticfiles i18n %}
 
 {% block bodyend %}
-	{{ block.super }}
-	{% include "helpPvalJoyride.html" %}
+  {{ block.super }}
+	<ul id="tlyPageGuide" data-tourtitle="Reliability web tool help">
+	  <li class="tlypageguide_left" data-tourtarget="div[data-label*='import volumes']">
+		<div>
+			<p>Import your volume file to our server by clicking on the <strong>Import Volumes</strong> box. Once uploaded, press "Execute"!</p>
+		</div>
+	  </li>
+	  <li class="tlypageguide_right" data-tourtarget="div[data-label*='import particles']">
+		<div id="step2">
+			<p>
+				Import your particles files to our server on the <strong>Import particles</strong> box.
+				For this particular workflow the particles need to be aligned. Typically .stk and .star files (with alignment information)
+				from Relion can be used. Pay special attention to the <strong>Import from</strong> dropdown list to choose the right format:
+				relion (.stk + .star files), xmipp, freealign, emx. Once uploaded, press "Execute"!</p>
+		</div>
+	  </li>
+	  <li class="tlypageguide_left" data-tourtarget="div[data-label='xmipp - downsampling volumes']">
+		<div>
+			<p>
+				Downsample the volume to reduce the processing time of the later protocols.
+			</p>
+		</div>
+	  </li>
+	  <li class="tlypageguide_right" data-tourtarget="div[data-label='xmipp - downsampling particles']">
+		<div>
+			<p>
+				Downsample the particles to reduce the processing time of the later protocols.
+			</p>
+		</div>
+	  </li>
+	  <li class="tlypageguide_bottom" data-tourtarget="div[data-label='xmipp3 - validate non tilt']">
+		<div>
+			<p>
+				Click on the <strong>validate non-tilt</strong> box.
+			</p>
+			<p>Parameters can be easily customized. Two level of usages are supported (Normal and Advanced), which
+			 should be chosen according to your experience. Press "Execute"!</p>
+			<br />
+		</div>
+	  </li>
+	  <li class="tlypageguide_bottom" data-tourtarget="div[data-label='xmipp3 - validate overfitting']">
+		<div>
+			<p>Click on the <strong>validate overfitting</strong> box.</p>
+			<p>Parameters can be easily customized. Two level of usages are supported (Normal and Advanced), which
+			should be chosen according to your experience. Finally press "Execute"!</p>
+		</div>
+	  </li>
+	  <li class="tlypageguide_top" data-tourtarget="#tabs">
+		<div>
+			<p>Once a method has finished, click on its box to show the <strong>Summary</strong> of Inputs and Outputs.</p>
+	        <p>Click on the <strong>Analyze Results</strong> button to further analyze the results of each method.</p>
+		</div>
+	  </li>
+	</ul>
 {% endblock %}
-

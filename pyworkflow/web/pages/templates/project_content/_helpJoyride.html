@@ -1,0 +1,40 @@
+{% load staticfiles i18n %}
+<script type="text/javascript">
+
+	$(function($) {
+
+		var html = '<span id="helpTool">'
+				+ '<a href=""><i class="fa fa-question-circle" style="margin-right:5px"></i>Help</a>'
+				+ '</span>'
+		$("span#toolbar").append(html)
+	});
+
+
+	//	Page guide!
+	$(document).ready(function() {
+		tl.pg.init({ /* optional preferences go here */
+			custom_open_button: "#helpTool"
+		});
+	});
+
+</script>
+
+<div id="tlyPageGuideWelcome">
+    <h2>Welcome to our web tool help tour.</h2>
+    <p>
+        We have prepared a small web help tour to guide you through this web tool.
+		What yo you want to do?
+    </p>
+	<br/>
+	<p>
+	<button class="tlypageguide_start btn-sm">let's go</button>
+	<button class="tlypageguide_ignore">not now</button>
+	<button class="tlypageguide_dismiss">got it, thanks</button>
+	</p>
+	&nbsp;<br/>
+	<p>
+		You can always click on the "Help" link to get some help.
+	</p>
+</div>
+
+<script type="text/javascript" src="{{js_root}}pageguide.js"></script>

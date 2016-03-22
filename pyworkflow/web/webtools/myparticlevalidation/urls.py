@@ -13,6 +13,6 @@ urls = [
     url('^' + MYPVAL_SERVICE + '$', 'app.views_webtools.particlevalidation_projects'),
     url(r'^create_pval_project/$', 'app.views_webtools.create_particlevalidation_project'),
     url('^' + MYPVAL_FORM_URL + '/$', 'app.views_webtools.particlevalidation_form'),
-    url(r'^p_content/$', 'app.views_webtools.particlevalidation_content')
+    url(r'^p_content$', 'app.views_webtools.particlevalidation_content')
 
 ]

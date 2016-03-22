@@ -116,13 +116,6 @@ def create_particlevalidation_project(request):
 
         projectPath = manager.getProjectPath(projectName)
 
-        inputVolumeProtocol = None
-        inputVolumeExtended = ''
-
-        inputParticlesProtocol = None
-        inputParticlesExtended = ''
-
-
         # If we need to import test data...
         if testDataKey:
 
@@ -167,7 +160,7 @@ def create_particlevalidation_project(request):
             project.launchProtocol(protImportParticles, wait=True, chdir=False)
 
             inputVolumeProtocol = protImportVol
-            inputVolumeExtended = 'outputVolumes'
+            inputVolumeExtended = 'outputVolume'
 
             inputParticlesProtocol = protImportParticles
             inputParticlesExtended = 'outputParticles'
@@ -175,7 +168,7 @@ def create_particlevalidation_project(request):
         else:
 
             # Empty import volumes protocol
-            protImportVol = project.newProtocol(ProtImportVolumes, objLabel='import volumes')
+            protImportVol = project.newProtocol(ProtImportVolumes, objLabel='import volume')
             project.saveProtocol(protImportVol)
 
             # Empty import particles protocol
@@ -194,7 +187,7 @@ def create_particlevalidation_project(request):
             downSamplingVolumes = project.newProtocol(XmippProtCropResizeVolumes)
             downSamplingVolumes.setObjLabel('xmipp - downsampling volumes')
             downSamplingVolumes.inputVolumes.set(protImportVol)
-            downSamplingVolumes.inputVolumes.setExtended('outputVolumes')
+            downSamplingVolumes.inputVolumes.setExtended('outputVolume')
             project.saveProtocol(downSamplingVolumes)
 
             inputVolumeProtocol = downSamplingVolumes
@@ -216,6 +209,9 @@ def create_particlevalidation_project(request):
         protNonTilt.inputParticles.set(inputParticlesProtocol)
         protNonTilt.inputParticles.setExtended(inputParticlesExtended)
 
+        # Attributes
+        if testDataKey: protNonTilt.symmetryGroup.set(attr['symetry'])
+
         # Load additional configuration
         loadProtocolConf(protNonTilt)
         project.saveProtocol(protNonTilt)
@@ -232,6 +228,9 @@ def create_particlevalidation_project(request):
         # Input particles
         protValidation.inputParticles.set(inputParticlesProtocol)
         protValidation.inputParticles.setExtended(inputParticlesExtended)
+
+        # Attributes
+        if testDataKey: protValidation.symmetryGroup.set(attr['symetry'])
 
         # Load additional configuration
         loadProtocolConf(protValidation)
@@ -254,7 +253,8 @@ def getAttrTestFile(key):
                 "sphericalAberration": 2,
                 "amplitudeContrast": 0.1,
                 "magnificationRate": 50000,
-                "particlesSamplingRate": 3.98
+                "particlesSamplingRate": 3.98,
+                "symetry":'d7'
                 }
 
     return attr
@@ -293,19 +293,3 @@ def particlevalidation_content(request):
 
     return render_to_response('pval_content.html', context)
 
-
-def setProtocolParams(protocol, key):
-    # Here we set protocol parameters for each test data
-    if key:
-        cls = type(protocol)
-
-        if issubclass(cls, XmippProtReconstructSignificant):
-            if(key == "betagal"):
-                attrs = {"symmetryGroup" : "i1",
-                         "alpha0": 99.5,
-                         "alphaF": 99.5}
-
-        for key,value in attrs.iteritems():
-            getattr(protocol, key).set(value)
-
-    loadProtocolConf(protocol)

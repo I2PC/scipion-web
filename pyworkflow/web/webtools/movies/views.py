@@ -230,5 +230,5 @@ def getSyncCommand(request):
     domain = django_settings.SITE_URL
     domain = domain.split(":")[0]
     projectName = getVarFromRequest(request, PROJECT_NAME)
-    command = "rsync -av --port 3333 USER_FOLDER/ %s::mws/%s" % (domain, projectName)
+    command = "rsync -av --port 3333 YOUR_FOLDER_WITH_MICROGRAPHS/ %s::mws/%s" % (domain, projectName)
     return command

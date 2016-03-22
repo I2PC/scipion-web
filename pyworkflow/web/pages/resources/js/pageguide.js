@@ -150,7 +150,7 @@ tl.pg.PageGuide = function (pg_elem, preferences) {
 };
 
 tl.pg.hashUrl = function() {
-    var str = window.location.href;
+    var str = window.location.href.split('?')[0];
     var hash = 0, i, char;
     if (str.length == 0) return hash;
     for (i = 0; i < str.length; i++) {
