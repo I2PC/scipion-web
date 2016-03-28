@@ -67,11 +67,9 @@ def writeCustomMenu(customMenu):
 [PROTOCOLS]
 
 Movies_Alignment = [
-    {"tag": "section", "text": "1. Upload data", "children": [
-        {"tag": "url", "value": "/upload_movies/", "text":"upload data", "icon": "fa-upload.png"}]},
-    {"tag": "section", "text": "2. Import your data", "children": [
+    {"tag": "section", "text": "1. Import your data", "children": [
         {"tag": "protocol", "value": "ProtImportMovies", "text": "import Movies", "icon": "bookmark.png"}]},
-    {"tag": "section", "text": "3. Align your Movies", "children": [
+    {"tag": "section", "text": "2. Align your Movies", "children": [
         {"tag": "protocol", "value": "ProtMovieAlignment", "text": "xmipp3 - movie alignment"}]}]
         ''')
         f.close()
@@ -213,18 +211,6 @@ def movies_form(request):
                     'showParallel': True,
                     'hostSelected': 'localhost'})
     return render_to_response('form/form.html', context)
-
-
-def upload_movies(request):
-    command = getSyncCommand(request)
-    context = {'command': command,
-               'logo_scipion_small': getResourceIcon('logo_scipion_small'),
-               }
-
-    context = base_form(request, context)
-
-    return render_to_response('upload_movies.html', context)
-
 
 def getSyncCommand(request):
     domain = django_settings.SITE_URL

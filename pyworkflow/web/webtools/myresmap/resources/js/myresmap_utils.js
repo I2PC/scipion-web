@@ -92,13 +92,13 @@ function getProjExample(elm){
 	var x = $("div#exProjects input[type='radio']:checked").val();
 	switch(x){
 		case "fcv":
-			var url = "/r_content/?p=fcvTestData";
+			var url = "/r_content?p=fcvTestData";
 			break;
 		case "mito_ribosome":
-			var url ="/r_content/?p=ribosomeTestData";
+			var url ="/r_content?p=ribosomeTestData";
 			break;
 		case "t20s_proteasome":
-			var url ="/r_content/?p=t20TestData";
+			var url ="/r_content?p=t20TestData";
 			break;
 	}
 	goWithSubDomainURL(url);
@@ -109,7 +109,7 @@ function createResMapProject(elm) {
 	var projName = "res"+randomString(16, '#aA')
 	var selected = $("#testData input[type='radio']:checked").val();
 
-	var projectUrl = getBaseURL() + "/r_content/?p="+ projName
+	var projectUrl = getBaseURL() + "/r_content?p="+ projName
 	var URL = getSubDomainURL() + "/create_resmap_project/?p=" + projName
 	if(selected != undefined){
 		URL += "&testData="+selected;
@@ -142,7 +142,7 @@ function createResMapProject(elm) {
 
 function goToProject(elm) {
 	var code = elm.val();
-	var URL2 = getSubDomainURL() + "/r_content/?p="+code;
+	var URL2 = getSubDomainURL() + "/r_content?p="+code;
 	window.location.href = URL2;
 }
 
