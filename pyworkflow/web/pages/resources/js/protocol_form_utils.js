@@ -559,9 +559,12 @@ function browseObjects(paramName, type_param, value_param, pointerCondition, max
      switch (type_param){
     
     	case "objClass":
+			var res = value_param.split("~")
+
 			url_param = "/browse_objects/?"
-				+ "&objClass=" + value_param 
+				+ "&objClass=" + res[0]
 				+ "&objFilter=" + pointerCondition
+				+ "&protId=" + res[1]
     		break;
     	
     	case "protClassName":

@@ -47,7 +47,7 @@ MYPVAL_SERVICE = 'mypval'
 MYPVAL_FORM_URL = 'p_form'
 
 
-def particlevalidation_projects(request):
+def particleValidation_projects(request):
     if CTX_PROJECT_NAME in request.session: request.session[CTX_PROJECT_NAME] = ""
     if CTX_PROJECT_PATH in request.session: request.session[CTX_PROJECT_PATH] = ""
 
@@ -92,7 +92,7 @@ Reliability tools = [
         f.close()
 
 
-def create_particlevalidation_project(request):
+def create_particleValidation_project(request):
     if request.is_ajax():
         from pyworkflow.em.protocol import ProtImportVolumes
         from pyworkflow.em.protocol import ProtImportParticles
@@ -196,10 +196,9 @@ def create_particlevalidation_project(request):
             inputParticlesProtocol = downSamplingParticles
             inputParticlesExtended = 'outputParticles'
 
-
         # 3a. Validate non tilt
         protNonTilt = project.newProtocol(XmippProtValidateNonTilt)
-        protNonTilt.setObjLabel('xmipp3 - validate non tilt')
+        protNonTilt.setObjLabel('BSOFT/xmipp3 - validate non tilt')
 
         # link Input volumes
         protNonTilt.inputVolumes.set(inputVolumeProtocol)
@@ -210,12 +209,12 @@ def create_particlevalidation_project(request):
         protNonTilt.inputParticles.setExtended(inputParticlesExtended)
 
         # Attributes
-        if testDataKey: protNonTilt.symmetryGroup.set(attr['symetry'])
+        if testDataKey:
+            protNonTilt.symmetryGroup.set(attr['symetry'])
 
         # Load additional configuration
         loadProtocolConf(protNonTilt)
         project.saveProtocol(protNonTilt)
-
 
         # 3b. Validation overfitting
         protValidation = project.newProtocol(XmippProtValidateOverfitting)
@@ -230,7 +229,9 @@ def create_particlevalidation_project(request):
         protValidation.inputParticles.setExtended(inputParticlesExtended)
 
         # Attributes
-        if testDataKey: protValidation.symmetryGroup.set(attr['symetry'])
+        if testDataKey:
+            protValidation.symmetryGroup.set(attr['symetry'])
+            protValidation.numberOfParticles.set(attr['numberOfParticles'])
 
         # Load additional configuration
         loadProtocolConf(protValidation)
@@ -241,6 +242,8 @@ def create_particlevalidation_project(request):
 
 def getAttrTestFile(key):
     pval = DataSet.getDataSet('particle_validation')
+
+    attr = None
 
     if key == "betagal":
 
@@ -254,13 +257,14 @@ def getAttrTestFile(key):
                 "amplitudeContrast": 0.1,
                 "magnificationRate": 50000,
                 "particlesSamplingRate": 3.98,
-                "symetry":'d7'
+                "symetry":'d2',
+                "numberOfParticles": '10 20 50 100 200 500 1000 2000'
                 }
 
     return attr
 
 
-def particlevalidation_form(request):
+def particleValidation_form(request):
     from django.shortcuts import render_to_response
     context = contextForm(request)
     context.update({'path_mode': 'select',
@@ -270,7 +274,7 @@ def particlevalidation_form(request):
     return render_to_response('form/form.html', context)
 
 
-def particlevalidation_content(request):
+def particleValidation_content(request):
     projectName = request.GET.get('p', None)
     path_files = getAbsoluteURL('resources_mypval/img/')
 

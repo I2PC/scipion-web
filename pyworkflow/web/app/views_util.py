@@ -412,6 +412,8 @@ def browse_objects(request):
         objClassList = request.GET.get('objClass')
 
         objFilterParam = request.GET.get('objFilter', None)
+        protId = getVarFromRequest(request, 'protId')
+        protId = int(protId)
         filterObject = FilterObject(objFilterParam, objClassList)
 
         project = loadProject(request)
@@ -419,15 +421,17 @@ def browse_objects(request):
 
         # Object Filter
         for obj in project.iterSubclasses(objClassList, filterObject.objFilter):
-            objParent = project.mapper.selectById(obj.getObjParentId())
 
-            objs[obj.getObjId()] = {"type": "obj",
+            if obj.getObjParentId() != protId:
+                objParent = project.mapper.selectById(obj.getObjParentId())
+
+                objs[obj.getObjId()] = {"type": "obj",
                                     "nameId": obj.getNameId(),
                                     "objParentName": objParent.getRunName(),
                                     "objId": obj.getObjId(),
                                     "info": str(obj)
                                     }
-            # Class Filter
+        # Class Filter
         for obj in project.iterSubclasses("Set", filterObject.classFilter):
             objParent = project.mapper.selectById(obj.getObjParentId())
 
