@@ -87,10 +87,10 @@ function getProjExample(elm){
 	var x = $("div#exProjects input[type='radio']:checked").val();
 	switch(x){
 		case "ribosome":
-			var url ="/m_content/?p=80SRiboTestData";
+			var url ="/m_content?p=80SRiboTestData";
 			break;
 		case "falcon":
-			var url ="/m_content/?p=FalconTestData";
+			var url ="/m_content?p=FalconTestData";
 			break;
 	}
 	goWithSubDomainURL(url);
@@ -101,7 +101,7 @@ function createMovProject(elm) {
 	var projName = "mov"+randomString(16, '#aA')
 	
 	var selected = $("#testData input[type='radio']:checked").val();
-	var projectUrl = getBaseURL() + "/m_content/?p="+ projName
+	var projectUrl = getBaseURL() + "/m_content?p="+ projName
 	var URL = getSubDomainURL() + "/create_movies_project/?p=" + projName
 	if(selected != undefined){
 		URL += "&testData="+selected;
@@ -134,7 +134,7 @@ function createMovProject(elm) {
 
 function goToProject(elm) {
 	var code = elm.val();
-	var URL2 = getSubDomainURL() + "/m_content/?p="+code;
+	var URL2 = getSubDomainURL() + "/m_content?p="+code;
 	window.location.href = URL2;
 }
 

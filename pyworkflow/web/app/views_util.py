@@ -35,8 +35,12 @@ import pytz
 import datetime
 from django.shortcuts import render_to_response
 from django.http import HttpResponse, HttpResponseForbidden, HttpResponseNotFound
+from django.utils.http import urlencode
+from django.shortcuts import redirect
 
 # Depending on DJANGO version (first is for DJANGO 1.9) second for 1.5.5
+from django.views.generic import RedirectView
+
 try:
     from wsgiref.util import FileWrapper
 except ImportError:
@@ -64,7 +68,6 @@ CTX_PROJECT_PATH = 'projectPath'
 # REQUEST PARAMS
 PROJECT_NAME = 'p'
 SERVICE_NAME = 's'
-
 
 WORKFLOW = 'w'
 MODE = 'm'
@@ -198,7 +201,6 @@ def getMedia(resource):
 
 
 def getResourceCss(css=None):
-
     cssFile = ''
 
     if css is not None:
@@ -208,7 +210,6 @@ def getResourceCss(css=None):
 
 
 def getResourceJs(js=None):
-
     jsFile = ''
 
     if js is not None:
@@ -218,11 +219,11 @@ def getResourceJs(js=None):
 
 
 def getResource(resource=None):
-
     if resource is None:
         resource = ''
 
     return "/" + os.path.join(django_settings.STATIC_URL, resource)
+
 
 def getVarFromRequest(request, varName):
     value = None
@@ -411,6 +412,8 @@ def browse_objects(request):
         objClassList = request.GET.get('objClass')
 
         objFilterParam = request.GET.get('objFilter', None)
+        protId = getVarFromRequest(request, 'protId')
+        if protId is not None: protId = int(protId)
         filterObject = FilterObject(objFilterParam, objClassList)
 
         project = loadProject(request)
@@ -418,15 +421,17 @@ def browse_objects(request):
 
         # Object Filter
         for obj in project.iterSubclasses(objClassList, filterObject.objFilter):
-            objParent = project.mapper.selectById(obj.getObjParentId())
 
-            objs[obj.getObjId()] = {"type": "obj",
+            if obj.getObjParentId() != protId:
+                objParent = project.mapper.selectById(obj.getObjParentId())
+
+                objs[obj.getObjId()] = {"type": "obj",
                                     "nameId": obj.getNameId(),
                                     "objParentName": objParent.getRunName(),
                                     "objId": obj.getObjId(),
                                     "info": str(obj)
                                     }
-            # Class Filter
+        # Class Filter
         for obj in project.iterSubclasses("Set", filterObject.classFilter):
             objParent = project.mapper.selectById(obj.getObjParentId())
 
@@ -966,10 +971,12 @@ def replacePattern(m, mode):
         text = " <a href='%s' target='_blank' style='color:firebrick;'>%s</a> " % (g1, g1)
     elif mode == HYPER_LINK2:
         if g1.startswith("sci-open:"):
-            url = 'javascript:launchViewer(%s)' % g1[len("sci-open:"):]
+            url = 'javascript:launchViewer(%s);' % g1[len("sci-open:"):]
+            target = ''
         else:
             url = g1
-        text = " <a href='%s' target='_blank' style='color:firebrick;'>%s</a> " % (url, m.group('link2_label'))
+            target = "target='_blank'"
+        text = " <a href='%s' %s style='color:firebrick;'>%s</a> " % (url, target, m.group('link2_label'))
     else:
         raise Exception("Unrecognized pattern mode: " + mode)
 
@@ -1023,11 +1030,11 @@ def savePlot(request, plot, close=False):
 
 
 def getAbsoluteURL(additionalPath=None):
-
     if additionalPath is None:
         additionalPath = ''
 
     return '/' + django_settings.ABSOLUTE_URL + additionalPath
+
 
 # ===============================================================================
 # ERROR PAGE
@@ -1042,8 +1049,8 @@ def handle404error(request):
     context = base_grid(request, context)
     return render_to_response('error.html', context)
 
-def handle500error(request):
 
+def handle500error(request):
     # So far use the same error page.
     return handle404error(request);
 
@@ -1165,3 +1172,11 @@ def dateNaiveToAware(naiveDate):
     loacalizeDate = serverTZ.localize(newDate)
 
     return loacalizeDate
+
+
+def ownRedirect(request, url, permanent=False, queryString=True):
+
+    redirectView = RedirectView(url=url, permanent=permanent, query_string=queryString)
+    redirectView.request = request
+
+    return redirectView.get(request)

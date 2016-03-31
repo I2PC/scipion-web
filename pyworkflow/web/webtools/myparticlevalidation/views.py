@@ -30,6 +30,8 @@ from django.http import HttpResponse
 from django.shortcuts import render_to_response
 
 import pyworkflow.utils as pwutils
+from pyworkflow.em.packages.xmipp3 import XmippProtReconstructSignificant, \
+    XmippProtCropResizeParticles, XmippProtCropResizeVolumes, XmippProtValidateNonTilt
 from pyworkflow.em.packages.xmipp3.protocol_validate_overfitting import XmippProtValidateOverfitting
 from pyworkflow.tests.tests import DataSet
 from pyworkflow.utils.utils import prettyDelta
@@ -45,7 +47,7 @@ MYPVAL_SERVICE = 'mypval'
 MYPVAL_FORM_URL = 'p_form'
 
 
-def particlevalidation_projects(request):
+def particleValidation_projects(request):
     if CTX_PROJECT_NAME in request.session: request.session[CTX_PROJECT_NAME] = ""
     if CTX_PROJECT_PATH in request.session: request.session[CTX_PROJECT_PATH] = ""
 
@@ -71,23 +73,29 @@ def writeCustomMenu(customMenu):
         f.write('''
 [PROTOCOLS]
 
-Local_Resolution = [
-    {"tag": "section", "text": "2. Import your data", "children": [
+Reliability tools = [
+    {"tag": "section", "text": "1. Import your data", "children": [
         {"tag": "protocol", "value": "ProtImportVolumes", "text": "import volumes", "icon": "bookmark.png"},
         {"tag": "protocol", "value": "ProtImportParticles", "text": "import particles", "icon": "bookmark.png"}]
     },
-    {"tag": "section", "text": "3. Validation", "children": [
-        {"tag": "protocol", "value": "XmippProtValidateOverfitting", "text": "xmipp3 - validate overfitting"}]
+    {"tag": "section", "text": "2. Downsample", "children": [
+        {"tag": "protocol", "value": "XmippProtCropResizeVolumes", "text": "xmipp3 - crop/resize volumes"},
+        {"tag": "protocol", "value": "XmippProtCropResizeParticles", "text": "xmipp3 - crop/resize particles"}
+        ]
+    },
+    {"tag": "section", "text": "3. Validate", "children": [
+        {"tag": "protocol", "value": "XmippProtValidateOverfitting", "text": "xmipp3 - validate overfitting"},
+        {"tag": "protocol", "value": "XmippProtValidateNonTilt", "text": "xmipp3 - validate nontilt"}
+        ]
     }]
     ''')
         f.close()
 
 
-def create_particlevalidation_project(request):
+def create_particleValidation_project(request):
     if request.is_ajax():
         from pyworkflow.em.protocol import ProtImportVolumes
         from pyworkflow.em.protocol import ProtImportParticles
-        from pyworkflow.em.packages.resmap.protocol_resmap import ProtResMap
 
         # Create a new project
         projectName = request.GET.get(PROJECT_NAME)
@@ -112,7 +120,7 @@ def create_particlevalidation_project(request):
         if testDataKey:
 
             # Get test data attributes
-            attr = getAttrTestFile(testDataKey)
+            attr = getAttrTestFile(testDataKey, projectPath)
 
             # 1. Import volumes
             source = attr['volume']
@@ -127,16 +135,16 @@ def create_particlevalidation_project(request):
             project.launchProtocol(protImportVol, wait=True, chdir=False)
 
             # 2. Import particles
-            source = attr['particles']
-            dest = os.path.join(projectPath, 'Uploads', basename(source))
-            pwutils.createLink(source, dest)
+            binary = linkTestData(attr['particles'], projectPath)
+            starFile = linkTestData(attr['starFile'], projectPath)
 
             label_import = "import particles (" + testDataKey + ")"
             protImportParticles = project.newProtocol(ProtImportParticles, objLabel=label_import)
-
-            protImportParticles.filesPath.set(dest)
+            protImportParticles.filesPath.set(binary)
 
             # Set import particle attributes
+            protImportParticles.importFrom.set(ProtImportParticles.IMPORT_FROM_RELION)
+            protImportParticles.starFile.set(starFile)
             protImportParticles.voltage.set(attr["microscopeVoltage"])
             protImportParticles.sphericalAberration.set(attr["sphericalAberration"])
             protImportParticles.amplitudeContrast.set(attr["amplitudeContrast"])
@@ -145,27 +153,79 @@ def create_particlevalidation_project(request):
 
             project.launchProtocol(protImportParticles, wait=True, chdir=False)
 
+            inputVolumeProtocol = protImportVol
+            inputVolumeExtended = 'outputVolume'
+
+            inputParticlesProtocol = protImportParticles
+            inputParticlesExtended = 'outputParticles'
+
         else:
 
             # Empty import volumes protocol
-            protImportVol = project.newProtocol(ProtImportVolumes, objLabel='import volumes')
+            protImportVol = project.newProtocol(ProtImportVolumes, objLabel='import volume')
             project.saveProtocol(protImportVol)
 
             # Empty import particles protocol
             protImportParticles = project.newProtocol(ProtImportParticles, objLabel='import particles')
             project.saveProtocol(protImportParticles)
 
-        # 3. Validation
+            # Downsample both inputs
+            # 2a Downsample particles
+            downSamplingParticles = project.newProtocol(XmippProtCropResizeParticles)
+            downSamplingParticles.setObjLabel('xmipp - downsampling particles')
+            downSamplingParticles.inputParticles.set(protImportParticles)
+            downSamplingParticles.inputParticles.setExtended('outputParticles')
+            project.saveProtocol(downSamplingParticles)
+
+            # 2b Downsample volume
+            downSamplingVolumes = project.newProtocol(XmippProtCropResizeVolumes)
+            downSamplingVolumes.setObjLabel('xmipp - downsampling volumes')
+            downSamplingVolumes.inputVolumes.set(protImportVol)
+            downSamplingVolumes.inputVolumes.setExtended('outputVolume')
+            project.saveProtocol(downSamplingVolumes)
+
+            inputVolumeProtocol = downSamplingVolumes
+            inputVolumeExtended = 'outputVolume'
+
+            inputParticlesProtocol = downSamplingParticles
+            inputParticlesExtended = 'outputParticles'
+
+        # 3a. Validate non tilt
+        protNonTilt = project.newProtocol(XmippProtValidateNonTilt)
+        protNonTilt.setObjLabel('BSOFT/xmipp3 - validate non tilt')
+
+        # link Input volumes
+        protNonTilt.inputVolumes.set(inputVolumeProtocol)
+        protNonTilt.inputVolumes.setExtended(inputVolumeExtended)
+
+        # Input particles
+        protNonTilt.inputParticles.set(inputParticlesProtocol)
+        protNonTilt.inputParticles.setExtended(inputParticlesExtended)
+
+        # Attributes
+        if testDataKey:
+            protNonTilt.symmetryGroup.set(attr['symmetry'])
+
+        # Load additional configuration
+        loadProtocolConf(protNonTilt)
+        project.saveProtocol(protNonTilt)
+
+        # 3b. Validation overfitting
         protValidation = project.newProtocol(XmippProtValidateOverfitting)
         protValidation.setObjLabel('xmipp3 - validate overfitting')
 
-        # Input volumes
-        protValidation.input3DReference.set(protImportVol)
-        protValidation.input3DReference.setExtended('outputVolume')
+        # link Input volumes
+        protValidation.input3DReference.set(inputVolumeProtocol)
+        protValidation.input3DReference.setExtended(inputVolumeExtended)
 
         # Input particles
-        protValidation.inputParticles.set(protImportParticles)
-        protValidation.inputParticles.setExtended('outputParticles')
+        protValidation.inputParticles.set(inputParticlesProtocol)
+        protValidation.inputParticles.setExtended(inputParticlesExtended)
+
+        # Attributes
+        if testDataKey:
+            protValidation.symmetryGroup.set(attr['symmetry'])
+            protValidation.numberOfParticles.set(attr['numberOfParticles'])
 
         # Load additional configuration
         loadProtocolConf(protValidation)
@@ -174,24 +234,44 @@ def create_particlevalidation_project(request):
     return HttpResponse(content_type='application/javascript')
 
 
-def getAttrTestFile(key):
-    pval = DataSet.getDataSet('pval')
+def getAttrTestFile(key, projectPath):
+    pval = DataSet.getDataSet('particle_validation')
 
-    if key == "pval":
-        attr = {"volume": pval.getFile("pval_vol"),
-                "samplingRate": 3.54,
-                "particles": pval.getFile("pval_part"),
+    attr = None
+
+    if key == "betagal":
+
+        attr = {"path": pval.getPath(),
+                "volume": pval.getFile("betagal_volume"),
+                "samplingRate": 3.98,
+                "particles": pval.getFile("betagal_particles"),
+                "starFile": pval.getFile("betagal_meta"),
                 "microscopeVoltage": 300,
                 "sphericalAberration": 2,
                 "amplitudeContrast": 0.1,
                 "magnificationRate": 50000,
-                "particlesSamplingRate": 3.54
+                "particlesSamplingRate": 3.98,
+                "symmetry": 'd2',
+                "numberOfParticles": '10 20 50 100 200 500 1000 2000'
                 }
+
+        linkTestData(pval.getFile('betagal_optimizer'), projectPath)
+        linkTestData(pval.getFile('betagal_half1'), projectPath)
+        linkTestData(pval.getFile('betagal_half2'), projectPath)
+        linkTestData(pval.getFile('betagal_sampling'), projectPath)
 
     return attr
 
 
-def particlevalidation_form(request):
+def linkTestData(fileToLink, projectPath):
+
+    dest = os.path.join(projectPath, 'Uploads', basename(fileToLink))
+    pwutils.createLink(fileToLink, dest)
+
+    return dest
+
+
+def particleValidation_form(request):
     from django.shortcuts import render_to_response
     context = contextForm(request)
     context.update({'path_mode': 'select',
@@ -201,7 +281,7 @@ def particlevalidation_form(request):
     return render_to_response('form/form.html', context)
 
 
-def particlevalidation_content(request):
+def particleValidation_content(request):
     projectName = request.GET.get('p', None)
     path_files = getAbsoluteURL('resources_mypval/img/')
 
@@ -223,3 +303,4 @@ def particlevalidation_content(request):
                     })
 
     return render_to_response('pval_content.html', context)
+

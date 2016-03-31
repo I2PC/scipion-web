@@ -171,7 +171,7 @@ def create_service_project(request):
         protJoin.inputVolumes.append(p1)
         protJoin.inputVolumes.append(p2)
         protJoin.inputVolumes.append(p3)
-#         protJoin.inputVolumes.append(p4)
+
         project.saveProtocol(protJoin)
         
 #         protValidate = project.newProtocol(XmippProtValidateNonTilt)
@@ -188,6 +188,7 @@ def create_service_project(request):
         
         
     return HttpResponse(content_type='application/javascript')
+
 
 def get_testdata(request):
     # Filename to use as test data 

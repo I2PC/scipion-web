@@ -1,10 +1,28 @@
-{% extends 'project_content/project_content.html' %}
+{% extends 'project_content/_service_content.html' %}
+{% load staticfiles i18n %}
 
-{% block header %}	
-	{% include "webtool_header.html" %}
-{% endblock %}
-
-{% block service %}
-	{% include "configResmapHidden.html" %}
-	{% include "helpResmapPopup.html" %}
+{% block bodyend %}
+{{ block.super }}
+<ul id="tlyPageGuide" data-tourtitle="">
+	<li class="tlypageguide_right" data-tourtarget="div[data-label*='import']">
+		<div>
+			<p>Upload and import your volume file by clicking on the <strong>import volumes</strong> box. Finally press "Execute"!</p>
+		</div>
+	</li>
+	<li class="tlypageguide_right" data-tourtarget="div[data-label*='resmap']">
+		<div>
+			<p>Click on the <strong>resmap - local resolution</strong> box.</p>
+			<br />
+			<p>Parameters can be easily customized. Two levels of usages are supported: Normal or Advanced, which
+         should be chosen according to your experience. Finally press "Execute"!</p>
+		</div>
+	</li>
+    <li class="tlypageguide_top" data-tourtarget="#tabs">
+      <div>
+        <p>Once a method has finished, click on its box to show the <strong>Summary</strong> of Inputs and Outputs.</p>
+        <p>Click on the <strong>Analyze Results</strong> button to further analyze the results of each method.</p>
+        <p>For the resmap method, the resmap output charts will be accessible and can be downloaded using the download button. <img src="{{download}}"/>.</p>
+      </div>
+    </li>
+</ul>
 {% endblock %}

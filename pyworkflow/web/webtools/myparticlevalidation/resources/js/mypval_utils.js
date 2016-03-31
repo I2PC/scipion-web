@@ -46,8 +46,8 @@ function serviceTestDataForm(){
 		dialog += "<br />";
 		dialog += '<div id="testData">';
 		dialog += "<p>Select <strong>Test data</strong>:</p>";
-		dialog += '&nbsp;&nbsp;&nbsp;<input type="radio" name="data" value="pval" checked>';
-		dialog += '&nbsp;&nbsp;' + getRefTestData("pval");
+		dialog += '&nbsp;&nbsp;&nbsp;<input type="radio" name="data" value="betagal" checked>';
+		dialog += '&nbsp;&nbsp;' + getRefTestData("betagal");
 		dialog += '<br />';
 		dialog += "</div>";
 		dialog += "<br />";
@@ -66,8 +66,8 @@ function goExampleForm(){
 
 	dialog += '<div id="exProjects">';
 	dialog += "<p>Select the <strong>Test data</strong>:</p>";
-	dialog += '&nbsp;&nbsp;&nbsp;<input type="radio" name="data" value="pval" checked>';
-	dialog += '&nbsp;&nbsp;' + getRefTestData("pval");
+	dialog += '&nbsp;&nbsp;&nbsp;<input type="radio" name="data" value="betagal" checked>';
+	dialog += '&nbsp;&nbsp;' + getRefTestData("betagal");
 	dialog += '<br />';
 	dialog += "</div>";
 	dialog += "<br />";
@@ -79,8 +79,8 @@ function goExampleForm(){
 function getProjExample(elm){
 	var x = $("div#exProjects input[type='radio']:checked").val();
 	switch(x){
-		case "pval":
-			var url = "/p_content/?p=beta-galactosidase";
+		case "betagal":
+			var url = "/p_content?p=betagal";
 			break;
 	}
 	goWithSubDomainURL(url);
@@ -91,7 +91,7 @@ function createPvalProject(elm) {
 	var projName = "pval"+randomString(16, '#aA')
 	var selected = $("#testData input[type='radio']:checked").val();
 
-	var projectUrl = getBaseURL() + "/p_content/?p="+ projName
+	var projectUrl = getBaseURL() + "/p_content?p="+ projName
 	var URL = getSubDomainURL() + "/create_pval_project/?p=" + projName
 	if(selected != undefined){
 		URL += "&testData="+selected;
@@ -124,14 +124,14 @@ function createPvalProject(elm) {
 
 function goToProject(elm) {
 	var code = elm.val();
-	var URL2 = getSubDomainURL() + "/p_content/?p="+code;
+	var URL2 = getSubDomainURL() + "/p_content?p="+code;
 	window.location.href = URL2;
 }
 
 function getRefTestData(id){
 	var ref = ""
 	switch(id){
-		case "pval":
+		case "betagal":
 			ref = "<strong>β-galactosidase</strong> (Resolution 2.8 Å , <a href='http://dx.doi.org/10.1016%2Fj.str.2014.01.011' style='color:firebrick;' target='_blank'>from Vinothkumar et al. Cell PRESS, 2014</a>)"
 			break;
 	}

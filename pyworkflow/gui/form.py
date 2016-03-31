@@ -1676,7 +1676,7 @@ class FormWindow(Window):
 
         
     def _checkCondition(self, paramName):
-        """Check if the condition of a param is statisfied 
+        """Check if the condition of a param is satisfied
         hide or show it depending on the result"""
         widget = self.widgetDict.get(paramName, None)
         
