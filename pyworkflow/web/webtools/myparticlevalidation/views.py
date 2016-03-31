@@ -120,7 +120,7 @@ def create_particleValidation_project(request):
         if testDataKey:
 
             # Get test data attributes
-            attr = getAttrTestFile(testDataKey)
+            attr = getAttrTestFile(testDataKey, projectPath)
 
             # 1. Import volumes
             source = attr['volume']
@@ -135,22 +135,16 @@ def create_particleValidation_project(request):
             project.launchProtocol(protImportVol, wait=True, chdir=False)
 
             # 2. Import particles
-            source = attr['particles']
-            dest = os.path.join(projectPath, 'Uploads', basename(source))
-            pwutils.createLink(source, dest)
+            binary = linkTestData(attr['particles'], projectPath)
+            starFile = linkTestData(attr['starFile'], projectPath)
 
             label_import = "import particles (" + testDataKey + ")"
             protImportParticles = project.newProtocol(ProtImportParticles, objLabel=label_import)
-
-            protImportParticles.filesPath.set(dest)
-
-            source = attr['starFile']
-            dest = os.path.join(projectPath, 'Uploads', basename(source))
-            pwutils.createLink(source, dest)
+            protImportParticles.filesPath.set(binary)
 
             # Set import particle attributes
             protImportParticles.importFrom.set(ProtImportParticles.IMPORT_FROM_RELION)
-            protImportParticles.starFile.set(dest)
+            protImportParticles.starFile.set(starFile)
             protImportParticles.voltage.set(attr["microscopeVoltage"])
             protImportParticles.sphericalAberration.set(attr["sphericalAberration"])
             protImportParticles.amplitudeContrast.set(attr["amplitudeContrast"])
@@ -210,7 +204,7 @@ def create_particleValidation_project(request):
 
         # Attributes
         if testDataKey:
-            protNonTilt.symmetryGroup.set(attr['symetry'])
+            protNonTilt.symmetryGroup.set(attr['symmetry'])
 
         # Load additional configuration
         loadProtocolConf(protNonTilt)
@@ -230,7 +224,7 @@ def create_particleValidation_project(request):
 
         # Attributes
         if testDataKey:
-            protValidation.symmetryGroup.set(attr['symetry'])
+            protValidation.symmetryGroup.set(attr['symmetry'])
             protValidation.numberOfParticles.set(attr['numberOfParticles'])
 
         # Load additional configuration
@@ -240,7 +234,7 @@ def create_particleValidation_project(request):
     return HttpResponse(content_type='application/javascript')
 
 
-def getAttrTestFile(key):
+def getAttrTestFile(key, projectPath):
     pval = DataSet.getDataSet('particle_validation')
 
     attr = None
@@ -257,11 +251,24 @@ def getAttrTestFile(key):
                 "amplitudeContrast": 0.1,
                 "magnificationRate": 50000,
                 "particlesSamplingRate": 3.98,
-                "symetry":'d2',
+                "symmetry": 'd2',
                 "numberOfParticles": '10 20 50 100 200 500 1000 2000'
                 }
 
+        linkTestData(pval.getFile('betagal_optimizer'), projectPath)
+        linkTestData(pval.getFile('betagal_half1'), projectPath)
+        linkTestData(pval.getFile('betagal_half2'), projectPath)
+        linkTestData(pval.getFile('betagal_sampling'), projectPath)
+
     return attr
+
+
+def linkTestData(fileToLink, projectPath):
+
+    dest = os.path.join(projectPath, 'Uploads', basename(fileToLink))
+    pwutils.createLink(fileToLink, dest)
+
+    return dest
 
 
 def particleValidation_form(request):

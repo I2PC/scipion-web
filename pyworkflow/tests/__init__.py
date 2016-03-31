@@ -259,7 +259,11 @@ DataSet(name='particle_validation', folder='pvalidation',
         files={
                'betagal_volume': 'betagal_volume.vol',
                'betagal_particles': 'betagal_particles.stk',
-               'betagal_meta': 'betagal_relion_angles_data.star'
+               'betagal_meta': 'betagal_relion_data.star',
+               'betagal_optimizer': 'betagal_relion_optimiser.star',
+               'betagal_half1': 'betagal_relion_half1_model.star',
+               'betagal_half2': 'betagal_relion_half2_model.star',
+               'betagal_sampling': 'betagal_relion_sampling.star',
                 })
 
 DataSet(name='resmap',  folder='resmap',

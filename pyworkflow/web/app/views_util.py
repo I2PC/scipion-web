@@ -413,7 +413,7 @@ def browse_objects(request):
 
         objFilterParam = request.GET.get('objFilter', None)
         protId = getVarFromRequest(request, 'protId')
-        protId = int(protId)
+        if protId is not None: protId = int(protId)
         filterObject = FilterObject(objFilterParam, objClassList)
 
         project = loadProject(request)
