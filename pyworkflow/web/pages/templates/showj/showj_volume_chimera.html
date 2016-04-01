@@ -81,18 +81,22 @@
 		canvasHeight = $('section').height();
 
 		canvasHeight = canvasHeight * 0.8;
+		// Moving the volume at full width doesn't work in Chrome, but it does in Firefox.
+		canvasWidth = canvasHeight;
 
 		json[9][1] = canvasWidth;
 		json[9][2] = canvasHeight;
+
+		// Set background color : white: 9,9,9
+		json[0][1]= 9
+		json[0][2]= 9
+		json[0][3]= 9
 
 		webGLStart();
 	}
 
   	$(document).ready(function(){
 
-  		// Loading WebGL
-  		showChimera();
-  		
   		// Event changing the volume
   		$("select#id_volumesToRenderComboBox").change(function(){
   			putWait();
@@ -113,13 +117,18 @@
   			min: {{minStats}},
   			max: {{maxStats}},
   			step: 0.01,
-  			slide : function(event, ui) {
+  			slide: function(event, ui) {
   				$("#thresholdValue").val(ui.value);
   			},
   			change: function(event, ui) {
   				updateThreshold();
   			}
   		});
+
+		// Loading WebGL
+		showChimera();
+
+
   	});
 	</script>
 {% endblock %}

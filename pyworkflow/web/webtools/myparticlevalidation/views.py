@@ -192,7 +192,7 @@ def create_particleValidation_project(request):
 
         # 3a. Validate non tilt
         protNonTilt = project.newProtocol(XmippProtValidateNonTilt)
-        protNonTilt.setObjLabel('BSOFT/xmipp3 - validate non tilt')
+        protNonTilt.setObjLabel('xmipp3 - validate non tilt')
 
         # link Input volumes
         protNonTilt.inputVolumes.set(inputVolumeProtocol)
@@ -212,7 +212,7 @@ def create_particleValidation_project(request):
 
         # 3b. Validation overfitting
         protValidation = project.newProtocol(XmippProtValidateOverfitting)
-        protValidation.setObjLabel('xmipp3 - validate overfitting')
+        protValidation.setObjLabel('BSOFT/xmipp3 - validate overfitting')
 
         # link Input volumes
         protValidation.input3DReference.set(inputVolumeProtocol)
