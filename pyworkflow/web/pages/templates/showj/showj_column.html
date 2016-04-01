@@ -126,23 +126,15 @@ $(document).ready(function() {
 
 /* Generate data for datatable from table dataset model */
 function generateDataForTable(){
-	dataForTable = new Array();
+	var dataForTable = new Array();
 	{% for row in tableDataset.getRows %}
-		dataRowForTable = new Array()
-		var row_id
-		{% for cell in row %}
-			dataRowForTable.push("{{cell}}")
-			{% if forloop.first	%}
-				row_id = "{{cell}}"
-			{% endif %}
-
-		{% endfor %}
-		/* dataRowForTable.push("DT_RowId\": \""+row_id+"\"") */
-		/* dataRowForTable.push("DT_RowId: "+row_id) */
-		dataForTable.push(dataRowForTable)
+		{% for cell in row %}{% if forloop.first %}//row_id = "{{cell}}";
+		dataRowForTable = ["{{cell}}"{% else %},"{{cell}}"{% endif %}{% endfor %}];
+		dataForTable.push(dataRowForTable);
 	{% endfor %}
 	return dataForTable;
 }
+
 </script>
 {% endblock %}
 
