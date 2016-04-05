@@ -44,7 +44,7 @@ class XmippProtValidateNonTilt(ProtAnalysis3D):
     Ranks a set of volumes according to their alignment reliability obtained from a clusterability test.
     """
 
-    _label = 'validate_nontilt'
+    _label = 'angular reliability'
     WEB = 0
 
     

@@ -85,7 +85,7 @@ Reliability tools = [
     },
     {"tag": "section", "text": "3. Validate", "children": [
         {"tag": "protocol", "value": "XmippProtValidateOverfitting", "text": "xmipp3 - validate overfitting"},
-        {"tag": "protocol", "value": "XmippProtValidateNonTilt", "text": "xmipp3 - validate nontilt"}
+        {"tag": "protocol", "value": "XmippProtValidateNonTilt", "text": "xmipp3 - angular reliability"}
         ]
     }]
     ''')
