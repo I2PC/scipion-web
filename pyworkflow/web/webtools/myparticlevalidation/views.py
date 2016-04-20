@@ -169,26 +169,32 @@ def create_particleValidation_project(request):
             protImportParticles = project.newProtocol(ProtImportParticles, objLabel='import particles')
             project.saveProtocol(protImportParticles)
 
-            # Downsample both inputs
-            # 2a Downsample particles
-            downSamplingParticles = project.newProtocol(XmippProtCropResizeParticles)
-            downSamplingParticles.setObjLabel('xmipp - downsampling particles')
-            downSamplingParticles.inputParticles.set(protImportParticles)
-            downSamplingParticles.inputParticles.setExtended('outputParticles')
-            project.saveProtocol(downSamplingParticles)
+            # # Downsample both inputs
+            # # 2a Downsample particles
+            # downSamplingParticles = project.newProtocol(XmippProtCropResizeParticles)
+            # downSamplingParticles.setObjLabel('xmipp - downsampling particles')
+            # downSamplingParticles.inputParticles.set(protImportParticles)
+            # downSamplingParticles.inputParticles.setExtended('outputParticles')
+            # project.saveProtocol(downSamplingParticles)
+            #
+            # # 2b Downsample volume
+            # downSamplingVolumes = project.newProtocol(XmippProtCropResizeVolumes)
+            # downSamplingVolumes.setObjLabel('xmipp - downsampling volumes')
+            # downSamplingVolumes.inputVolumes.set(protImportVol)
+            # downSamplingVolumes.inputVolumes.setExtended('outputVolume')
+            # project.saveProtocol(downSamplingVolumes)
 
-            # 2b Downsample volume
-            downSamplingVolumes = project.newProtocol(XmippProtCropResizeVolumes)
-            downSamplingVolumes.setObjLabel('xmipp - downsampling volumes')
-            downSamplingVolumes.inputVolumes.set(protImportVol)
-            downSamplingVolumes.inputVolumes.setExtended('outputVolume')
-            project.saveProtocol(downSamplingVolumes)
+            # inputVolumeProtocol = downSamplingVolumes
+            # inputVolumeExtended = 'outputVolume'
 
-            inputVolumeProtocol = downSamplingVolumes
-            inputVolumeExtended = 'outputVolume'
+            # inputParticlesProtocol = downSamplingParticles
+            # inputParticlesExtended = 'outputParticles'
 
-            inputParticlesProtocol = downSamplingParticles
-            inputParticlesExtended = 'outputParticles'
+        inputVolumeProtocol = protImportVol
+        inputVolumeExtended = 'outputVolume'
+
+        inputParticlesProtocol = protImportParticles
+        inputParticlesExtended = 'outputParticles'
 
         # 3a. Validate non tilt
         protNonTilt = project.newProtocol(XmippProtValidateNonTilt)

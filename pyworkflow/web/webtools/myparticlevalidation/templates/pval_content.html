@@ -4,6 +4,14 @@
 {% block bodyend %}
   {{ block.super }}
 	<ul id="tlyPageGuide" data-tourtitle="Reliability web tool help">
+	  <li class="tlypageguide_left" data-tourtarget="div[id='graph_PROJECT']">
+		<div>
+			<p>This workflow might take over an <strong>hour</strong>, depending of the number of input particles and size of them.
+				For BSOFT/Xmipp validate overfitting a typical execution starting from 3000 particles (64x64) requires about 40 minutes in a single CPU machine.
+				As for Vargas method, for the same number of images, it will take over an hour.
+			</p>
+		</div>
+	  </li>
 	  <li class="tlypageguide_left" data-tourtarget="div[data-label*='import volumes']">
 		<div>
 			<p>Import your volume file to our server by clicking on the <strong>Import Volumes</strong> box. Once uploaded, press "Execute"!</p>
@@ -16,20 +24,6 @@
 				For this particular workflow the particles need to be aligned. Typically .stk and .star files (with alignment information)
 				from Relion can be used. Pay special attention to the <strong>Import from</strong> dropdown list to choose the right format:
 				relion (.stk + .star files), xmipp, freealign, emx. Once uploaded, press "Execute"!</p>
-		</div>
-	  </li>
-	  <li class="tlypageguide_left" data-tourtarget="div[data-label*='downsampling volumes']">
-		<div>
-			<p>
-				Downsample the volume to reduce the processing time of the later protocols.
-			</p>
-		</div>
-	  </li>
-	  <li class="tlypageguide_right" data-tourtarget="div[data-label*='downsampling particles']">
-		<div>
-			<p>
-				Downsample the particles to reduce the processing time of the later protocols.
-			</p>
 		</div>
 	  </li>
 	  <li class="tlypageguide_bottom" data-tourtarget="div[data-label*='non tilt']">
@@ -45,7 +39,7 @@
 	  <li class="tlypageguide_bottom" data-tourtarget="div[data-label*='overfitting']">
 		<div>
 			<p>Click on the <strong>xmipp - validate overfitting</strong> box.</p>
-			<p>This protocol will tell you whether your set of particles can reconstruct a valid map or not.</p><br/>
+			<p>This protocol might tell you whether your set of particles can reconstruct a valid map or not.</p><br/>
 			<h4>Input</h4>
 			<p>It needs a reference map (to align noise images) and a set of <strong>aligned</strong> particles.</p><br/>
 			<h4>Parameters</h4>
