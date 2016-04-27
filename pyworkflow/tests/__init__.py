@@ -264,7 +264,15 @@ DataSet(name='particle_validation', folder='pvalidation',
                'betagal_half1': 'betagal_relion_half1_model.star',
                'betagal_half2': 'betagal_relion_half2_model.star',
                'betagal_sampling': 'betagal_relion_sampling.star',
-                })
+               '10004_volume': '10004_volume.mrc',
+               '10004_particles': '10004_particles.mrcs',
+               '10004_meta': '10004_relion_data.star',
+               '10004_optimizer': '10004_relion_optimiser.star',
+               '10004_half1': '10004_relion_half1_model.star',
+               '10004_half2': '10004_relion_half2_model.star',
+               '10004_sampling': '10004_relion_sampling.star',
+
+        })
 
 DataSet(name='resmap',  folder='resmap',
         files={'betagal': 'betaGal.mrc',

@@ -49,6 +49,9 @@ function serviceTestDataForm(){
 		dialog += '&nbsp;&nbsp;&nbsp;<input type="radio" name="data" value="betagal" checked>';
 		dialog += '&nbsp;&nbsp;' + getRefTestData("betagal");
 		dialog += '<br />';
+		dialog += '&nbsp;&nbsp;&nbsp;<input type="radio" name="data" value="10004" checked>';
+		dialog += '&nbsp;&nbsp;' + getRefTestData("10004");
+		dialog += '<br />';
 		dialog += "</div>";
 		dialog += "<br />";
 
@@ -69,6 +72,9 @@ function goExampleForm(){
 	dialog += '&nbsp;&nbsp;&nbsp;<input type="radio" name="data" value="betagal" checked>';
 	dialog += '&nbsp;&nbsp;' + getRefTestData("betagal");
 	dialog += '<br />';
+	dialog += '&nbsp;&nbsp;&nbsp;<input type="radio" name="data" value="10004" checked>';
+	dialog += '&nbsp;&nbsp;' + getRefTestData("10004");
+	dialog += '<br />';
 	dialog += "</div>";
 	dialog += "<br />";
 	
@@ -82,6 +88,10 @@ function getProjExample(elm){
 		case "betagal":
 			var url = "/p_content?p=betagal";
 			break;
+		case "10004":
+			var url = "/p_content?p=empiar10004";
+			break;
+
 	}
 	goWithSubDomainURL(url);
 }
@@ -132,8 +142,12 @@ function getRefTestData(id){
 	var ref = ""
 	switch(id){
 		case "betagal":
-			ref = "<strong>β-galactosidase</strong> (Resolution 2.8 Å , <a href='http://dx.doi.org/10.1016%2Fj.str.2014.01.011' style='color:firebrick;' target='_blank'>from Vinothkumar et al. Cell PRESS, 2014</a>)"
+			ref = "<strong>β-galactosidase</strong> (<a href='http://dx.doi.org/10.1016%2Fj.str.2014.01.011' style='color:firebrick;' target='_blank'>from Vinothkumar et al. Cell PRESS, 2014</a>)"
 			break;
+		case "10004":
+			ref = "<strong>HIV-1 envelope glycoprotein (Empiar 10004)</strong> (<a href='http://dx.doi.org/10.1038/nsmb.2711' style='color:firebrick;' target='_blank'>from Bartesaghi et al. Nature Structural & Molecular Biology, 2013</a>)"
+			break;
+
 	}
 	return ref;
 }
