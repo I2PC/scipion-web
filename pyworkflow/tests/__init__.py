@@ -271,6 +271,13 @@ DataSet(name='particle_validation', folder='pvalidation',
                '10004_half1': '10004_relion_half1_model.star',
                '10004_half2': '10004_relion_half2_model.star',
                '10004_sampling': '10004_relion_sampling.star',
+               '10008_volume': '10008_volume.mrc',
+               '10008_particles': '10008_particles.stk',
+               '10008_meta': '10008_relion_data.star',
+               '10008_optimizer': '10008_relion_optimiser.star',
+               '10008_half1': '10008_relion_half1_model.star',
+               '10008_half2': '10008_relion_half2_model.star',
+               '10008_sampling': '10008_relion_sampling.star',
 
         })
 

@@ -52,6 +52,10 @@ function serviceTestDataForm(){
 		dialog += '&nbsp;&nbsp;&nbsp;<input type="radio" name="data" value="10004" checked>';
 		dialog += '&nbsp;&nbsp;' + getRefTestData("10004");
 		dialog += '<br />';
+		dialog += '&nbsp;&nbsp;&nbsp;<input type="radio" name="data" value="10008" checked>';
+		dialog += '&nbsp;&nbsp;' + getRefTestData("10008");
+		dialog += '<br />';
+
 		dialog += "</div>";
 		dialog += "<br />";
 
@@ -75,6 +79,9 @@ function goExampleForm(){
 	dialog += '&nbsp;&nbsp;&nbsp;<input type="radio" name="data" value="10004" checked>';
 	dialog += '&nbsp;&nbsp;' + getRefTestData("10004");
 	dialog += '<br />';
+	dialog += '&nbsp;&nbsp;&nbsp;<input type="radio" name="data" value="10008" checked>';
+	dialog += '&nbsp;&nbsp;' + getRefTestData("10008");
+	dialog += '<br />';
 	dialog += "</div>";
 	dialog += "<br />";
 	
@@ -90,6 +97,9 @@ function getProjExample(elm){
 			break;
 		case "10004":
 			var url = "/p_content?p=empiar10004";
+			break;
+		case "10008":
+			var url = "/p_content?p=empiar10008";
 			break;
 
 	}
@@ -146,6 +156,9 @@ function getRefTestData(id){
 			break;
 		case "10004":
 			ref = "<strong>HIV-1 envelope glycoprotein (Empiar 10004)</strong> (<a href='http://dx.doi.org/10.1038/nsmb.2711' style='color:firebrick;' target='_blank'>from Bartesaghi et al. Nature Structural & Molecular Biology, 2013</a>)"
+			break;
+		case "10008":
+			ref = "<strong>HIV-1 envelope glycoprotein (Empiar 10008)</strong> (<a href='http://dx.doi.org/10.1073/pnas.1307382110' style='color:firebrick;' target='_blank'>from Mao et al. PNAS, 2013</a>)"
 			break;
 
 	}

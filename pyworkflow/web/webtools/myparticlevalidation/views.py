@@ -286,6 +286,26 @@ def getAttrTestFile(key, projectPath):
         linkTestData(pval.getFile('10004_half2'), projectPath)
         linkTestData(pval.getFile('10004_sampling'), projectPath)
 
+    elif key == "10008":
+
+        attr = {"path": pval.getPath(),
+                "volume": pval.getFile("10008_volume"),
+                "samplingRate": 3.00,
+                "particles": pval.getFile("10008_particles"),
+                "starFile": pval.getFile("10008_meta"),
+                "microscopeVoltage": 200,
+                "sphericalAberration": 2,
+                "amplitudeContrast": 0.1,
+                "magnificationRate": 50000,
+                "particlesSamplingRate": 3.00,
+                "symmetry": 'c3',
+                "numberOfParticles": '10 20 50 100 200 500 1000 2000'
+                }
+        linkTestData(pval.getFile('10008_optimizer'), projectPath)
+        linkTestData(pval.getFile('10008_half1'), projectPath)
+        linkTestData(pval.getFile('10008_half2'), projectPath)
+        linkTestData(pval.getFile('10008_sampling'), projectPath)
+
     return attr
 
 
