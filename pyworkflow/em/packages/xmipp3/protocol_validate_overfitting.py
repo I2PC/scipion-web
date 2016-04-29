@@ -409,7 +409,7 @@ class XmippProtValidateOverfitting(ProtReconstruct3D):
         validationMd.write(outputFn)        
     
     def _defineResultsName(self):
-        return self._getExtraPath('results.xmd')
+        return self._getExtraPath('results.xmd', abs=True)
     
     def _defineResultsNoiseName(self):
-        return self._getExtraPath('resultsNoise.xmd')
+        return self._getExtraPath('resultsNoise.xmd', abs=True)
