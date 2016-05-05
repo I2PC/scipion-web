@@ -26,16 +26,14 @@
 		<h4 style="text-align:justify;">
 			This tool will provide you with 2 methods to assess the reliability of your images compared to your map.
 			<br/><br/>
-			The non-tilt validation method will evaluate the consistency between a raw 3D density map with respect to a set of 2D projection images
- 			that were used to reconstruct a volume obtaining the alignment precision of each particle
+			The alignment reliability method (validate non-tilt) will evaluate the consistency between a raw 3D density map with respect to a set of 2D projection images
+ 			that were used to reconstruct that map, obtaining the alignment precision for each particle
 			(<a href="https://doi.org/10.1038/srep21626" target="_blank"><strong>Vargas, J. et al., Sci. Rep., 2016</strong></a>).
 			<br/><br/>
-			The overfitting method will
-			assess the validity of a reconstruction from micrograph images of presumably identical particles based on aligned noise.
-			This is both a sanity check for the microscopist at an early stage in a project, as well as for reconstructions already deposited
-			in the EMDB. Practically, if the resolution of the reconstruction based on the images is not considerably
-			different from the one based on the aligned gaussian noise (for less number of particles), the images may not produce a valid
-			reconstruction (<a href="http://dx.doi.org/10.3934/biophy.2015.1.21" target="_blank"><strong>J. Bernard Heymann, 2015</strong></a>).
+			The overfitting assesment method (validate overfitting) will
+			assess the validity of a reconstruction comparing particle images and noise images.
+			Practically, if the resolution of the reconstruction based on particle images is not considerably
+			different from the one based on aligned gaussian noise images, there may be overfitting in the reconstruction (<a href="http://dx.doi.org/10.3934/biophy.2015.1.21" target="_blank"><strong>J. Bernard Heymann, 2015</strong></a>).
 		</h4>
 
 		<div id="minibox">
