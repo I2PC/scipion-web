@@ -30,6 +30,7 @@ from django.http import HttpResponse
 from django.shortcuts import render_to_response
 
 import pyworkflow.utils as pwutils
+from pyworkflow.em import ProtImportParticles
 from pyworkflow.em.packages.xmipp3 import XmippProtReconstructSignificant, \
     XmippProtCropResizeParticles, XmippProtCropResizeVolumes, XmippProtValidateNonTilt
 from pyworkflow.em.packages.xmipp3.protocol_validate_overfitting import XmippProtValidateOverfitting
@@ -136,15 +137,21 @@ def create_particleValidation_project(request):
 
             # 2. Import particles
             binary = linkTestData(attr['particles'], projectPath)
-            starFile = linkTestData(attr['starFile'], projectPath)
+            metaFile = linkTestData(attr['metaFile'], projectPath)
 
             label_import = "import particles (" + testDataKey + ")"
             protImportParticles = project.newProtocol(ProtImportParticles, objLabel=label_import)
             protImportParticles.filesPath.set(binary)
 
             # Set import particle attributes
-            protImportParticles.importFrom.set(ProtImportParticles.IMPORT_FROM_RELION)
-            protImportParticles.starFile.set(starFile)
+            protImportParticles.importFrom.set(attr["importFrom"])
+
+            # RELION Datasets
+            if attr["importFrom"] == ProtImportParticles.IMPORT_FROM_RELION:
+                protImportParticles.starFile.set(metaFile)
+            else:
+                protImportParticles.sqliteFile.set(metaFile)
+
             protImportParticles.voltage.set(attr["microscopeVoltage"])
             protImportParticles.sphericalAberration.set(attr["sphericalAberration"])
             protImportParticles.amplitudeContrast.set(attr["amplitudeContrast"])
@@ -251,14 +258,15 @@ def getAttrTestFile(key, projectPath):
                 "volume": pval.getFile("betagal_volume"),
                 "samplingRate": 3.98,
                 "particles": pval.getFile("betagal_particles"),
-                "starFile": pval.getFile("betagal_meta"),
+                "metaFile": pval.getFile("betagal_meta"),
                 "microscopeVoltage": 300,
                 "sphericalAberration": 2,
                 "amplitudeContrast": 0.1,
                 "magnificationRate": 50000,
                 "particlesSamplingRate": 3.98,
                 "symmetry": 'd2',
-                "numberOfParticles": '10 20 50 100 200 500 1000 2000'
+                "numberOfParticles": '10 20 50 100 200 500 1000 2000',
+                "importFrom": ProtImportParticles.IMPORT_FROM_RELION
                 }
 
         linkTestData(pval.getFile('betagal_optimizer'), projectPath)
@@ -272,14 +280,15 @@ def getAttrTestFile(key, projectPath):
                 "volume": pval.getFile("10004_volume"),
                 "samplingRate": 4.32,
                 "particles": pval.getFile("10004_particles"),
-                "starFile": pval.getFile("10004_meta"),
+                "metaFile": pval.getFile("10004_meta"),
                 "microscopeVoltage": 80,
                 "sphericalAberration": 2,
                 "amplitudeContrast": 0.1,
                 "magnificationRate": 75000,
                 "particlesSamplingRate": 4.32,
                 "symmetry": 'c3',
-                "numberOfParticles": '10 20 50 100 200 500 1000 2000'
+                "numberOfParticles": '10 20 50 100 200 500 1000 2000',
+                "importFrom": ProtImportParticles.IMPORT_FROM_RELION
                 }
         linkTestData(pval.getFile('10004_optimizer'), projectPath)
         linkTestData(pval.getFile('10004_half1'), projectPath)
@@ -292,19 +301,16 @@ def getAttrTestFile(key, projectPath):
                 "volume": pval.getFile("10008_volume"),
                 "samplingRate": 3.00,
                 "particles": pval.getFile("10008_particles"),
-                "starFile": pval.getFile("10008_meta"),
+                "metaFile": pval.getFile("10008_meta"),
                 "microscopeVoltage": 200,
                 "sphericalAberration": 2,
                 "amplitudeContrast": 0.1,
                 "magnificationRate": 50000,
                 "particlesSamplingRate": 3.00,
                 "symmetry": 'c3',
-                "numberOfParticles": '10 20 50 100 200 500 1000 2000'
+                "numberOfParticles": '10 20 50 100 200 500 1000 2000',
+                "importFrom": ProtImportParticles.IMPORT_FROM_SCIPION
                 }
-        linkTestData(pval.getFile('10008_optimizer'), projectPath)
-        linkTestData(pval.getFile('10008_half1'), projectPath)
-        linkTestData(pval.getFile('10008_half2'), projectPath)
-        linkTestData(pval.getFile('10008_sampling'), projectPath)
 
     return attr
 
