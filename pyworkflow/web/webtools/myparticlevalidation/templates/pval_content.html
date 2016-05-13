@@ -6,15 +6,15 @@
 	<ul id="tlyPageGuide" data-tourtitle="Reliability web tool help">
 	  <li class="tlypageguide_left" data-tourtarget="div[id='graph_PROJECT']">
 		<div>
-			<p>This workflow might take over an <strong>hour</strong>, depending of the number of input particles and size of them.
-				For BSOFT/Xmipp validate overfitting a typical execution starting from 3000 particles (64x64) requires about 40 minutes in a single CPU machine.
+			<p>This workflow might take over an <strong>hour</strong>, depending on the number of input particles and size of them.
+				For BSOFT/Xmipp validate overfitting a typical execution starting from 3000 particles (64x64 pixels) requires about 40 minutes in a single CPU machine.
 				As for Vargas method, for the same number of images, it will take over an hour.
 			</p>
 		</div>
 	  </li>
 	  <li class="tlypageguide_left" data-tourtarget="div[data-label*='import volumes']">
 		<div>
-			<p>Import your volume file to our server by clicking on the <strong>Import Volumes</strong> box. Once uploaded, press "Execute"!</p>
+			<p>Import your volume file to our server by clicking on the <strong>Import Volumes</strong> box. typical 64x64x64, up to 128.Once uploaded, press "Execute"!</p>
 		</div>
 	  </li>
 	  <li class="tlypageguide_right" data-tourtarget="div[data-label*='import particles']">
@@ -22,7 +22,7 @@
 			<p>
 				Import your particles files to our server on the <strong>Import particles</strong> box.
 				For this particular workflow the particles need to be aligned. Pay special attention to the <strong>Import from</strong> dropdown list to choose the right format:
-				relion (.stk + .star files), xmipp, freealign, emx. Once uploaded, press "Execute"!</p>
+				relion (.stk + .star files), xmipp, freealign, emx. Once uploaded, press "Execute"!. For performance reasons ion maximun 4000 and typical 64 up to 128</p>
 		</div>
 	  </li>
 	  <li class="tlypageguide_bottom" data-tourtarget="div[data-label*='non tilt']">
@@ -43,9 +43,8 @@
 			<p>It needs a reference map (to align noise images) and a set of <strong>aligned</strong> particles.</p><br/>
 			<h4>Parameters</h4>
 			<p><ul>
+				<li>Resize...(Optional): If obtaining the best possible reconstruction is not your goal, you can resize your input particles and volume to reduce running time of the protocol.</li>
 				<li>Symmetry: Symmetry as in <a href="http://xmipp.cnb.csic.es/twiki/bin/view/Xmipp/Symmetry">xmipp symmetry page</a></li>
-				<li>Number of particles (Advanced expert level): Number of subsets and related number of particles in each subset. e.g.: 50 100 200 500 1000 2000. Note that the biggest set should be less than half of the total input particles.</li>
-				<li>Number of times the randomization is performed: the number of times that reconstruction will be performed for each subset.</li>
 			</ul>
 			</p><br/>
 			<h4>Output</h4>
