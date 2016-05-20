@@ -28,11 +28,26 @@
 	  <li class="tlypageguide_bottom" data-tourtarget="div[data-label*='non tilt']">
 		<div>
 			<p>
-				Click on the <strong>validate non-tilt</strong> box.
+				Click on the <strong>alignment reliability</strong> box.
 			</p>
-			<p>Parameters can be easily customized. Two level of usages are supported (Normal and Advanced), which
-			 should be chosen according to your experience. Press "Execute"!</p>
-			<br />
+
+			<p>This protocol determines the consistency between a 3D reconstruction from its projections attending to their alignment precision.</p>
+			<br/>
+			<h4>Input</h4>
+			<p>It needs a reference map (to align noise images) and a set of aligned particles.</p>
+			<br/>
+			<h4>Parameters</h4>
+			<p>
+				<ul>
+					<li>Symmetry: Symmetry as in <a href="http://xmipp.cnb.csic.es/twiki/bin/view/Xmipp/Symmetry">xmipp symmetry page</a></li>
+				</ul>
+			</p>
+			<br/>
+			<h4>Output</h4>
+			<p>Quality parameter which determines the percentage of particles that aligns better than noise</p>
+
+			<p>A chart with information about the P value (comparison between the particle and noise alignment precision) for each particle. A value higher that 1 means that the particle aligns with more precision than noise.</p>
+			<a  target='_blank' href="/{% static 'images/alignmentReliabilityOutputPlot.png' %}"><img src="/{% static 'images/alignmentReliabilityOutputPlot.png' %}"/></a>
 		</div>
 	  </li>
 	  <li class="tlypageguide_bottom" data-tourtarget="div[data-label*='overfitting']">
@@ -49,7 +64,7 @@
 			</p><br/>
 			<h4>Output</h4>
 			<p>A chart with two series related to the resolution of the reconstructed maps; one from aligned particles and another from aligned noise. Comparing them will help you to see if your aligned particles may reconstruct a valid map or not.</p>
-			<img src="/{% static 'images/overfittingChart.png' %}"/>
+			<a target="_blank" href="/{% static 'images/overfittingChart.png' %}"><img src="/{% static 'images/overfittingChart.png' %}"/></a>
 		</div>
 	  </li>
 	  <li class="tlypageguide_top" data-tourtarget="#tabs">
