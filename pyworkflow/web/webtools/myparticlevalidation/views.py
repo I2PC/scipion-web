@@ -205,7 +205,7 @@ def create_particleValidation_project(request):
 
         # 3a. Validate non tilt
         protNonTilt = project.newProtocol(XmippProtValidateNonTilt)
-        protNonTilt.setObjLabel('xmipp3 - validate non tilt')
+        protNonTilt.setObjLabel('alignment reliability (validate non tilt)')
 
         # link Input volumes
         protNonTilt.inputVolumes.set(inputVolumeProtocol)

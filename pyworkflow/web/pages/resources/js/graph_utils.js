@@ -138,15 +138,14 @@ function callPaintGraph(nodeSource, type) {
 		var id = jQuery(this).attr('id');
 		var idNew = nameId + id;
 
-		var name = jQuery(this).attr('data-label');
-		if (name==""){
-			name = jQuery(this).attr('data-name');
-		}
+		var label = jQuery(this).attr('data-label');
+		var name = jQuery(this).attr('data-name');
+
 
 		if(type == "normal"){
-			paintBox(nodeSource, nameId, idNew, name, "runs");
+			paintBox(nodeSource, nameId, idNew, label, name, "runs");
 		} else if (type == "small"){
-			paintBox(nodeSource, nameId, idNew, id, "runs");
+			paintBox(nodeSource, nameId, idNew, id, name, "runs");
 		}
 		
 		var width = $("div#" + idNew + ".window").width();
@@ -217,7 +216,7 @@ function callPaintObjGraph(){
 }
 
 
-function paintBox(nodeSource, nameId, id, msg, mode) {
+function paintBox(nodeSource, nameId, id, msg, label, mode) {
 	/*
 	 * Function to paint a box like a node inside the protocol graph.
 	 * The node source is passed by arguments.
@@ -242,7 +241,7 @@ function paintBox(nodeSource, nameId, id, msg, mode) {
 		
 		var projName = nodeSource.attr("data-project");
 		var aux = '<div class="window" style="display:none;" onclick="' + onclick + '" id="'
-				+ id + '" data-label="'+ msg +'"><a href="' + href + '"><strong>' + msg
+				+ id + '" data-label="'+ label +'"><a href="' + href + '"><strong>' + msg
 				+ '</strong></a><br/><span id="nodeStatus" data-val=""></span></div>';	
 	} else {
 		var aux = '<div class="window" style="display:none;" id="' + id + '"><strong>' + msg
