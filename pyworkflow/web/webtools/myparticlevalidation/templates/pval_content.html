@@ -6,16 +6,15 @@
 	<ul id="tlyPageGuide" data-tourtitle="Reliability web tool help">
 	  <li class="tlypageguide_left" data-tourtarget="div[id='graph_PROJECT']">
 		<div>
-			<p>This workflow might take over an <strong>hour</strong>, depending on the number of input particles and size of them.
-				For BSOFT/Xmipp validate overfitting a typical execution starting from 3000 particles (64x64 pixels) requires about 40 minutes in a single CPU machine.
-				As for Vargas method, for the same number of images, it will take over an hour.
+			<p>This workflow might take about <strong>4 hours</strong>, depending on the number of input particles and size of them.
+				We strongly recommend to use a set of 3000 to 4000 aligned particles (64x64 pixels) and a 64x64x64 size volume.
 			</p>
 		</div>
 	  </li>
 	  <li class="tlypageguide_left" data-tourtarget="div[data-label*='import volumes']">
 		<div>
-			<p>Import your volume file to our server by clicking on the <strong>Import Volumes</strong> box. A typical 64x64x64, up to 128x128x128 is the recommended pixel size of the volumes for this process. Once uploaded, press "Execute"!</p>
-			<p>If needed you can downsample your volume after importing it by clicking on the left pane in the <strong>crop/resize volumes</strong> protocol.</p>
+			<p>Import your volume file to our server by clicking on the <strong>Import Volumes</strong> box. A typical 64x64x64 is the recommended pixel size of the volumes for this process. Once uploaded, press "Execute"!</p>
+			<p>Note that you can downsample your volume after importing it by clicking on the left pane in the <strong>crop/resize volumes</strong> protocol.</p>
 		</div>
 	  </li>
 	  <li class="tlypageguide_right" data-tourtarget="div[data-label*='import particles']">
@@ -25,7 +24,7 @@
 				For this particular workflow the particles need to be aligned. Pay special attention to the <strong>Import from</strong> drop down list to choose the right format:
 				relion (.stk + .star files), xmipp, freealign, emx. Once uploaded, press "Execute"!. For performance reasons, we do not recommend to use more than 4000 particles. It is also recommended
 				to use a typical particle size of 64x64 up to 128x128.</p>
-			<p>If needed you can downsample your particles after importing them by clicking on the left pane in the <strong>crop/resize particles</strong> protocol.</p>
+			<p>Note that you can downsample your particles after importing them by clicking on the left pane in the <strong>crop/resize particles</strong> protocol.</p>
 		</div>
 	  </li>
 	  <li class="tlypageguide_bottom" data-tourtarget="div[data-label*='non tilt']">
@@ -34,7 +33,7 @@
 				Click on the <strong>alignment reliability</strong> box.
 			</p>
 
-			<p>This protocol determines the consistency between a 3D reconstruction from its projections attending to their alignment precision.</p>
+			<p>This protocol determines the consistency between a 3D reconstruction and the particle images it comes from, attending to their alignment precision.</p>
 			<br/>
 			<h4>Input</h4>
 			<p>It needs a reference map (to align noise images) and a set of aligned particles.</p>
