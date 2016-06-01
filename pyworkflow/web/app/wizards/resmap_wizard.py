@@ -44,29 +44,31 @@ from pyworkflow.em.packages.resmap.wizard import myCreatePrewhiteningFigure
 
 class ResmapPrewhitenWizardWeb(ResmapPrewhitenWizard):
     _environments = [WEB_DJANGO]
-    
+
     def _run(self, protocol, request):
-        
-        if not protocol.inputVolume.get().hasValue():
-            return HttpResponse("errorInput")
-        elif protocol.useSplitVolume == True:
-            if not protocol.splitVolume.get().hasValue():
-                return HttpResponse("errorInput")
+
+        if not protocol.useSplitVolume:
+            emptyInput = protocol.inputVolume.pointsNone()
+        else:
+            emptyInput = (protocol.volumeHalf1.pointsNone() or
+                          protocol.volumeHalf2.pointsNone())
+
+        if emptyInput:
+            return HttpResponse("Error: select the input volume(s) first.")
         else:
             plotUrl, min_ang = getPlotResMap(request, protocol)
 
             ang = protocol.prewhitenAng.get()
             if ang < min_ang:
                 ang = min_ang
-            
+
             context = {
                        # Params
-                       'inputId': protocol.inputVolume.get().getObjId(),
                        'ang': round(ang, 2),
                        'ramp': protocol.prewhitenRamp.get(),
                        # Extra Params
                        'pValue': protocol.pVal.get(),
-                       'minRes': protocol.minRes.get(), 
+                       'minRes': protocol.minRes.get(),
                        'maxRes': protocol.maxRes.get(),
                        'stepRes': protocol.stepRes.get(),
                        # Others
@@ -75,75 +77,84 @@ class ResmapPrewhitenWizardWeb(ResmapPrewhitenWizard):
                        'messi_js': getResourceJs('messi'),
                        'messi_css': getResourceCss('messi'),
                        }
-            
-            if protocol.useSplitVolume == True and protocol.splitVolume.get().hasValue():
-                context.update({'useSplit' : 1,
-                                'splitId' : protocol.splitVolume.getObjId(),
+
+            if protocol.useSplitVolume:
+                context.update({'useSplit': 1,
+                                'inputId': protocol.volumeHalf1.getUniqueId(),
+                                'splitId': protocol.volumeHalf2.getUniqueId()
                                 })
-           
-            if protocol.applyMask == True and protocol.maskVolume.get().hasValue():
-                context.update({'useMask' : 1,
-                                'maskId' : protocol.maskVolume.getObjId(),
-                                }) 
-            
+            else:
+                context.update({'inputId': protocol.inputVolume.getUniqueId()
+                                })
+
+            if protocol.applyMask:
+                if protocol.maskVolume.pointsNone():
+                    return HttpResponse("Error: select the input mask first.")
+                context.update({'useMask': 1,
+                                'maskId': protocol.maskVolume.getUniqueId()
+                                })
+
             context = base_wiz(request, context)
             return render_to_response('wizards/wiz_resmap.html', context)
 
 #===============================================================================
-# RESMAP REQUEST UPDATE 
+# RESMAP REQUEST UPDATE
 #===============================================================================
 
 def get_resmap_plot(request):
     # LOAD Project
     project = loadProject(request)
-    
+
     # Create protocol
     newProtocol = project.newProtocol(ProtResMap)
-    
+
     # GET and SET Parameters
     newAng = request.GET.get('ang')
     newProtocol.prewhitenAng.set(float(newAng))
-  
+
     newRamp = request.GET.get('ramp')
     newProtocol.prewhitenRamp.set(float(newRamp))
-    
-    inputId = request.GET.get('inputId')
-    inputVolume = project.mapper.selectById(inputId)
-    newProtocol.inputVolume.set(inputVolume)
-    
-    useSplit = request.GET.get('useSplit', None)
-    if useSplit is not None:
-        newProtocol.useSplitVolume = True
-        splitId = request.GET.get('splitId', None)
-        splitVolume = project.mapper.selectById(splitId)
-        newProtocol.splitVolume.set(splitVolume.get())
-        
-    useMask = request.GET.get('useMask', None)
-    if useSplit is not None:
-        newProtocol.applyMask = True
-        maskId = request.GET.get('maskId',  None)
-        inputMask = project.mapper.selectById(maskId)
-        newProtocol.maskVolume.set(inputMask.get())
-        
+
+    def setPointerValue(inputPointer, uniqueIdKey):
+        uniqueId = request.GET.get(uniqueIdKey)
+        parts = uniqueId.split('.')
+        inputPointer.set(project.mapper.selectById(parts[0]))
+        inputPointer.setExtendedParts(parts[1:])
+
+    useSplit = request.GET.get('useSplit', None) is not None
+    newProtocol.useSplitVolume.set(useSplit)
+
+    if not useSplit:
+        setPointerValue(newProtocol.inputVolume, 'inputId')
+    else:
+        setPointerValue(newProtocol.volumeHalf1, 'inputId')
+        setPointerValue(newProtocol.volumeHalf2, 'splitId')
+
+    useMask = request.GET.get('useMask', None) is not None
+    newProtocol.applyMask.set(useMask)
+
+    if useMask:
+        setPointerValue(newProtocol.maskVolume, 'maskId')
+
     # Extra Params
     pValue = request.GET.get('pValue', None)
     if pValue is not None:
-        newProtocol.pVal.set(float(pValue))
-        
+        newProtocol.pVal.set(pValue)
+
     minRes = request.GET.get('minRes', None)
     if minRes is not None:
-        newProtocol.minRes.set(float(minRes))
-        
+        newProtocol.minRes.set(minRes)
+
     maxRes = request.GET.get('maxRes', None)
     if maxRes is not None:
-        newProtocol.maxRes.set(float(maxRes))
-        
+        newProtocol.maxRes.set(maxRes)
+
     stepRes = request.GET.get('stepRes', None)
     if stepRes is not None:
-        newProtocol.stepRes.set(float(stepRes))
+        newProtocol.stepRes.set(stepRes)
 
     plotUrl, _ = getPlotResMap(request, newProtocol)
-    
+
     return HttpResponse(plotUrl, content_type='application/javascript')
 
 #===============================================================================
@@ -162,18 +173,23 @@ def getPlotResMap(request, protocol):
     plotUrl = savePlot(request, plotter, close=True)
     return plotUrl, min_ang
 
-def _beforePreWhitening(protocol, dir):
+def _beforePreWhitening(protocol, workingDir):
     from pyworkflow.em.convert import ImageHandler
     # Convert input volumes
     ih = ImageHandler()
-    inputVolume = protocol.inputVolume.get()
-    path = join(dir, 'volume1.map')
-    print path
-    ih.convert(inputVolume, path)
+    projPath = protocol.getProject().getPath()
+
+    def convertVol(inputVol, outputFn):
+        index, path = inputVol.get().getLocation()
+        ih.convert((index, join(projPath, path)), join(workingDir, outputFn))
+
     if protocol.useSplitVolume:
-        ih.convert(protocol.splitVolume.get(), join(dir, 'volume2.map'))
-    
-    return protocol.runResmap(dir, wizardMode=True)
+        convertVol(protocol.volumeHalf1, 'volume1.map')
+        convertVol(protocol.volumeHalf2, 'volume2.map')
+    else:
+        convertVol(protocol.inputVolume, 'volume1.map')
+
+    return protocol.runResmap(workingDir, wizardMode=True)
 
      
 def _runPreWhiteningWeb(protocol, results):
