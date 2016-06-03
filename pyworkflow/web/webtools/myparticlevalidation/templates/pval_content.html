@@ -55,7 +55,9 @@
 	  <li class="tlypageguide_bottom" data-tourtarget="div[data-label*='overfitting']">
 		<div>
 			<p>Click on the <strong>xmipp - validate overfitting</strong> box.</p>
-			<p>This protocol might tell you whether your set of particles can reconstruct a valid map or not.</p><br/>
+			<p>This protocol is aimed to assess the validity of a reconstruction comparing aligned particles to aligned gaussian noise.
+			Practically, for small sets of particles, if the resolution of the reconstruction based on aligned particles is not considerably different
+			from the one based on aligned gaussian noise, particle images may not be good enough for the reconstruction.</p><br/>
 			<h4>Input</h4>
 			<p>It needs a reference map (to align noise images) and a set of <strong>aligned</strong> particles.</p><br/>
 			<h4>Parameters</h4>
@@ -66,7 +68,11 @@
 			</p><br/>
 			<h4>Output</h4>
 			<p>A chart with two series related to the resolution of the reconstructed maps; one from aligned particles and another from aligned noise. Comparing them will help you to see if your aligned particles may reconstruct a valid map or not.</p>
-			<a target="_blank" href="/{% static 'images/overfittingChart.png' %}"><img src="/{% static 'images/overfittingChart.png' %}"/></a>
+			<br/>
+			<h3>Example of an acceptable result</h3>
+			<a target="_blank" href="/{% static 'images/overfittingChartBetagal.jpeg' %}"><img src="/{% static 'images/overfittingChartBetagal.jpeg' %}"/></a>
+			<h3>Example of a probably non-acceptable result</h3>
+			<a target="_blank" href="/{% static 'images/overfittingChartMao.jpeg' %}"><img src="/{% static 'images/overfittingChartMao.jpeg' %}"/></a>
 		</div>
 	  </li>
 	  <li class="tlypageguide_top" data-tourtarget="#tabs">
