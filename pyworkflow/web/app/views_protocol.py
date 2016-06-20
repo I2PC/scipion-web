@@ -26,29 +26,59 @@
 
 import os
 import json
+
+from pyworkflow.object import Set
 from views_util import loadProject, loadProtocolProject, parseText, SERVICE_NAME, getVarFromRequest, CTX_PROJECT_NAME
 from django.http import HttpResponse
 from django.shortcuts import render_to_response
 
 import em_wizard
 from pyworkflow.wizard import WEB_DJANGO
-from pyworkflow.em import findWizardsFromDict, getSubclassesFromModules, Wizard
+from pyworkflow.em import findWizardsFromDict, getSubclassesFromModules, Wizard, Protocol
 from pyworkflow.em import Pointer, PointerList, Boolean, PointerParam, String
 from pyworkflow.protocol.params import MultiPointerParam, RelationParam, Line
 
 SPECIAL_PARAMS = ['numberOfMpi', 'numberOfThreads', 'hostName', 'expertLevel', '_useQueue']
 OBJ_PARAMS =['runName', 'comment']
 
-def getPointerHtml(protVar):
+def getPointerHtml(protVar, pretty = False):
     if protVar.hasValue():
         #if protVar.get() is None:
         #    raise Exception("protVar.hasValue...and .get() is None")
         #TODO: CHECK THIS LATER to display better when _extended attribute
-        return protVar.getObjValue().getNameId(), '%s::%s' % (protVar.getObjValue().getObjId(), protVar._extended.get())
+
+        if pretty:
+            html = pointerToPrettyHtml(protVar)
+        else:
+            html = protVar.getObjValue().getNameId()
+
+        value = '%s::%s' % (protVar.getObjValue().getObjId(), protVar._extended.get())
+
+        return html, value
     return '','' 
 
-        
-def findWizardsWeb(protocol):   
+# The idea is to progressively use this method without breaking anything
+def pointerToPrettyHtml(pointer):
+
+    objValue = pointer.getObjValue()
+
+    # Its a protocol?
+    if isinstance(objValue, Protocol):
+        html = objValue._label
+
+    # If it's a set, volume, ...
+    else:
+
+        html = objValue._objName
+
+    # If there is a extended
+    if pointer.hasExtended():
+        html += "." + pointer._extended.get()
+
+    return html
+
+
+def findWizardsWeb(protocol):
     webWizardsDict = getSubclassesFromModules(Wizard, {'em_wizard': em_wizard})
     return findWizardsFromDict(protocol, WEB_DJANGO, webWizardsDict)
 
@@ -227,7 +257,7 @@ def PreprocessParamForm(request, param, paramName, wizards, viewerDict, visualiz
         
         # POINTER
         elif isinstance(param, PointerParam):
-            param.htmlValue, param.htmlIdValue = getPointerHtml(protVar)
+            param.htmlValue, param.htmlIdValue = getPointerHtml(protVar, True)
         
         # RELATION PARAM
         elif isinstance(param, RelationParam):
