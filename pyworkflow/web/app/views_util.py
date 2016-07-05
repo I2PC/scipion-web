@@ -634,33 +634,42 @@ def download_output(request):
         if protocol is None:
             protocol = project.getProtocol(int(objId)).get()
 
-        import zipfile
+        # if is not finished
+        if not protocol.isFinished():
+            return HttpResponseNotFound('Output not ready. Protocol is not finished.')
 
         # Use absolute path
-        # z = zipfile.ZipFile("output.zip", "w")
-        outputFile = project.getAbsPath(project.getTmpPath("output.zip"))
-        z = zipfile.ZipFile(outputFile, "w")
+        outputFile = project.getAbsPath(protocol._getTmpPath("output.zip"))
 
-        # This are relative
-        files = protocol.getOutputFiles()
+        # If the output file does NOT exists
+        if not os.path.exists(outputFile):
 
-        if (files is not None) and (len(files) > 0):
-            for f in files:
-                fileName = project.getAbsPath(f)
-                z.write(fileName, arcname=os.path.basename(f))
-        else:
-            print "No output defined for the protocol, returning the whole folder of the protocol instead: ", protocol.getRunName()
+            # This are relative
+            files = protocol.getOutputFiles()
 
-            f = project.getAbsPath(protocol.getWorkingDir())
+            if (files is not None) and (len(files) > 0):
 
-            if os.path.exists(f):
+                z = zipfile.ZipFile(outputFile, "w")
 
-                zipdir(f, outputFile)
+                for f in files:
+                    fileName = project.getAbsPath(f)
+                    z.write(fileName, compress_type=zipfile.ZIP_DEFLATED, arcname=os.path.basename(f))
+
+                z.close()
+
             else:
+                print "No output defined for the protocol, returning the whole folder of the protocol instead: " + protocol.getRunName()
 
-                return HttpResponseNotFound('Output not found or ready.')
+                f = project.getAbsPath(protocol.getWorkingDir())
 
-        z.close()
+                if os.path.exists(f):
+
+                    zipdir(f, outputFile)
+                else:
+
+                    return HttpResponseNotFound('Output not found or ready.')
+
+
 
         return HttpResponse(outputFile, content_type='application/javascript')
 
@@ -1086,6 +1095,10 @@ def loadProtocolConf(protocol):
         if 'queueParams' in protDict:
             protocol.setQueueParams(protDict.get('queueParams'))
 
+def zipdirSystem(dirPath, zipFilePath, includeDirInZip):
+
+    # os.system("tar czf %s %s" % (zipFilePath, dirPath) )
+    os.system("zip -r %s %s" % (zipFilePath, dirPath))
 
 def zipdir(dirPath=None, zipFilePath=None, includeDirInZip=True):
     """Create a zip archive from a directory.
@@ -1118,6 +1131,12 @@ def zipdir(dirPath=None, zipFilePath=None, includeDirInZip=True):
     if not os.path.isdir(dirPath):
         raise OSError("dirPath argument must point to a directory. "
                       "'%s' does not." % dirPath)
+    # zipdirSystem(dirPath, zipFilePath, True)
+    zipDirPython(dirPath, zipFilePath, includeDirInZip)
+
+
+def zipDirPython(dirPath, zipFilePath, includeDirInZip):
+
     parentDir, dirToZip = os.path.split(dirPath)
 
     # Little nested function to prepare the proper archive path
@@ -1129,12 +1148,16 @@ def zipdir(dirPath=None, zipFilePath=None, includeDirInZip=True):
             archivePath = archivePath.replace(dirToZip + os.path.sep, "", 1)
         return os.path.normcase(archivePath)
 
-    outFile = zipfile.ZipFile(zipFilePath, "w",
-                              compression=zipfile.ZIP_DEFLATED)
+    outFile = zipfile.ZipFile(zipFilePath, "w", zipfile.ZIP_DEFLATED)
+
     for (archiveDirPath, dirNames, fileNames) in os.walk(dirPath):
         for fileName in fileNames:
             filePath = os.path.join(archiveDirPath, fileName)
-            outFile.write(filePath, trimPath(filePath))
+
+            if not filePath == zipFilePath:
+
+                outFile.write(filePath, trimPath(filePath))
+
         # Make sure we get empty directories as well
         if not fileNames and not dirNames:
             zipInfo = zipfile.ZipInfo(trimPath(archiveDirPath) + "/")
