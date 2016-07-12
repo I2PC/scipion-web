@@ -46,9 +46,16 @@ function serviceTestDataForm(){
 		dialog += "<br />";
 		dialog += '<div id="testData">';
 		dialog += "<p>Select <strong>Test data</strong>:</p>";
-		dialog += '&nbsp;&nbsp;&nbsp;<input type="radio" name="data" value="pval" checked>';
-		dialog += '&nbsp;&nbsp;' + getRefTestData("pval");
+		dialog += '&nbsp;&nbsp;&nbsp;<input type="radio" name="data" value="betagal" checked>';
+		dialog += '&nbsp;&nbsp;' + getRefTestData("betagal");
 		dialog += '<br />';
+		dialog += '&nbsp;&nbsp;&nbsp;<input type="radio" name="data" value="10004" checked>';
+		dialog += '&nbsp;&nbsp;' + getRefTestData("10004");
+		dialog += '<br />';
+		dialog += '&nbsp;&nbsp;&nbsp;<input type="radio" name="data" value="10008" checked>';
+		dialog += '&nbsp;&nbsp;' + getRefTestData("10008");
+		dialog += '<br />';
+
 		dialog += "</div>";
 		dialog += "<br />";
 
@@ -66,8 +73,14 @@ function goExampleForm(){
 
 	dialog += '<div id="exProjects">';
 	dialog += "<p>Select the <strong>Test data</strong>:</p>";
-	dialog += '&nbsp;&nbsp;&nbsp;<input type="radio" name="data" value="pval" checked>';
-	dialog += '&nbsp;&nbsp;' + getRefTestData("pval");
+	dialog += '&nbsp;&nbsp;&nbsp;<input type="radio" name="data" value="betagal" checked>';
+	dialog += '&nbsp;&nbsp;' + getRefTestData("betagal");
+	dialog += '<br />';
+	dialog += '&nbsp;&nbsp;&nbsp;<input type="radio" name="data" value="10004" checked>';
+	dialog += '&nbsp;&nbsp;' + getRefTestData("10004");
+	dialog += '<br />';
+	dialog += '&nbsp;&nbsp;&nbsp;<input type="radio" name="data" value="10008" checked>';
+	dialog += '&nbsp;&nbsp;' + getRefTestData("10008");
 	dialog += '<br />';
 	dialog += "</div>";
 	dialog += "<br />";
@@ -79,9 +92,16 @@ function goExampleForm(){
 function getProjExample(elm){
 	var x = $("div#exProjects input[type='radio']:checked").val();
 	switch(x){
-		case "pval":
-			var url = "/p_content/?p=beta-galactosidase";
+		case "betagal":
+			var url = "/p_content?p=betagal";
 			break;
+		case "10004":
+			var url = "/p_content?p=empiar10004";
+			break;
+		case "10008":
+			var url = "/p_content?p=empiar10008";
+			break;
+
 	}
 	goWithSubDomainURL(url);
 }
@@ -91,7 +111,7 @@ function createPvalProject(elm) {
 	var projName = "pval"+randomString(16, '#aA')
 	var selected = $("#testData input[type='radio']:checked").val();
 
-	var projectUrl = getBaseURL() + "/p_content/?p="+ projName
+	var projectUrl = getBaseURL() + "/p_content?p="+ projName
 	var URL = getSubDomainURL() + "/create_pval_project/?p=" + projName
 	if(selected != undefined){
 		URL += "&testData="+selected;
@@ -124,16 +144,23 @@ function createPvalProject(elm) {
 
 function goToProject(elm) {
 	var code = elm.val();
-	var URL2 = getSubDomainURL() + "/p_content/?p="+code;
+	var URL2 = getSubDomainURL() + "/p_content?p="+code;
 	window.location.href = URL2;
 }
 
 function getRefTestData(id){
 	var ref = ""
 	switch(id){
-		case "pval":
-			ref = "<strong>β-galactosidase</strong> (Resolution 2.8 Å , <a href='http://dx.doi.org/10.1016%2Fj.str.2014.01.011' style='color:firebrick;' target='_blank'>from Vinothkumar et al. Cell PRESS, 2014</a>)"
+		case "betagal":
+			ref = "<strong>β-galactosidase</strong> (<a href='http://dx.doi.org/10.1016%2Fj.str.2014.01.011' style='color:firebrick;' target='_blank'>from Vinothkumar et al. Cell PRESS, 2014</a>)"
 			break;
+		case "10004":
+			ref = "<strong>HIV-1 envelope glycoprotein (Empiar 10004)</strong> (<a href='http://dx.doi.org/10.1038/nsmb.2711' style='color:firebrick;' target='_blank'>from Bartesaghi et al. Nature Structural & Molecular Biology, 2013</a>)"
+			break;
+		case "10008":
+			ref = "<strong>HIV-1 envelope glycoprotein (Empiar 10008)</strong> (<a href='http://dx.doi.org/10.1073/pnas.1307382110' style='color:firebrick;' target='_blank'>from Mao et al. PNAS, 2013</a>)"
+			break;
+
 	}
 	return ref;
 }

@@ -272,7 +272,7 @@ class ProtocolClassTreeProvider(TreeProvider):
 def getPointerLabelAndInfo(pobj, mapper):
     """ 
     Return a string to represent selected objects
-    that are stored by pointesr.
+    that are stored by pointers.
     This function will be used from PointerVar and MultiPointerVar.
     """
     label = getObjectLabel(pobj, mapper)
@@ -1685,7 +1685,7 @@ class FormWindow(Window):
 
         
     def _checkCondition(self, paramName):
-        """Check if the condition of a param is statisfied 
+        """Check if the condition of a param is satisfied
         hide or show it depending on the result"""
         widget = self.widgetDict.get(paramName, None)
         

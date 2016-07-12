@@ -7,7 +7,7 @@
 	<input type="file" name="file"  data-upload-url="{{abs_url}}uploadr/" id="id_file" value="Choose a file"/>
 	<input type="hidden" id="project_folder" name="project_folder" value="{{project_folder}}"/>
 
-	<script type="text/javascript" src="http://cdn.rawgit.com/23/resumable.js/master/resumable.js"></script>
+	<script type="text/javascript" src="/{% static 'js/resumable.js' %}"></script>
 	<script type="text/javascript" src="/{% static 'js/django-resumable.js' %}"></script>
 	<script>
 		document.addEventListener("DOMContentLoaded", function () {

@@ -37,7 +37,7 @@ from pyworkflow.web.app.views_project import contentContext
 from pyworkflow.web.app.views_protocol import contextForm
 from pyworkflow.web.app.views_util import (getResourceCss, getResourceJs, getResourceIcon, getServiceManager,
                                            loadProtocolConf, CTX_PROJECT_PATH, CTX_PROJECT_NAME, PROJECT_NAME,
-                                           getResource, getAbsoluteURL)
+                                           getResource, getAbsoluteURL, MODE_SERVICE)
 from pyworkflow.web.pages import settings as django_settings
 
 MYRESMAP_SERVICE = 'myresmap'
@@ -182,7 +182,7 @@ def resmap_content(request):
                     'protResMap': path_files + 'protResMap.png',
                     'analyzeResults': path_files + 'analyzeResults.png',
                     'formUrl': 'r_form',
-                    'mode': 'service',
+                    'mode': MODE_SERVICE,
                     'daysLeft': daysLeft
                     })
 

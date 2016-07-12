@@ -1,6 +1,6 @@
 {% extends 'base_grid.html'%}
 
-{% block title %} - {{msg.LABEL_PROJECTS}}{% endblock %}
+{% block title %} - {{Workflows}}{% endblock %}
 
 {% block content_head %}
 <!-- CSS -->
@@ -35,44 +35,24 @@
 
 	});
 
-	// Load workflows
-	var workflows = {{workflows|safe}};
-	
 
-	
 </script>
 {% endblock %}
 
 {% block content_header %}	{% include "header.html"%} {% endblock %}
 
-{% block menu %}
-<div id="asideMainContainer">
-	<a href="javascript:createProjectForm('{{msg.TITLE_CREATE_PROJECT}}', '{{msg.TITLE_CREATE_PROJECT_NAME}}');" >
-		<button class="btn button2 primary_inv" type="button">
-			{{msg.LABEL_CREATE_PROJECT}}
-		</button>
-	</a>
-</div>
-{% endblock %}
-
 {% block content %}
 <div class="projectsList">
 	<ul>				
-	{% for project in projects %}
+	{% for workflow in workflows %}
 		<li class="projList">
 			<strong>
-			<a href="{{abs_url}}project_content/?p={{project.projName}}" class="projName">
-				{{project.projName}}
-			</a>
+				{% if workflow.exists %}
+					<a href="{{abs_url}}project_content/?p={{workflow.project}}&m=workflow" class="projName">{{workflow.name}}</a>
+				{% else %}
+					<a href="#" class="projName" onclick="javascript:createProject('{{workflow.project}}','{{workflow.file}}')">{{workflow.name}}</a>
+				{% endif %}
 			</strong>
-			<br /> 
-			{{msg.LABEL_MODIFIED}}{{project.pTime}} 
-			<a href="javascript:deleteProjectForm('{{project.projName}}', 
-			'{{msg.TITLE_DELETE_PROJECT}}', 
-			'{{msg.MESSAGE_DELETE_PROJECT}}');" 
-			class="projRemove">
-				{{msg.LABEL_DELETE_PROJECT}}
-			</a>
 		</li>
 	{% endfor %}
 	</ul>

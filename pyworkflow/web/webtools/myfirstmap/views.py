@@ -28,7 +28,7 @@ from os.path import exists, join, basename
 from pyworkflow.web.app.views_util import (getResourceCss, getResourceJs, getResourceIcon,
                                            getServiceManager, getImageFullPath, loadProtocolConf, SERVICE_NAME,
                                            CTX_PROJECT_PATH, CTX_PROJECT_NAME, PROJECT_NAME, getVarFromRequest,
-                                           getResource, getAbsoluteURL)
+                                           getResource, getAbsoluteURL, MODE_SERVICE)
 from pyworkflow.web.app.views_base import base_grid
 from pyworkflow.web.app.views_project import contentContext
 from pyworkflow.web.app.views_protocol import contextForm
@@ -171,7 +171,7 @@ def create_service_project(request):
         protJoin.inputVolumes.append(p1)
         protJoin.inputVolumes.append(p2)
         protJoin.inputVolumes.append(p3)
-#         protJoin.inputVolumes.append(p4)
+
         project.saveProtocol(protJoin)
         
 #         protValidate = project.newProtocol(XmippProtValidateNonTilt)
@@ -188,6 +188,7 @@ def create_service_project(request):
         
         
     return HttpResponse(content_type='application/javascript')
+
 
 def get_testdata(request):
     # Filename to use as test data 
@@ -230,7 +231,7 @@ def service_content(request):
                     'alignVol': path_files + 'alignVol.png',
                     'download': path_files + 'download.png',
                     'formUrl': 'my_form',
-                    'mode':'service',
+                    'mode': MODE_SERVICE,
                     'daysLeft': daysLeft
                     })
     

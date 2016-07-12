@@ -105,7 +105,7 @@
 <!-- POINTER PARAM -->		
 		{% if paramGroup.getClassName == "PointerParam"%}
 		<td class="ico">
-			<a href="javascript:browseObjects('{{paramGroupName}}','{{projectName}}','objClass','{{paramGroup.pointerClass.get}}','{{paramGroup.pointerCondition.get}}');">
+			<a href="javascript:browseObjects('{{paramGroupName}}','{{projectName}}','objClass','{{paramGroup.pointerClass.get}}~{{protocol.getObjId}}','{{paramGroup.pointerCondition.get}}');">
 				<i class="fa fa-search" style="font-size:1.1em;"></i>
 			</a> 
 		</td>
@@ -117,7 +117,7 @@
 <!-- MULTI POINTER PARAM -->
 	{% elif paramGroup.getClassName == "MultiPointerParam" %}
 		<td class="ico">
-			<a href="javascript:browseObjects('{{paramGroupName}}','{{projectName}}','objClass','{{paramGroup.pointerClass.get}}','{{paramGroup.pointerCondition.get}}','{{paramGroup.maxNumObjects}}');">
+			<a href="javascript:browseObjects('{{paramGroupName}}','{{projectName}}','objClass','{{paramGroup.pointerClass.get}}~{{protocol.getObjId}}','{{paramGroup.pointerCondition.get}}','{{paramGroup.maxNumObjects}}');">
 				<i class="fa fa-search" style="font-size:1.1em;"></i>
 			</a>
 			<a href="javascript:removeObjects('{{paramGroupName}}');">

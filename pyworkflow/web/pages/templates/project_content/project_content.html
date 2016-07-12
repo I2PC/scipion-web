@@ -1,9 +1,22 @@
 {% extends 'base_flex.html' %}
-{% block title %} - {{msg.LABEL_PROJECT}}{{projectName}}{% endblock %}
+{% block title %}
+	{% if mode == 'workflow' %}
+		{{msg.LABEL_WORKFLOW}}
+	{% else %}
+		{{msg.LABEL_PROJECT}}
+	{% endif %}
+	{{projectName}}
+{% endblock %}
 
 {% block head %}
+
+
 <!-- CSS -->
-<link href={{project_content_css}} rel="stylesheet" type="text/css">
+{% block css %}
+    {{ block.super }}
+	<link href={{project_content_css}} rel="stylesheet" type="text/css">
+{% endblock %}
+
 <style type="text/css">
 
 .ui-state-active {
@@ -98,7 +111,7 @@
 	{% include "project_content/tree_prot_view.html" %}
 	</div>
 </div>
-{% endblock %} 
+{% endblock %}
 
 {% block headerNorth %}
 <div id="headerToolbar">

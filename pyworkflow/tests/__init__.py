@@ -255,18 +255,26 @@ DataSet(name='SymVirus', folder='SymVirus',
 
 DataSet(name='xmipp_programs', folder='xmipp_programs', files={})
 
-#DataSet(name='resmap', folder='resmap',
-#        files={'fcv': 'fcv.map',
-#               'mito_ribo': 'mito_ribosome.map',
-#               't20s': 't20s_proteasome.map'
-#               }
-#        )
-
-DataSet(name='pval', folder='pval',
-        files={'pval_vol': 'volume_iter050.vol',
-               'pval_part': 'particles_iter_004.sqlite'
-               }
-        )
+DataSet(name='particle_validation', folder='pvalidation',
+        files={
+               'betagal_volume': 'betagal_volume.vol',
+               'betagal_particles': 'betagal_particles.stk',
+               'betagal_meta': 'betagal_relion_data.star',
+               'betagal_optimizer': 'betagal_relion_optimiser.star',
+               'betagal_half1': 'betagal_relion_half1_model.star',
+               'betagal_half2': 'betagal_relion_half2_model.star',
+               'betagal_sampling': 'betagal_relion_sampling.star',
+               '10004_volume': '10004_volume.vol',
+               '10004_particles': '10004_particles.mrcs',
+               '10004_meta': '10004_relion_data.star',
+               '10004_optimizer': '10004_relion_optimiser.star',
+               '10004_half1': '10004_relion_half1_model.star',
+               '10004_half2': '10004_relion_half2_model.star',
+               '10004_sampling': '10004_relion_sampling.star',
+               '10008_volume': '10008_volume.vol',
+               '10008_particles': '10008_particles.stk',
+               '10008_meta': '10008_particles.sqlite'
+        })
 
 DataSet(name='resmap',  folder='resmap',
         files={'betagal': 'betaGal.mrc',

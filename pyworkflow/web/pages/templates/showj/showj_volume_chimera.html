@@ -97,9 +97,6 @@
 
   	$(document).ready(function(){
 
-  		// Loading WebGL
-  		showChimera();
-  		
   		// Event changing the volume
   		$("select#id_volumesToRenderComboBox").change(function(){
   			putWait();
@@ -120,13 +117,18 @@
   			min: {{minStats}},
   			max: {{maxStats}},
   			step: 0.01,
-  			slide : function(event, ui) {
+  			slide: function(event, ui) {
   				$("#thresholdValue").val(ui.value);
   			},
   			change: function(event, ui) {
   				updateThreshold();
   			}
   		});
+
+		// Loading WebGL
+		showChimera();
+
+
   	});
 	</script>
 {% endblock %}

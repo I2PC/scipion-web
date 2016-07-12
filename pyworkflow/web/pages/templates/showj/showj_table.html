@@ -170,14 +170,9 @@ $(document).ready(function() {
 function generateDataForTable(){
 	var dataForTable = new Array();
 	{% for row in tableDataset.getRows %}
-		dataRowForTable = new Array()
-		{% for cell in row %}
-			dataRowForTable.push("{{cell}}")
-			{% if forloop.first	%}
-				row_id = "{{cell}}"
-			{% endif %}
-		{% endfor %}
-		dataForTable.push(dataRowForTable)
+		{% for cell in row %}{% if forloop.first %}//row_id = "{{cell}}";
+		dataRowForTable = ["{{cell}}"{% else %},"{{cell}}"{% endif %}{% endfor %}];
+		dataForTable.push(dataRowForTable);
 	{% endfor %}
 	return dataForTable;
 }

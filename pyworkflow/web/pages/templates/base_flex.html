@@ -7,13 +7,16 @@
 <meta charset='utf-8'>
 <link rel="icon" type="image/png" href="{{favicon}}" />
 <!-- CSS -->
-<link href="{{general_css}}" rel="stylesheet"	type="text/css"> 
+{% block css %}
+<link href="{{general_css}}" rel="stylesheet"	type="text/css">
 <link href="{{general_flex}}" rel="stylesheet"	type="text/css"> 
 <link href="{{jquery_ui_css}}" rel="stylesheet" type="text/css"/>
 <link href="{{messi_css}}" rel="stylesheet" type="text/css"/>
 <link href="{{font_awesome}}" rel="stylesheet" type="text/css">
+{% endblock %}
 
 <!-- JS -->
+{% block js %}
 <script type="text/javascript" src="{{jquery}}"></script>
 <script type="text/javascript" src="{{jsplumb}}"></script>
 <script type="text/javascript" src="{{jquery_ui}}"></script>
@@ -25,6 +28,7 @@
 <script type="text/javascript" src="{{jquery_splitter}}"></script>
 <script type="text/javascript" src="{{utils}}"></script>
 <script type="text/javascript" src="{{config}}"></script>
+{% endblock %}
 
 <script>
 // Fix to move UI elements in touch displays
@@ -43,11 +47,13 @@ $('#widget').draggable();
 		{% block header %}	
 			{% include "header.html" %}
 		{% endblock %}
-		
+
+		{% if not nowest %}
 		<aside class="west">
 			{% block sideLeft %}	
 			{% endblock %}
 		</aside>
+		{% endif %}
 		
 		<section class="center layout-inner" data-layout='{"type": "border", "hgap": 1, "vgap": 1}'>
 			
@@ -70,5 +76,7 @@ $('#widget').draggable();
 		    </div>
 		</section>
 	</div>
+	{% block bodyend %}
+	{% endblock %}
 </body>
 </html>

@@ -24,19 +24,20 @@
 # *
 # **************************************************************************
 
-from os.path import exists, join, basename
 import json
-from views_base import base_grid, base_flex
-from views_util import loadProject, loadProjectFromPath, getResourceCss, getResourceIcon, getResourceJs, \
-    getServiceManager, PROJECT_NAME, SERVICE_NAME, \
-    getVarFromRequest, CTX_PROJECT_PATH, CTX_PROJECT_NAME
-from views_tree import loadProtTree
-from pyworkflow.manager import Manager
-from pyworkflow.utils.path import copyFile
-from django.http import HttpResponse, HttpRequest
+
+from django.http import HttpResponse
 from django.shortcuts import render_to_response
-import pyworkflow
+
 from pyworkflow.em import getProtocols
+from pyworkflow.manager import Manager
+from pyworkflow.utils import getWorkflowsList
+from pyworkflow.web.app.views_util import MODE_WORKFLOW
+from views_base import base_grid, base_flex
+from views_tree import loadProtTree
+from views_util import loadProject, getResourceCss, getResourceIcon, getResourceJs, \
+    getServiceManager, PROJECT_NAME, SERVICE_NAME, \
+    getVarFromRequest, CTX_PROJECT_PATH, CTX_PROJECT_NAME, WORKFLOW, MODE
 
 
 def projects(request):
@@ -55,6 +56,7 @@ def projects(request):
     context = {'projects': projectsList,
                'projects_css': getResourceCss('projects'),
                'project_utils_js': getResourceJs('project_utils'),
+               'workflows': json.dumps(getWorkflowsList())
                }
 
     context = base_grid(request, context)
@@ -62,12 +64,38 @@ def projects(request):
     return render_to_response('projects.html', context)
 
 
+def workflows(request):
+
+    workflows = getWorkflowsList()
+
+    # Annotate existence of projects (hashed)
+    manager = getServiceManager(None)
+
+    for workflow in workflows:
+
+        # Project for the workflow should be the hashed value
+        if manager.hasProject(workflow['project']):
+            workflow['exists'] = True
+        else:
+            workflow['exists'] = False
+
+    context = {'projects_css': getResourceCss('projects'),
+               'project_utils_js': getResourceJs('project_utils'),
+               'workflows': workflows
+               }
+
+    context = base_grid(request, context)
+
+    return render_to_response('workflows.html', context)
+
+
 def create_project(request):
     manager = Manager()
 
     if request.is_ajax():
         projectName = getVarFromRequest(request, PROJECT_NAME)
-        manager.createProject(projectName, chdir=False)
+        workflow = getVarFromRequest(request, WORKFLOW)
+        manager.createProject(projectName, chdir=False, workflow=workflow)
 
     return HttpResponse(content_type='application/javascript')
 
@@ -208,7 +236,8 @@ def formatProvider(provider, mode):
         if mode == "runs":
             status = info[0]
             time = info[1]
-            objs.append((objId, [objId, name, status, time]))
+            label = info[2]
+            objs.append((objId, [objId, name, status, time, label]))
 
         elif mode == "objects":
             objs.append((objId, [objId, name, info]))
@@ -218,10 +247,15 @@ def formatProvider(provider, mode):
 
 def project_content(request):
     projectName = getVarFromRequest(request, PROJECT_NAME)
+    mode = getVarFromRequest(request, MODE)
     project = Manager().loadProject(projectName, chdir=False)
     context = contentContext(request, project)
-    context.update({'mode': None,
+    context.update({'mode': mode,
                     'formUrl': 'form'})
+
+    if mode == MODE_WORKFLOW:
+        context.update({'nowest': True})
+
     return render_to_response('project_content/project_content.html', context)
 
 

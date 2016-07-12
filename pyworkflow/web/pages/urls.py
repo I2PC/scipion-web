@@ -27,6 +27,7 @@ mainUrls = ['',
     #PROJECT (CONTENT, RUNTABLE AND GRAPH)
     url(r'^projects/', 'app.views_project.projects'),
     url(r'^create_project/$', 'app.views_project.create_project'),
+    url(r'^workflows/', 'app.views_project.workflows'),
     url(r'^delete_project/$', 'app.views_project.delete_project'),
     url(r'^project_content/$', 'app.views_project.project_content'),
     url(r'^get_protocols/$', 'app.views_project.get_protocols'),

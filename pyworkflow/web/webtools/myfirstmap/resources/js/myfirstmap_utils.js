@@ -92,13 +92,13 @@ function getProjExample(elm){
 	var x = $("div#exProjects input[type='radio']:checked").val();
 	switch(x){
 		case "groel":
-			var url = "/content/?p=GroelTestData";
+			var url = "/content?p=GroelTestData";
 			break;
 		case "bpv":
-			var url ="/content/?p=BpvTestData";
+			var url ="/content?p=BpvTestData";
 			break;
 		case "ribosome":
-			var url ="/content/?p=RiboTestData";
+			var url ="/content?p=RiboTestData";
 			break;
 	}
 	goWithSubDomainURL(url);
@@ -126,7 +126,7 @@ function createServProject(elm) {
 	var projName = "map"+randomString(16, '#aA')
 	var selected = $("#testData input[type='radio']:checked").val();
 	
-	var projectUrl = getBaseURL() + "/content/?p="+ projName
+	var projectUrl = getBaseURL() + "/content?p="+ projName
 	var URL = getSubDomainURL() + "/create_service_project/?p=" + projName
 	if(selected != undefined){
 		URL += "&testData="+selected;
@@ -160,7 +160,7 @@ function createServProject(elm) {
 function goToProject(elm) {
 	var code = elm.val();
 	
-	var URL2 = getSubDomainURL() + "/content/?p="+code;
+	var URL2 = getSubDomainURL() + "/content?p="+code;
 	window.location.href = URL2;
 
 }

@@ -1,10 +1,44 @@
-{% extends 'project_content/project_content.html' %}
+{% extends 'project_content/_service_content.html' %}
+{% load staticfiles i18n %}
 
-{% block header %}	
-	{% include "webtool_header.html" %}
+{% block bodyend %}
+{{ block.super }}
+<ul id="tlyPageGuide" data-tourtitle="">
+	<li class="tlypageguide_right" data-tourtarget="div[data-label*='import movies']">
+		<div>
+			<p>Upload and import your movies by clicking on the <strong>import movies</strong> box. Finally press "Execute"!
+			<p>In order to upload your movies to our server, you have 2 options: a traditional, simple, resumable <strong>file upload</strong> or a more
+				technical <strong>rsync</strong> command line from a terminal window.
+			</p>
+			<p style='font-family:Monospace;padding:1em;font-size:110%;'>
+				{{command}}
+			</p>
+			<p>
+				Note that this Portal may run in two configurations: Guest/Demo and as an Instruct Access Project.
+				In a Guest/Demo configuration, we limit the size of your total set of uploaded movies to 25 GigaBytes
+				(this mode is intended to provide just with a quick look on the Web Portal capabilities).
+				As an Instruct Access Project, I2PC staff should have already taken care of the correct uploading of
+				your movies.
+			</p>
+		</div>
+	</li>
+	<li class="tlypageguide_right" data-tourtarget="div[data-label*='xmipp - movie alignment']">
+		<div>
+			<p>Click on the <strong>xmipp - movie alignment</strong> box.</p>
+			<br />
+			<p>Parameters can be easily customized. Two levels of usages are supported: Normal or Advanced, which
+         should be chosen according to your experience. Finally press "Execute"!</p>
+		</div>
+	</li>
+    <li class="tlypageguide_top" data-tourtarget="#tabs">
+      <div>
+        <p>Once a method has finished, click on its box to show the <strong>Summary</strong> of Inputs and Outputs.</p>
+        <p>Click on the <strong>Analyze Results</strong> button to further analyze the results of each method.</p>
+        <p>For the movie alignment method, the corrected averaged micrographs can be downloaded using the download button: <img src="{{download}}"/>.</p>
+      </div>
+    </li>
+</ul>
 {% endblock %}
 
-{% block service %}
-	{% include "configHiddenMovies.html" %}
-	{% include "helpPopupMovies.html" %}
-{% endblock %}
+
+

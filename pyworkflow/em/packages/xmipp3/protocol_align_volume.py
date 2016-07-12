@@ -61,7 +61,7 @@ class XmippProtAlignVolume(em.ProtAlignVolume):
         form.addParam('inputVolumes', params.MultiPointerParam, pointerClass='SetOfVolumes,Volume',  
                       label="Input volume(s)", important=True, 
                       help='Select one or more volumes (Volume or SetOfVolumes)\n'
-                           'to be aligned againt the reference volume.')
+                           'to be aligned against the reference volume.')
         
         group1 = form.addGroup('Mask')
         group1.addParam('applyMask', params.BooleanParam, default=False, 

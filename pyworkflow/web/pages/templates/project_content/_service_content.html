@@ -1,0 +1,77 @@
+{% extends 'project_content/project_content.html' %}
+
+{% block header %}
+	{% include "webtool_header.html" %}
+{% endblock %}
+
+{% block css %}
+	{{ block.super }}
+	<link rel="stylesheet" href="{{css_root}}pageguide.css">
+{% endblock %}
+
+
+{% block service %}
+	{{ block.super }}
+	<script type="text/javascript">
+		jQuery(function($) {
+			// Hide the TreeProtView
+			$("div#westContainer").hide();
+
+			// Events to show the TreeProtView
+			$("div.ui-resizable-handle").click(function(){
+				$("div#westContainer").show();
+			// overflow-y ?
+			}).mousemove(function (){
+				$("div#westContainer").show();
+			// overflow-y ?
+			});
+		});
+	</script>
+{% endblock %}
+
+{% block bodyend %}
+	{{ block.super }}
+	<script type="text/javascript">
+
+		$(function($) {
+
+			var html = '<span id="helpTool">'
+					+ '<a href=""><i class="fa fa-question-circle" style="margin-right:5px"></i>Help</a>'
+					+ '</span>'
+			$("span#toolbar").append(html)
+		});
+
+
+		//	Page guide!
+		$(document).ready(function() {
+			tl.pg.init({ /* optional preferences go here */
+				custom_open_button: "#helpTool"
+			});
+		});
+
+	</script>
+
+	<div id="tlyPageGuideWelcome">
+		<h2>Welcome to our help tour.</h2>
+		<p>
+			We have prepared a small tour to guide you through this web tool.
+			What yo you want to do?
+		</p>
+		<br/>
+		<p>
+		<button class="tlypageguide_start btn-sm">go on tour!</button>
+		<button class="tlypageguide_ignore">not now</button>
+		<button class="tlypageguide_dismiss">got it, thanks</button>
+		</p>
+		&nbsp;<br/>
+		<p>
+			You can always click on the "Help" link to get some help.
+		</p>
+	</div>
+
+	<script type="text/javascript" src="{{js_root}}pageguide.js"></script>
+
+{% endblock %}
+
+
+

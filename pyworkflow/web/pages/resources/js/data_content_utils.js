@@ -70,7 +70,7 @@ function updateObjTabs(id) {
 			// Label
 			var label = $("#obj_label");
 			label.empty();
-			var value_label = $("#graph_"+id).attr("data-label")
+			var value_label = $("#graph_"+id).attr("data-name")
 			label.append(value_label + "&nbsp;&nbsp;&nbsp;" + edit_html);
 			
 			// Info
