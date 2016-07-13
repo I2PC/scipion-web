@@ -241,7 +241,7 @@ class XmippProtValidateNonTilt(ProtAnalysis3D):
     def _methods(self):
         messages = []
         if (hasattr(self,'outputVolumes')):
-            messages.append('The quality parameter(s) has been obtained using the approach [Vargas2014a] with angular sampling of %f and significant value of %f' % (self.angularSampling.get(), self.alpha.get()))
+            messages.append('The quality parameter(s) has been obtained using the approach [Vargas2014a] with angular sampling of %f and significant value of %f' % (self.angularSampling.get(), self.significanceNoise.get()))
         return messages
     
     def _citations(self):
