@@ -468,6 +468,20 @@ journal = {Journal of Microscopy}
 }
 
 @article{Vargas2014a,
+  doi = {http://dx.doi.org/10.1038/srep21626},
+  url = {http://dx.doi.org/10.1038/srep21626},
+  year  = {2016},
+  month = {feb},
+  publisher = {Nature Publishing Group},
+  volume = {6},
+  pages = {21626},
+  author = {Vargas et al.},
+  title = {Particle alignment reliability in single particle electron cryomicroscopy: a general approach},
+  journal = {Sci. Rep.},
+  keywords = "Validation"
+}
+
+@article{Vargas2014aOLD,
 title = "A general validation approach for cryoEM ",
 journal = "Nature Methods",
 volume = "",
