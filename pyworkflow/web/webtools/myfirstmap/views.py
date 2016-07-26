@@ -244,17 +244,24 @@ def setProtocolParams(protocol, key):
         
         if issubclass(cls, XmippProtRansac):
             if(key == "bpv"):
-                attrs = {"symmetryGroup" : "i1",
-                        "dimRed": True,
-                        "numGrids": 2}
+                attrs = {"symmetryGroup": "i1",
+                         "dimRed": False,
+                         "numGrids": 2,
+                         "numSamples": 4,
+                         "maxFreq": 5,
+                         "useAll": True
+                        }
             if(key == "groel"):
-                attrs = {"symmetryGroup" : "d7",
-                        "dimRed": True, 
-                        "numGrids": 3}
+                attrs = {"symmetryGroup": "d7",
+                         "dimRed": False,
+                         "numGrids": 3,
+                         "maxFreq": 5,
+                         "useAll": True
+                         }
             if(key == "ribosome"):
-                attrs = {"symmetryGroup" : "c1",
-                        "dimRed": True,
-                        "numGrids": 3}
+                attrs = {"symmetryGroup": "c1",
+                         "dimRed": True,
+                         "numGrids": 3}
         
         elif issubclass(cls, EmanProtInitModel):
             if(key == "bpv"):
