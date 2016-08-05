@@ -18,12 +18,14 @@
 	<div id="piebyplatform"></div><br/>
 	<div id="piebycountry"></div><br/>
 	<div id="downloadsovertime"></div><br/>
+	<div id="accumulatedDownloads"></div><br/>
 	<div id="piebysubscription"></div><br/>
 
 
 	<script>
 	var downloadData = {{downloadsJSON|safe}};
 	var downloadsAggregation = {};
+	var downloadsTimeSeries;
 
 	$(function () {
 
@@ -39,6 +41,7 @@
 		loadPlatformChart();
 		loadCountryChart();
 		loadDownloadsTimeSeries();
+		loadDownloadsAccumulated();
 		loadSubscriptionChart();
 	}
 
@@ -54,7 +57,17 @@
 	};
 
 	function loadDownloadsTimeSeries(){
-		loadZoomableTimeSeries('#downloadsovertime', 'Downloads over time', propertyAggregationToTimeSeries(downloadsAggregation['timeStamp'], 'Downloads'))
+		downloadsTimeSeries = propertyAggregationToTimeSeries(downloadsAggregation['timeStamp'], 'Downloads');
+		loadZoomableTimeSeries('#downloadsovertime', 'Downloads per day', downloadsTimeSeries)
+	};
+
+	function loadDownloadsAccumulated(){
+
+		accumulateData(downloadsTimeSeries[0].data);
+
+		downloadsTimeSeries[0].type='area'
+
+		loadAreaChart('#accumulatedDownloads', 'Accumulated downloads', downloadsTimeSeries)
 	};
 
 	function loadSubscriptionChart(){
@@ -66,7 +79,6 @@
 
 		// Aggregate data
 		aggregateAll(downloadData, downloadsAggregation);
-
 
 	}
 
@@ -235,6 +247,21 @@
 
 	};
 
+	function accumulateData(data){
+
+		var previousValue = 0;
+		for (var i=0; i<data.length; i++){
+
+			var point = data[i];
+			point[1]= parseInt(point[1]) + previousValue;
+
+			previousValue = point[1];
+		};
+
+		return data;
+	};
+
+
 	function loadPieChart(container, title, data){
 
 		// Build the chart
@@ -265,6 +292,29 @@
 		});
 	};
 
+	function loadAreaChart(container, title, data){
+
+		// Build the chart
+		$(container).highcharts({
+			chart: {
+
+				zoomType: 'x'
+			},
+			title: {
+				text: title
+			},
+			xAxis: {
+                type: 'datetime'
+            },
+            yAxis: {
+                title: {
+					text: 'Downloads'
+				}
+            },
+			series: data
+		});
+	};
+
 	function loadZoomableTimeSeries(container, title, data){
 
 		$(container).highcharts({
@@ -288,33 +338,6 @@
             },
             legend: {
                 enabled: false
-            },
-            plotOptions: {
-                area: {
-					stacking: 'normal',
-                    fillColor: {
-                        linearGradient: {
-                            x1: 0,
-                            y1: 0,
-                            x2: 0,
-                            y2: 1
-                        },
-                        stops: [
-                            [0, Highcharts.getOptions().colors[0]],
-                            [1, Highcharts.Color(Highcharts.getOptions().colors[0]).setOpacity(0).get('rgba')]
-                        ]
-                    },
-                    marker: {
-                        radius: 2
-                    },
-                    lineWidth: 1,
-                    states: {
-                        hover: {
-                            lineWidth: 1
-                        }
-                    },
-                    threshold: null
-                }
             },
             series: data
         });
