@@ -181,6 +181,7 @@ jsDict = {'jquery': 'jquery/jquery.js',
           # JSmol
           'jsmol': 'jsmol/JSmol.min.js',
           'jsmolFolder': 'jsmol/j2s',
+          'ngl': 'ngl.embedded.min.js',
 
           }
 
@@ -899,7 +900,7 @@ def readDimensions(request, path, typeOfColumn):
 
 
 def getTmpVolumePath(fileName):
-    """ Return the temporarly filename of converted volumes
+    """ Return the temporary filename of converted volumes
     to be rendered over the web.
 
     Parameters
@@ -917,7 +918,7 @@ def convertVolume(request, pathToVolume):
     imgConvertedFn = getTmpVolumePath(imgFn.replace(':mrc', ''))
     # For rendering volume slices over the web, PIL need that
     # the volume is stored with a specific datatype
-    # So, we write a temporarly volume the first time
+    # So, we write a temporary volume the first time
     if not os.path.exists(imgConvertedFn):
         img = xmipp.Image()
         img.read(str(imgFn))
