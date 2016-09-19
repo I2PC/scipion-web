@@ -48,17 +48,6 @@
  
 			 {% if dataset.getNumberSlices > 1 or form.typeVolume.value == 'pdb' %} 
 
-			<!-- CHIMERA HEADLESS -->
-			<input type="button" id="volume_chimera" name="select_mode" title="Change to mode 3D Visualization"
-			onclick="changeMode('volume_chimera');" 
-			class="submitButton
- 			 {% if form.mode.value != 'volume_chimera' %} 
- 			 visualizeVolOff 
- 			 {% else %} 
- 			  visualizeVolOn 
- 			 {% endif %} 
- 			 " 
-			 />
 			<!-- NGL VIEWER -->
 			<input type="button" id="volume_ngl" name="select_mode" title="Visualize it with NGL viewer"
 			onclick="changeMode('volume_ngl');"

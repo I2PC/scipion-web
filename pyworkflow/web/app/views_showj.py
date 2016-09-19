@@ -57,6 +57,7 @@ def loadDataSet(request, inputParams, firstTime):
 
     return dataset
 
+
 def loadTable(request, dataset, inputParams):
     if inputParams[sj.TABLE_NAME] is not None:
         updateTable(inputParams, dataset)
@@ -68,6 +69,7 @@ def loadTable(request, dataset, inputParams):
     inputParams[sj.TABLE_NAME] = dataset.currentTable()
 
     return table
+
 
 def updateTable(inputParams, dataset):
     """ Save changes in the SQLITE before to load a new table
@@ -82,13 +84,15 @@ def updateTable(inputParams, dataset):
             item = x.split("-")
             id = item[0]
             state = item[1]
-#            print "CHANGES TO SAVE:", id," - "+ state
+        #            print "CHANGES TO SAVE:", id," - "+ state
     else:
-#        print "NO CHANGES"
+        #        print "NO CHANGES"
         pass
 
+
 def hasTableChanged(request, inputParams):
-    return request.session.get(inputParams[sj.PATH], {}).get(sj.TABLE_NAME, None) != inputParams.get(sj.TABLE_NAME, None)
+    return request.session.get(inputParams[sj.PATH], {}).get(sj.TABLE_NAME, None) != inputParams.get(sj.TABLE_NAME,
+                                                                                                     None)
 
 
 def loadColumnsConfig(request, dataset, table, inputParams, extraParams, firstTime):
@@ -182,14 +186,14 @@ def setRenderingOptions(request, dataset, table, inputParams):
         inputParams[sj.MODE] = sj.MODE_TABLE
         dataset.setNumberSlices(0)
     else:
-        #Setting the _imageVolName
+        # Setting the _imageVolName
         _imageVolName = inputParams[sj.VOL_SELECTED]
         if _imageVolName == None:
             _imageVolName = table.getValueFromIndex(0, label)
 
         _typeOfColumnToRender = inputParams[sj.COLS_CONFIG].getColumnProperty(label, 'columnType')
         isVol = _typeOfColumnToRender == sj.COL_RENDER_VOLUME
-        oldMode =  inputParams[sj.OLDMODE]
+        oldMode = inputParams[sj.OLDMODE]
 
         if isVol:
             if oldMode == None or oldMode not in ['table', 'gallery']:
@@ -201,7 +205,7 @@ def setRenderingOptions(request, dataset, table, inputParams):
                         pass
                     elif oldMode == 'gallery':
                         _imageVolName = inputParams[sj.VOL_SELECTED]
-                        index = table.getIndexFromValue(_imageVolName, label) +1
+                        index = table.getIndexFromValue(_imageVolName, label) + 1
                         inputParams[sj.SELECTEDITEMS] = index
 
                 elif oldMode != inputParams[sj.MODE]:
@@ -213,7 +217,7 @@ def setRenderingOptions(request, dataset, table, inputParams):
                         # New Functionality used to render elements selected in table mode for volumes
                         lastItemSelected = inputParams[sj.SELECTEDITEMS].split(',').pop()
                         if len(lastItemSelected) > 0:
-                            index = int(lastItemSelected)-1
+                            index = int(lastItemSelected) - 1
                         else:
                             # To avoid exceptions without selected item between transitions
                             index = 0
@@ -224,9 +228,9 @@ def setRenderingOptions(request, dataset, table, inputParams):
         if _imageVolName is None:
             # Patch to visualize individual volume
             pathAux = inputParams[sj.PATH].split("/Runs/")[1]
-            _imageVolName = "Runs/"+pathAux
+            _imageVolName = "Runs/" + pathAux
 
-        #Setting the _imageDimensions
+        # Setting the _imageDimensions
         _imageDimensions = readDimensions(request, _imageVolName, _typeOfColumnToRender)
 
         if _imageDimensions is None:
@@ -235,20 +239,21 @@ def setRenderingOptions(request, dataset, table, inputParams):
             dataset.setNumberSlices(_imageDimensions[2])
 
         if _typeOfColumnToRender == sj.COL_RENDER_IMAGE or isVol:
-            is3D = inputParams[sj.MODE] in [sj.MODE_VOL_CHIMERA, sj.MODE_VOL_NGL]
+            is3D = inputParams[sj.MODE] ==sj.MODE_VOL_NGL
             # Setting the _convert
             _convert = isVol and (inputParams[sj.MODE] in [sj.MODE_GALLERY, sj.MODE_TABLE] or is3D)
             # Setting the _reslice
             _reslice = isVol and inputParams[sj.MODE] in [sj.MODE_GALLERY, sj.MODE_TABLE]
             # Setting the _getStats
             _getStats = isVol and is3D
-            # Setting the _dataType (replaced astex by chimera)
-            _dataType = xmipp.DT_FLOAT if isVol and inputParams[sj.MODE]==sj.MODE_VOL_CHIMERA else xmipp.DT_UCHAR
+            # Setting the _dataType
+            _dataType = xmipp.DT_FLOAT if isVol and inputParams[sj.MODE] == sj.MODE_VOL_NGL else xmipp.DT_UCHAR
             # Setting the _imageVolName and _stats
 
             # CONVERSION TO .mrc DONE HERE!
             _imageVolNameOld = _imageVolName
-            _imageVolNameNew, _stats = readImageVolume(request, _imageVolName, _convert, _dataType, _reslice, int(inputParams[sj.VOL_VIEW]), _getStats)
+            _imageVolNameNew, _stats = readImageVolume(request, _imageVolName, _convert, _dataType, _reslice,
+                                                       int(inputParams[sj.VOL_VIEW]), _getStats)
 
             if isVol:
                 inputParams[sj.COLS_CONFIG].configColumn(label, renderFunc="get_slice")
@@ -262,39 +267,44 @@ def setRenderingOptions(request, dataset, table, inputParams):
     return volPath, _stats, _imageDimensions, _imageVolNameOld
 
 
-#Initialize default values
+# Initialize default values
 DEFAULT_PARAMS = {
     sj.PATH: None,
-    sj.ALLOW_RENDER: True,                 # Image can be displayed, depending on column layout
-    sj.MODE: sj.MODE_GALLERY,                   # Mode Options: gallery, table, column, volume_astex, volume_chimera
-    sj.TABLE_NAME: None,                    # Table name to display. If None the first one will be displayed
-    sj.LABEL_SELECTED: None,        # Column to be displayed in gallery mode. If None the first one will be displayed
-    sj.GOTO: 1,                           # Element selected (metadata record) by default. It can be a row in table mode or an image in gallery mode
-    sj.MANUAL_ADJUST: 'Off',                 # In gallery mode 'On' means columns can be adjust manually by the user. When 'Off' columns are adjusted automatically to screen width.
-    sj.COLS: None,                         # In gallery mode (and colRowMode set to 'On') cols define number of columns to be displayed
-    sj.ROWS: None,                          # In gallery mode (and colRowMode set to 'On') rows define number of columns to be displayed
+    sj.ALLOW_RENDER: True,  # Image can be displayed, depending on column layout
+    sj.MODE: sj.MODE_GALLERY,  # Mode Options: gallery, table, column, volume_astex, volume_chimera
+    sj.TABLE_NAME: None,  # Table name to display. If None the first one will be displayed
+    sj.LABEL_SELECTED: None,  # Column to be displayed in gallery mode. If None the first one will be displayed
+    sj.GOTO: 1,
+# Element selected (metadata record) by default. It can be a row in table mode or an image in gallery mode
+    sj.MANUAL_ADJUST: 'Off',
+# In gallery mode 'On' means columns can be adjust manually by the user. When 'Off' columns are adjusted automatically to screen width.
+    sj.COLS: None,  # In gallery mode (and colRowMode set to 'On') cols define number of columns to be displayed
+    sj.ROWS: None,  # In gallery mode (and colRowMode set to 'On') rows define number of columns to be displayed
 
     sj.ORDER: None,
     sj.SORT_BY: None,
-    sj.IMG_ZOOM: '128px',                     # Zoom set by default
-    sj.IMG_MIRRORY: False,                    # When 'True' image are mirrored in Y Axis
-    sj.IMG_APPLY_TRANSFORM: False,       # When 'True' if there is transform matrix, it will be applied
-    sj.IMG_ONLY_SHIFTS: False,                 # When 'True' if there is transform matrix, only shifts will be applied
-    sj.IMG_WRAP: False,                       # When 'True' if there is transform matrix, only shifts will be applied
-    sj.IMG_MAX_WIDTH: 512,                # Maximum image width (in pixels)
-    sj.IMG_MIN_WIDTH: 64,                 # Minimum image width (in pixels)
-    sj.IMG_MAX_HEIGHT: 512,               # Maximum image height (in pixels)
-    sj.IMG_MIN_HEIGHT: 64,                # Minimum image height (in pixels)
+    sj.IMG_ZOOM: '128px',  # Zoom set by default
+    sj.IMG_MIRRORY: False,  # When 'True' image are mirrored in Y Axis
+    sj.IMG_APPLY_TRANSFORM: False,  # When 'True' if there is transform matrix, it will be applied
+    sj.IMG_ONLY_SHIFTS: False,  # When 'True' if there is transform matrix, only shifts will be applied
+    sj.IMG_WRAP: False,  # When 'True' if there is transform matrix, only shifts will be applied
+    sj.IMG_MAX_WIDTH: 512,  # Maximum image width (in pixels)
+    sj.IMG_MIN_WIDTH: 64,  # Minimum image width (in pixels)
+    sj.IMG_MAX_HEIGHT: 512,  # Maximum image height (in pixels)
+    sj.IMG_MIN_HEIGHT: 64,  # Minimum image height (in pixels)
 
-    sj.VOL_SELECTED: None,       # If 3D, Volume to be displayed in gallery, volume_astex and volume_chimera mode. If None the first one will be displayed
-    sj.VOL_VIEW: xmipp.VIEW_Z_NEG,      # If 3D, axis to slice volume
-    sj.VOL_TYPE: 'map',                 # If map, it will be displayed normally, else if pdb only astexViewer and chimera display will be available
+    sj.VOL_SELECTED: None,
+# If 3D, Volume to be displayed in gallery, volume_astex and volume_chimera mode. If None the first one will be displayed
+    sj.VOL_VIEW: xmipp.VIEW_Z_NEG,  # If 3D, axis to slice volume
+    sj.VOL_TYPE: 'map',
+# If map, it will be displayed normally, else if pdb only astexViewer and chimera display will be available
 
-    sj.SELECTEDITEMS: 0,     # List with the id for the selected items in the before mode.
-    sj.ENABLEDITEMS: 0,     # List with the id for the enabled items in the before mode.
-    sj.CHANGES: 0,          # List with the changes done
+    sj.SELECTEDITEMS: 0,  # List with the id for the selected items in the before mode.
+    sj.ENABLEDITEMS: 0,  # List with the id for the enabled items in the before mode.
+    sj.CHANGES: 0,  # List with the changes done
     sj.OLDMODE: None,
 }
+
 
 def showj(request):
     """ This method will visualize data objects in table or gallery mode.
@@ -306,11 +316,11 @@ def showj(request):
     """
     firstTime = request.method == GET
 
-    #=TIME CONTROL==============================================================
-#    from datetime import datetime
-#    start = datetime.now()
-#    print "INIT SHOWJ: ", datetime.now()-start
-    #===========================================================================
+    # =TIME CONTROL==============================================================
+    #    from datetime import datetime
+    #    start = datetime.now()
+    #    print "INIT SHOWJ: ", datetime.now()-start
+    # ===========================================================================
 
     ### WEB INPUT PARAMETERS ###
     _imageDimensions = ''
@@ -336,18 +346,18 @@ def showj(request):
         for key, value in request.POST.iteritems():
             if key in inputParams:
                 inputParams[key] = value
-        # extraParams will be read from SESSION
+                # extraParams will be read from SESSION
 
     # Image zoom 
     request.session[sj.IMG_ZOOM_DEFAULT] = inputParams[sj.IMG_ZOOM]
 
-    #=DEBUG=====================================================================
-#    from pprint import pprint
-#    print "INPUT PARAMS:"
-#    pprint(inputParams)
-#    print "EXTRA PARAMS:"
-#    pprint(extraParams)
-    #===========================================================================
+    # =DEBUG=====================================================================
+    #    from pprint import pprint
+    #    print "INPUT PARAMS:"
+    #    pprint(inputParams)
+    #    print "EXTRA PARAMS:"
+    #    pprint(extraParams)
+    # ===========================================================================
 
     if inputParams[sj.VOL_TYPE] != 'pdb':
         # Load the initial dataset from file or session
@@ -362,7 +372,7 @@ def showj(request):
         volPath, _stats, _imageDimensions, volOld = setRenderingOptions(request, dataset, table, inputParams)
         inputParams['volOld'] = volOld
 
-        #Store variables into session
+        # Store variables into session
         storeToSession(request, inputParams, dataset, _imageDimensions)
     else:
         inputParams[sj.COLS_CONFIG] = None
@@ -373,9 +383,9 @@ def showj(request):
 
     render_var = render_to_response(return_page, RequestContext(request, context))
 
-    #=TIME CONTROL==============================================================
-#    print "FINISH SHOWJ: ", datetime.now()-start
-    #===========================================================================
+    # =TIME CONTROL==============================================================
+    #    print "FINISH SHOWJ: ", datetime.now()-start
+    # ===========================================================================
 
     return render_var
 
@@ -398,32 +408,31 @@ def storeToSession(request, inputParams, dataset, _imageDimensions):
 
 
 def createContextShowj(request, inputParams, dataset, table, paramStats, volPath=None, labelsToRender=None):
-
     showjForm = ShowjForm(dataset,
                           inputParams[sj.COLS_CONFIG], labelsToRender,
-                          inputParams) # A form bound for the POST data and unbound for the GET
+                          inputParams)  # A form bound for the POST data and unbound for the GET
 
     if showjForm.is_valid() is False:
         print showjForm.errors
 
     context = createContext(dataset, table, inputParams[sj.COLS_CONFIG], request, showjForm, inputParams)
 
-    if inputParams[sj.MODE] in [sj.MODE_VOL_CHIMERA, sj.MODE_VOL_NGL]:
+    if inputParams[sj.MODE] == sj.MODE_VOL_NGL:
         context.update(create_context_volume(request, inputParams, volPath, paramStats))
 
-    elif inputParams[sj.MODE] == sj.MODE_GALLERY or inputParams[sj.MODE]==sj.MODE_TABLE :
+    elif inputParams[sj.MODE] == sj.MODE_GALLERY or inputParams[sj.MODE] == sj.MODE_TABLE:
         context.update({"showj_alt_js": getResourceJs('showj_' + inputParams[sj.MODE] + '_utils')})
 
     elif inputParams[sj.MODE] == 'column':
         context.update({"showj_alt_js": getResourceJs('showj_' + sj.MODE_TABLE + '_utils')})
 
     # IMPROVE TO KEEP THE ITEMS (SELECTED, ENABLED, CHANGES)
-    context.update({sj.SELECTEDITEMS : inputParams[sj.SELECTEDITEMS],
+    context.update({sj.SELECTEDITEMS: inputParams[sj.SELECTEDITEMS],
                     sj.ENABLEDITEMS: inputParams[sj.ENABLEDITEMS],
                     sj.CHANGES: inputParams[sj.CHANGES],
                     })
 
-    return_page =  'showj/%s%s%s' % ('showj_', showjForm.data[sj.MODE], '.html')
+    return_page = 'showj/%s%s%s' % ('showj_', showjForm.data[sj.MODE], '.html')
     return context, return_page
 
 
@@ -438,11 +447,10 @@ def createContext(dataset, table, columnsConfig, request, showjForm, inputParams
     if dataset is not None:
         context.update({sj.DATASET: dataset})
     if columnsConfig is not None:
-
         context.update({sj.COLS_CONFIG: json.dumps({'columnsLayout': columnsConfig._columnsDict,
                                                     'colsOrder': inputParams[sj.ORDER],
                                                     'colsSortby': inputParams[sj.SORT_BY]
-                                                   },
+                                                    },
                                                    ensure_ascii=False,
                                                    cls=ColumnPropertiesEncoder)})
     if table is not None:
@@ -462,7 +470,7 @@ def getExtraParameters(extraParams, table):
     enc_visible = False
     enc_render = False
 
-    if extraParams != None and extraParams != {}:
+    if extraParams is not None and extraParams != {}:
         for k in table.iterColumns():
             defaultColumnsLayoutProperties[k.getLabel()] = {}
             _mapCol[k.getLabel()] = k.getName()
@@ -472,15 +480,14 @@ def getExtraParameters(extraParams, table):
             if key in {sj.RENDER, sj.VISIBLE}:
 
                 if key == sj.VISIBLE:
-                    val = {key:'True'}
-                    if enc_visible == False:
+                    val = {key: 'True'}
+                    if not enc_visible:
                         enc_visible = True
 
                 elif key == sj.RENDER:
-                    val = {'renderable':'True'}
-                    if enc_render == False:
+                    val = {'renderable': 'True'}
+                    if not enc_render:
                         enc_render = True
-
 
                 params = value.split()
                 for label in params:
@@ -491,15 +498,15 @@ def getExtraParameters(extraParams, table):
             for x in defaultColumnsLayoutProperties:
                 if enc_visible:
                     if not 'visible' in defaultColumnsLayoutProperties[x]:
-                        defaultColumnsLayoutProperties[x].update({sj.VISIBLE:'False'})
+                        defaultColumnsLayoutProperties[x].update({sj.VISIBLE: 'False'})
                 if enc_render:
                     # COL_RENDER_IMAGE = 3
                     if _mapRender[x] == 3 and not 'renderable' in defaultColumnsLayoutProperties[x]:
-                        defaultColumnsLayoutProperties[x].update({'renderable':'False'})
+                        defaultColumnsLayoutProperties[x].update({'renderable': 'False'})
     return defaultColumnsLayoutProperties, _mapCol
 
 
-#### Load an Xmipp Dataset ###
+# Load an Xmipp Dataset
 def loadDatasetXmipp(path):
     """ Create a table from a metadata. """
     if path.endswith('.sqlite'):
@@ -516,7 +523,7 @@ def loadDatasetXmipp(path):
 
 def testingSSH(request):
     context = {}
-#   return render_to_response("testing_ssh.html", RequestContext(request, context))
+    # return render_to_response("testing_ssh.html", RequestContext(request, context))
     return render_to_response("scipion.html", RequestContext(request, context))
 
 
@@ -548,125 +555,25 @@ def volumeToNGL(volPath):
     return nglVolume
 
 
-
 def create_context_volume(request, inputParams, volPath, param_stats):
     import os
 
-    threshold = calculateThreshold(param_stats)
+    context = None
 
-    context = {"threshold": round(threshold, 4),
-               'minStats': round(param_stats[2], 3) if param_stats != None else 1,
-               'maxStats': round(param_stats[3], 3) if param_stats != None else 1}
-
-    if inputParams[sj.MODE] == sj.MODE_VOL_CHIMERA:
-        # Using the .vol file
-        volPath = inputParams['volOld']
-        volPath = os.path.join(getProjectPathFromRequest(request), volPath)
-
-        context.update(create_context_chimera(volPath, threshold))
-
-    elif inputParams[sj.MODE] == sj.MODE_VOL_NGL:
+    if inputParams[sj.MODE] == sj.MODE_VOL_NGL:
 
         # We need to convert the map to a valid NGL density format (mrc)
         volPath = volumeToNGL(volPath)
 
-        context.update(create_context_ngl(volPath))
+        context = {"ngl": getResourceJs('ngl'),
+                   "volPath": volPath,
+                   "threshold": 2.5,
+                   'minSigma': 0,
+                   'maxSigma': 8,
+                   "jquery_ui_css": getResourceCss("jquery_ui")
+        }
 
     return context
-
-
-def create_context_ngl(volpath):
-    return {'ngl': getResourceJs('ngl'),
-            "volPath": volpath
-            }
-
-
-def create_context_chimera(volPath, threshold=None):
-    # Control the threshold value
-    if threshold == None:
-        threshold = 0.1
-    else:
-        threshold = round(threshold, 3)
-
-    chimeraHtml = chimera_headless(volPath, threshold)
-
-    context = {"chimeraHtml": chimeraHtml,
-               "volPath": volPath,
-               "threshold": threshold,
-               "jquery_ui_css": getResourceCss("jquery_ui"),
-               "philogl": getResourceJs("philogl"),
-               }
-
-    return context
-
-def get_chimera_html(request):
-    if request.is_ajax():
-        volPath = request.GET.get('volPath')
-        threshold = request.GET.get('threshold')
-        chimeraHtml = chimera_headless(volPath, threshold)
-        return HttpResponse(chimeraHtml, content_type='application/javascript')
-    else:
-        return HttpResponse("FAIL", content_type='application/javascript')
-
-def chimera_headless(volPath, threshold):
-    """ Function that generate the visualization HTML with a 
-        'volPath' and a 'threshold' given by user.
-        Chimera Headless version must be in the environment variables
-        For example:
-        export CHIMERA_HEADLESS=/.local/UCSF-Chimera64-2014-10-09/bin/chimera """
-
-    # Patch for files ended in :mrc
-    volPath = volPath.split(":mrc")[0]
-
-    # Create or Modify the file to exportS
-    htmlFile = os.path.join(pw.WEB_RESOURCES, 'chimera', 'output.html')
-    outputHtmlFile = open(htmlFile, 'w+')
-    outputHtmlFile.close()
-
-    # Build chimera command file
-    cmdFile = htmlFile + '.cmd'
-    outputCmdFile = open(cmdFile, 'w+')
-
-    outputCmdFile.write("""
-    open %(volPath)s
-    volume #0 level %(threshold)s
-    export format WebGL %(htmlFile)s
-    """ % locals())
-    outputCmdFile.close()
-
-    # Execute command file in chimera headless
-    cmdToExec = [os.environ.get('CHIMERA_HEADLESS_HOME')+"/bin/chimera", cmdFile]
-    print "Chimera command: ", cmdToExec
-    import subprocess
-    subprocess.call(cmdToExec, shell=False)
-
-    # Extract information from HTML output file
-    outputHtmlFile = open(htmlFile, "r")
-    chimeraHtml = outputHtmlFile.read()
-
-#     Format information
-#     print "HTML =", chimeraHtml
-    chimeraHtml = chimeraHtml.decode('string-escape')
-#     print "HTML DECODE STRING =", chimeraHtml
-    chimeraHtml = chimeraHtml.decode("utf-8")
-#     print "HTML DECODE UTF8 =", chimeraHtml
-    chimeraHtml = chimeraHtml.split("</html>")
-#     print "HTML SPLIT =", chimeraHtml
-    chimeraHtml = chimeraHtml[1]
-#     print "HTML SPLIT[1] =", chimeraHtml
-    chimeraHtml = '<canvas id="molview"></canvas>' + chimeraHtml
-#     print "HTML CANVAS =", chimeraHtml
-
-    # Close file
-    outputHtmlFile.close()
-
-    return chimeraHtml
-
-def calculateThreshold(params):
-    threshold = params[1] * 2.5
-#     threshold = (params[2] + params[3])/2 if params != None else 1
-
-    return threshold
 
 
 def updateSessionTable(request):
@@ -680,8 +587,7 @@ def updateSessionTable(request):
         cols_config.configColumn(label, renderable=option)
     elif type == "editable":
         cols_config.configColumn(label, editable=option)
-#    elif type == 'visible':
-#        cols_config.configColumn(label, visible=option)
+    #    elif type == 'visible':
+    #        cols_config.configColumn(label, visible=option)
 
     return HttpResponse(content_type='application/javascript')
-
