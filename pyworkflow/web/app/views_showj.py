@@ -533,14 +533,15 @@ def volumeToNGL(volPath):
 
     # return getResource('reference.mrc')
 
-    nglVolume = volPath
+    # Clean volPath in case it comes with :mrc, ...
+    nglVolume = volPath.split(":")[0]
 
     # If it ends in mrc
-    if nglVolume.endswith("mrc"):
+    if nglVolume.endswith(".mrc"):
         return nglVolume
     else:
         # Add mrc
-        nglVolume = volPath + ".mrc"
+        nglVolume += ".mrc"
 
     # If the ngl volume already exists
     if os.path.exists(nglVolume):
@@ -569,7 +570,7 @@ def create_context_volume(request, inputParams, volPath, param_stats):
                    "volPath": volPath,
                    "threshold": 2.5,
                    'minSigma': 0,
-                   'maxSigma': 8,
+                   'maxSigma': 4,
                    "jquery_ui_css": getResourceCss("jquery_ui")
         }
 
