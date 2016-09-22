@@ -568,7 +568,7 @@ def create_context_volume(request, inputParams, volPath, param_stats):
 
         context = {"ngl": getResourceJs('ngl'),
                    "volPath": volPath,
-                   "threshold": 2.5,
+                   "threshold": 1.5,
                    'minSigma': 0,
                    'maxSigma': 4,
                    "jquery_ui_css": getResourceCss("jquery_ui")
