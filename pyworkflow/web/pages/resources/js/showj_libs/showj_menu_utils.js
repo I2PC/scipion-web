@@ -76,10 +76,15 @@ function changeMode(modeNew){
 	var modeOld = form.mode.value
 	 
 	if (modeNew != modeOld){
-		if (modeNew == "volume_chimera"){
-			new Messi("<i class='fa fa-picture-o'/>  Loading Volume...",{
-				modal : true
+		if (modeNew == "volume_chimera") {
+			new Messi("<i class='fa fa-picture-o'/>  Loading Volume...", {
+				modal: true
 			});
+		} else if (modeNew == "volume_ngl"){
+		new Messi("<i class='fa fa-picture-o'/>  Loading Volume...",{
+			modal : true
+		});
+
 		} else if (modeNew == "gallery"){
 			new Messi("<i class='fa fa-picture-o'/>  Loading Slices...",{
 				modal : true

@@ -6,7 +6,7 @@ from django.conf.urls import patterns, include, url
 from django.contrib import admin
 
 from pyworkflow.web import app
-from pyworkflow.web.app import views_util, views_home
+from pyworkflow.web.app import views_util, views_home, views_showj
 from pyworkflow.web.app.views_management import ScipionResumableUploadView
 
 admin.autodiscover()
@@ -87,7 +87,7 @@ mainUrls = ['',
     url(r'^get_log/$', 'app.views_util.get_log'),
 
     #SHOWJ
-    url(r'^showj/$', 'app.views_showj.showj'), #Load showj web
+    url(r'^showj/$', app.views_showj.showj), #Load showj web
     url(r'^update_session_table/$', 'app.views_showj.updateSessionTable'),
     url(r'^jsmol/$', 'app.views_showj.jsmol'),
     url(r'^get_chimera_html/$', 'app.views_showj.get_chimera_html'),
@@ -97,7 +97,7 @@ mainUrls = ['',
     url(r'^doUpload', 'app.views_management.doUpload'),
     url(r'^getPath/', 'app.views_management.getPath'),
     url(r'^getExtIcon/$', 'app.views_management.getExtIcon'),
-    url(r'^get_file/$', 'app.views_util.get_file'),
+    url(r'^get_file/$', app.views_util.get_file),
     url(r'^get_image_dim/$', 'app.views_util.get_image_dim'),
     url(r'^uploadr/$', ScipionResumableUploadView.as_view(), name='uploadr'),
     url(r'^deletefile$', views_util.delete_file),
