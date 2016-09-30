@@ -92,7 +92,6 @@ def form(request):
      
 def contextForm(request):
     from views_base import base_form
-    from django.core.context_processors import csrf
     from views_util import getResourceCss, getResourceIcon, getResourceJs, getResourceLogo
     from pyworkflow.protocol.params import Group, Line
     
@@ -235,8 +234,6 @@ def contextForm(request):
     for paramName in SPECIAL_PARAMS:
         context[paramName] = protocol.getAttributeValue(paramName, '')
 
-    # Cross Site Request Forgery protection is need it
-    context.update(csrf(request))
     context = base_form(request, context)
 
     return context

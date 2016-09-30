@@ -593,8 +593,10 @@ def environAdd(varName, newValue, valueFirst=False):
 def envVarOn(varName, env=None):
     """ Is variable set to True in the environment? """
     v = env.get(varName) if env else os.environ.get(varName)
-    return v is not None and v.lower() in ['true', 'yes', 'on', '1']
+    return str2Boolean(v)
 
+def str2Boolean(v):
+    return v is not None and v.lower() in ['true', 'yes', 'on', '1']
 
 def getMemoryAvailable():
     """ Return the total memory of the system in MB """

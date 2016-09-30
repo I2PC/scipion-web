@@ -29,7 +29,7 @@
 import os
 from django.http import HttpResponse
 from pyworkflow.web.pages import settings as django_settings
-from django.shortcuts import render_to_response
+from django.shortcuts import render_to_response, render
 from django.template import RequestContext
 from pyworkflow.web.app.views_util import readDimensions, readImageVolume, getResourceJs, getResourceCss, \
     getProjectPathFromRequest, GET, getResource
@@ -381,7 +381,7 @@ def showj(request):
     labelsToRender = getRenderableColumnsFromParams(extraParams, table)
     context, return_page = createContextShowj(request, inputParams, dataset, table, _stats, volPath, labelsToRender)
 
-    render_var = render_to_response(return_page, RequestContext(request, context))
+    render_var = render(request, return_page, context)
 
     # =TIME CONTROL==============================================================
     #    print "FINISH SHOWJ: ", datetime.now()-start

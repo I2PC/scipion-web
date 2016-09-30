@@ -223,14 +223,7 @@ def service_content(request):
     daysLeft = prettyDelta(project.getLeftTime())
     
     context = contentContext(request, project, serviceName=MYFIRSTMAP_SERVICE)
-    context.update({'importAverages': path_files + 'importAverages.png',
-                    'useProtocols': path_files + 'useProtocols.png',
-                    'protForm': path_files + 'protForm.png',
-                    'summary': path_files + 'summary.png',
-                    'showj': path_files + 'showj.png',
-                    'alignVol': path_files + 'alignVol.png',
-                    'download': path_files + 'download.png',
-                    'formUrl': 'my_form',
+    context.update({'formUrl': 'my_form',
                     'mode': MODE_SERVICE,
                     'daysLeft': daysLeft
                     })

@@ -25,7 +25,7 @@
 # **************************************************************************
 
 # WEBSERVICES IMPORT
-# from pyworkflow.web.webtools.myfirstmap.views import *
-# from pyworkflow.web.webtools.movies.views import *
-# from pyworkflow.web.webtools.myresmap.views import *
-# from pyworkflow.web.webtools.myparticlevalidation.views import *
+from pyworkflow.web.webtools.myfirstmap.views import *
+from pyworkflow.web.webtools.movies.views import *
+from pyworkflow.web.webtools.myresmap.views import *
+from pyworkflow.web.webtools.myparticlevalidation.views import *

@@ -29,7 +29,7 @@ from views_base import getResourceCss, getResourceIcon, getResourceJs, base_flex
 from views_util import loadProject, CTX_PROJECT_PATH, CTX_PROJECT_NAME, getVarFromRequest, PROJECT_NAME
 from pyworkflow.manager import Manager
 from django.http import HttpResponse
-from django.shortcuts import render_to_response
+from django.shortcuts import render_to_response, render
 
 
 def data_content(request):
@@ -52,7 +52,7 @@ def data_content(request):
 
     context = base_flex(request, context)
 
-    return render_to_response('data_content/data_content.html', context)
+    return render(request, 'data_content/data_content.html', context)
 
 
 def object_info(request):

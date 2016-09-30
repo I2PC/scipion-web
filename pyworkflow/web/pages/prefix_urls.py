@@ -1,4 +1,4 @@
-from django.conf.urls import include, url, patterns
+from django.conf.urls import include, url
 from pyworkflow.web.pages import settings as django_settings
 from django.views.generic.base import RedirectView
 
@@ -12,6 +12,6 @@ urlpatterns = [
     # url('^(?!' + django_settings.ABSOLUTE_URL + ')', RedirectView.as_view(url='/' + django_settings.ABSOLUTE_URL + 'home/'), name='outside')
 ]
 
-patterns(urlpatterns)
+urlpatterns
 
 

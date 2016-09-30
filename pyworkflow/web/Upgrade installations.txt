@@ -1,0 +1,35 @@
+This is the collection of commands run to upgrade Django
+
+# This will upgrade django from 1.5 to 1.8
+sudo ./scipion run pip install Django --upgrade
+
+# A second time will upgrade to 1.10.1
+sudo ./scipion run pip install Django --upgrade
+
+# Migrate
+./scipion run python manage.py migrate
+
+
+# While getting this error
+InvalidTemplateLibrary at /webtools/
+Invalid template library specified. ImportError raised when trying to load 'django.templatetags.future': cannot import name ssi
+#I've run:
+find /home/pablo/desarrollo/scipion-web/software/lib/python2.7/site-packages/django/ -name '*.pyc' -delete
+
+It didn't work.
+
+I've seen this: http://stackoverflow.com/questions/38931998/django-upgrade-1-9-1-10-error-with-removedindjango110warning-import
+
+So now I've removed django and installed 1.10 using pip withing intelliJ.
+
+It didn't work:
+Now I delete django: rm -rf site-packages/django
+
+Basically check with scipion run pip list if django is installed
+
+Test with:
+scipion run python
+import django
+print django.get_version()
+
+Use pip to uninstall and install django 1.10 if required.

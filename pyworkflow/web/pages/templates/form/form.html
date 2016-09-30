@@ -124,7 +124,8 @@
 			</div>
 		</div>
 		
-		<form id="protocolForm" action="/protocol/" method="POST" data-mode="">{% csrf_token %}
+		<form id="protocolForm" action="/protocol/" method="POST" data-mode="">
+			{% csrf_token %}
 			<input type="hidden" name="s" value="{{s}}"/>
 			<input type="hidden" name="p" value="{{projectName}}"/>
 			<input type="hidden" name="protocolId" value="{{protocol.getObjId}}"/>

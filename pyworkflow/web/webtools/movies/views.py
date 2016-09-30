@@ -188,13 +188,7 @@ def movies_content(request):
         # MODE
         'formUrl': 'mov_form',
         'mode': MODE_SERVICE,
-        # IMAGES
-        'importMovies': path_files + 'importMovies.png',
-        'movieAlignment': path_files + 'movieAlignment.png',
-        'protMovieAlign': path_files + 'protMovieAlign.png',
-        'summary': path_files + 'summary.png',
         'showj': path_files + 'showj.png',
-        'download': path_files + 'download.png',
         'command': command,
         'daysLeft': daysLeft
     })

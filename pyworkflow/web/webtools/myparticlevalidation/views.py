@@ -315,7 +315,6 @@ def particleValidation_form(request):
 
 def particleValidation_content(request):
     projectName = request.GET.get('p', None)
-    path_files = getAbsoluteURL('resources_mypval/img/')
 
     # Get info about when the project was created
     manager = getServiceManager(MYPVAL_SERVICE)

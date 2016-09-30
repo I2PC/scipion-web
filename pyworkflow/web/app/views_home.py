@@ -32,7 +32,7 @@ from pyworkflow.utils import strDate
 from pyworkflow.web.app.views_util import  getResource, dateNaiveToAware
 from pyworkflow.web.app.views_base import base_grid
 from django.http import HttpResponse, HttpResponseNotFound
-from django.core.context_processors import csrf
+from django.template.context_processors import csrf
 from pyworkflow.mapper.sqlite import SqliteFlatMapper
 # Depending on DJANGO version (first is for DJANGO 1.9) second for 1.5.5
 try:

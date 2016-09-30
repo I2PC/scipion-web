@@ -223,7 +223,7 @@ def getResource(resource=None):
     if resource is None:
         resource = ''
 
-    return "/" + os.path.join(django_settings.STATIC_URL, resource)
+    return os.path.join(django_settings.STATIC_URL, resource)
 
 
 def getVarFromRequest(request, varName):

@@ -27,7 +27,7 @@
 from os.path import exists, join, basename
 
 from django.http import HttpResponse
-from django.shortcuts import render_to_response
+from django.shortcuts import render_to_response, render
 
 import pyworkflow.utils as pwutils
 from pyworkflow.tests.tests import DataSet
@@ -160,7 +160,7 @@ def resmap_form(request):
                     'formUrl': 'my_form',
                     'showHost': False,
                     'showParallel': True})
-    return render_to_response('form/form.html', context)
+    return render(request, 'form/form.html', context)
 
 
 def resmap_content(request):
@@ -177,8 +177,7 @@ def resmap_content(request):
     daysLeft = prettyDelta(project.getLeftTime())
 
     context = contentContext(request, project, serviceName=MYRESMAP_SERVICE)
-    context.update({'importVolumes': path_files + 'importVolumes.png',
-                    'useResMap': path_files + 'useResMap.png',
+    context.update({
                     'protResMap': path_files + 'protResMap.png',
                     'analyzeResults': path_files + 'analyzeResults.png',
                     'formUrl': 'r_form',

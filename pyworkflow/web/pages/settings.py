@@ -6,6 +6,7 @@ import os
 from os.path import dirname, realpath, join
 import pyworkflow as pw
 import pyworkflow.config as pwconfig
+from pyworkflow.utils import str2Boolean
 
 DIRECTORY_PROJECT = dirname(realpath(__file__))
 DB_PATH = join(pw.HOME, 'web', 'scipion_web.db')
@@ -13,8 +14,7 @@ DB_PATH = join(pw.HOME, 'web', 'scipion_web.db')
 WEB_CONF = pwconfig.loadWebConf()
 
 # DEBUG = True
-DEBUG = WEB_CONF['DEBUG']
-TEMPLATE_DEBUG = DEBUG
+DEBUG = str2Boolean(WEB_CONF['DEBUG'])
 
 ADMINS = (
     # ('Your Name', 'your_email@example.com'),
@@ -41,8 +41,12 @@ ALLOWED_HOSTS = ['*']
 # ALLOWED_HOSTS = ['localhost']
 
 SITE_URL = WEB_CONF['SITE_URL']
-# Subdomain where Scipion is hosted or working, can't start with a slash: m/
+# Subpath where Scipion is hosted or working, can't start with a slash: m/
 ABSOLUTE_URL = WEB_CONF['ABSOLUTE_URL']
+
+# Full url
+FULL_URL = SITE_URL + '/' + ABSOLUTE_URL
+
 # Populate analytics script into DJANGO settings from .conf file.
 ANALYTICS_SCRIPT = WEB_CONF['ANALYTICS_SCRIPT']
 
@@ -82,7 +86,6 @@ USE_TZ = True
 
 # Absolute filesystem path to the directory that will hold user-uploaded files.
 # Example: "/var/www/example.com/media/"
-
 MEDIA_ROOT = os.path.join(pw.HOME, 'resources')
 
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
@@ -101,7 +104,7 @@ STATIC_ROOT = 'static'
 
 # URL prefix for static files.
 # Example: "http://example.com/static/", "http://static.example.com/"
-STATIC_URL = ABSOLUTE_URL + 'static/'
+STATIC_URL = '/' + ABSOLUTE_URL + 'static/'
 
 # Additional locations of static files
 WS_ROOT = os.path.join(pw.HOME, 'web', 'webtools')
@@ -111,43 +114,58 @@ staticDirs = [os.path.join(pw.HOME, 'web', 'pages')] + serviceFolders
 # Put strings here, like "/home/html/static" or "C:/www/django/static".
 # Always use forward slashes, even on Windows.
 # Don't forget to use absolute paths, not relative paths.
-STATICFILES_DIRS = tuple([os.path.join(d, 'resources') for d in staticDirs])        
+STATICFILES_DIRS = tuple([os.path.join(d, 'resources') for d in staticDirs])
 
-# STATICFILES_DIRS = (
-#       os.path.join(pw.HOME, 'web', 'pages', 'resources'),
-#       os.path.join(pw.HOME, 'web', 'webservices', 'myfirstmap', 'resources'),
-#       os.path.join(pw.HOME, 'web', 'webservices', 'desktop', 'resources'),
-# )
 
-# Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
-# Always use forward slashes, even on Windows.
-# Don't forget to use absolute paths, not relative paths.
-templateDirs = [os.path.join(DIRECTORY_PROJECT)] + serviceFolders
-TEMPLATE_DIRS = tuple([os.path.join(d, 'templates') for d in templateDirs])        
-
-# TEMPLATE_DIRS = (
-#     os.path.join(DIRECTORY_PROJECT, 'templates'),
-#     os.path.join(pw.HOME, 'web', 'webservices', 'myfirstmap', 'templates'),
-#     os.path.join(pw.HOME, 'web', 'webservices', 'desktop', 'templates'),
-# )
 
 # List of finder classes that know how to find static files in
 # various locations.
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
-    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-#    'django.contrib.staticfiles.finders.DefaultStorageFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder'
 )
 
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = '@#%2f*5p!fyr2iqhk%#@9c^34p^*x#4&n()ucv2*jf*b3hje0='
 
-# List of callables that know how to import templates from various sources.
-TEMPLATE_LOADERS = (
-    'django.template.loaders.filesystem.Loader',
-    'django.template.loaders.app_directories.Loader',
-#     'django.template.loaders.eggs.Loader',
-)
+# Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
+# Always use forward slashes, even on Windows.
+# Don't forget to use absolute paths, not relative paths.
+templateDirs = [os.path.join(DIRECTORY_PROJECT)] + serviceFolders
+# TEMPLATE_DIRS = tuple([os.path.join(d, 'templates') for d in templateDirs])
+
+# # List of callables that know how to import templates from various sources.
+# TEMPLATE_LOADERS = (
+#     'django.template.loaders.filesystem.Loader',
+#     'django.template.loaders.app_directories.Loader',
+# #     'django.template.loaders.eggs.Loader',
+# )
+
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': tuple([os.path.join(d, 'templates') for d in templateDirs]),
+        'APP_DIRS': True,
+        'OPTIONS': {
+            # 'debug': True,
+            'context_processors': [
+                # Insert your TEMPLATE_CONTEXT_PROCESSORS here or use this
+                # list if you haven't customized them:
+                'django.contrib.auth.context_processors.auth',
+                # 'django.template.context_processors.debug',
+                'django.template.context_processors.i18n',
+                'django.template.context_processors.media',
+                'django.template.context_processors.static',
+                'django.template.context_processors.tz',
+                'django.contrib.messages.context_processors.messages',
+                'django.template.context_processors.csrf',
+            ]
+            # 'loaders': [
+            #         'django.template.loaders.filesystem.Loader',
+            #         'django.template.loaders.app_directories.Loader',
+            # ]
+        }
+    }]
 
 MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -156,7 +174,6 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-#     'pyworkflow.web.app.middleware.UrlRedirectMiddleware',
 )
 
 SESSION_ENGINE = (
@@ -178,7 +195,7 @@ INSTALLED_APPS = [
     'django.contrib.admin',
     # 'django.contrib.admindocs',
     # 'gunicorn',
-    'app',
+    'pyworkflow.web.app',
     'resumable'
 ]
 

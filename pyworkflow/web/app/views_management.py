@@ -31,7 +31,7 @@ import shutil
 
 import matplotlib
 from django.forms import Form
-from django.shortcuts import render_to_response, HttpResponse
+from django.shortcuts import render_to_response, HttpResponse, render
 from django.template import RequestContext
 from django.views.generic import FormView
 from resumable.views import ResumableUploadView
@@ -66,8 +66,7 @@ def upload(request):
     context = base_form(request, context)
 
     # Render list page with the documents and the form
-    return render_to_response('upload/upload.html', context,
-                              context_instance=RequestContext(request))
+    return render(request, 'upload/upload.html', context)
 
 class ResumableForm(Form):
     file = ResumableFileField(
@@ -272,8 +271,6 @@ def health(request):
 
     addFigures(healthLines)
 
-
-
     # matplotlib backend
     description = 'Matplot lib backend should be Agg: ' + matplotlib.get_backend()
     isOK = (matplotlib.get_backend().lower() == 'agg')
@@ -281,13 +278,9 @@ def health(request):
 
     healthLines.append(healthLine)
 
-
-
-
     context = {'healthLines': healthLines}
 
     context = base(request, context)
 
     # Render list page with the documents and the form
-    return render_to_response('health.html', context,
-                              context_instance=RequestContext(request))
+    return render(RequestContext(request), 'health.html', context)
