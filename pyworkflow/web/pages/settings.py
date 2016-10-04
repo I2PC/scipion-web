@@ -6,15 +6,16 @@ import os
 from os.path import dirname, realpath, join
 import pyworkflow as pw
 import pyworkflow.config as pwconfig
-from pyworkflow.utils import str2Boolean
+import pyworkflow.utils as utils
+
 
 DIRECTORY_PROJECT = dirname(realpath(__file__))
 DB_PATH = join(pw.HOME, 'web', 'scipion_web.db')
 
 WEB_CONF = pwconfig.loadWebConf()
 
-# DEBUG = True
-DEBUG = str2Boolean(WEB_CONF['DEBUG'])
+DEBUG = True
+# DEBUG = utils.str2Boolean(WEB_CONF['DEBUG'])
 
 ADMINS = (
     # ('Your Name', 'your_email@example.com'),
@@ -184,6 +185,9 @@ ROOT_URLCONF = 'pages.prefix_urls'
 
 # Python dotted path to the WSGI application used by Django's runserver.
 WSGI_APPLICATION = 'pages.wsgi.application'
+
+LOGIN_REDIRECT_URL = 'profile'
+
 
 INSTALLED_APPS = [
     'django.contrib.auth',

@@ -33,3 +33,9 @@ import django
 print django.get_version()
 
 Use pip to uninstall and install django 1.10 if required.
+
+
+Migrate DB:
+# To generate the database model
+./scipion run python pyworkflow/web/manage.py makemigrations app
+./scipion run python pyworkflow/web/manage.py migrate app

@@ -1,0 +1,37 @@
+{% extends 'base_grid.html'%}
+
+{% block title %} - Registration form{% endblock %}
+
+{% block content_head %}
+<!-- CSS -->
+
+
+<!-- JS -->
+{% endblock %}
+
+{% block content_header %}	{% include "header.html"%} {% endblock %}
+
+{% block content %}
+
+	<h3>Create a new account</h3>
+
+	<div class="row">
+		<div class="col-sm12 col-md7">
+			<div class="panel panel-body">
+				{% if error_message %}
+				<p><strong>{{ error_message}}</strong></p>
+				{% endif %}
+				<form role="form" class="form-horizontal" action="" method="post">
+					{% csrf_token %}
+					{% include 'users/form_template.html' %}
+					<button type="submit" class="btn btn-success">Submit</button>
+				</form>
+
+			</div>
+		</div>
+	</div>
+
+{% endblock %}
+
+
+

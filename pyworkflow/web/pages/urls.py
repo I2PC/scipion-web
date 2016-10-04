@@ -9,14 +9,14 @@ from django.conf.urls import include, url
 from django.contrib import admin
 
 from pyworkflow.web import app
-from pyworkflow.web.app import views_util, views_home, views_showj
+from pyworkflow.web.app import views_util, views_home
+import views_users
 from pyworkflow.web.app.views_management import ScipionResumableUploadView
 
 admin.autodiscover()
 from django.conf import settings
-from pyworkflow.web.pages.settings import WS_ROOT, serviceFolders
 from django.views.generic import TemplateView
-from django.conf.urls.static import static
+from django.contrib.auth import views as auth_views
 
 # ===============================================================================
 # URL ASSOCIATION
@@ -107,12 +107,19 @@ mainUrls = [
     # MANAGEMENT
     url(r'^health$', app.views_management.health),
 
-    url(r'^home/', app.views_home.home),
+    url(r'^home/', app.views_home.home, name='home'),
     url(r'^download_form', app.views_home.download_form),
     url(r'^startdownload/', app.views_home.startDownload),
     url(r'^download/', app.views_home.doDownload),
     url(r'^getdownloadsdata', views_home.getDownloadsStats),
     url(r'^downloadstats', views_home.showDownloadStats),
+
+    # USERS
+    url(r'^register', views_users.UserFormView.as_view(), name='register'),
+    url(r'^userprofile', views_users.UserProfileView.as_view(), name='profile'),
+    # Following https://simpleisbetterthancomplex.com/tutorial/2016/06/27/how-to-use-djangos-built-in-login-system.html
+    url(r'^login', auth_views.login, {'template_name': 'users/login.html'}, name='login'),
+    url(r'^logout', auth_views.logout, name='logout'),
 ]
 
 

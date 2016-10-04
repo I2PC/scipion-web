@@ -41,7 +41,7 @@ def VARS_base(request, context):
     context_base = {
         # ABSOLUTE PATH URL CONFIG
         'abs_url': getAbsoluteURL(),
-        'config': getResourceJs('config'),
+        # 'config': getResourceJs('config'),
         'js_root': getResourceJs(),
         'css_root': getResourceCss(),
         'analytics': django_settings.ANALYTICS_SCRIPT,

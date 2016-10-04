@@ -148,7 +148,7 @@ jsDict = {'jquery': 'jquery/jquery.js',
           'jquery_hover_intent': 'jquery/jquery.hoverIntent.minified.js',
           'jquery_browser': 'jquery/jquery.serverBrowser.js',
 
-          'config': 'config.js',
+          # 'config': 'config.js',
           'utils': 'utils.js',
           'host_utils': 'host_utils.js',
           'graph_utils': 'graph_utils.js',

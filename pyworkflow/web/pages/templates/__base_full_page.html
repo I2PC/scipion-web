@@ -1,8 +1,9 @@
 {% extends "__base.html" %}
+{% load staticfiles i18n%}
 
     {% block css %}
         {{ block.super }}
-        <link href="{{css_root}}/jumbotron.css" rel="stylesheet">
+        <link href="{% static 'css/jumbotron.css'%}" rel="stylesheet">
     {% endblock %}
 
     {% block header %}

@@ -27,7 +27,7 @@
 
 import os
 import json
-from django.shortcuts import render_to_response, redirect
+from django.shortcuts import render_to_response, redirect, render
 from pyworkflow.utils import strDate
 from pyworkflow.web.app.views_util import  getResource, dateNaiveToAware
 from pyworkflow.web.app.views_base import base_grid
@@ -55,7 +55,7 @@ DOWNLOADABLES_FILE = 'file'
 def home(request):
     context = {}
     context = base_grid(request, context)
-    return render_to_response('home/index.html', context)
+    return render(request, 'home/index.html', context)
 
 
 def download_form(request):
