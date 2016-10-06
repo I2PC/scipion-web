@@ -119,7 +119,7 @@ mainUrls = [
     url(r'^userprofile', views_users.UserProfileView.as_view(), name='profile'),
     # Following https://simpleisbetterthancomplex.com/tutorial/2016/06/27/how-to-use-djangos-built-in-login-system.html
     url(r'^login', auth_views.login, {'template_name': 'users/login.html'}, name='login'),
-    url(r'^logout', auth_views.logout, name='logout'),
+    url(r'^logout', auth_views.logout, {'template_name': 'users/logout.html'}, name='logout'),
 ]
 
 

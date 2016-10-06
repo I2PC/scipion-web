@@ -1,20 +1,9 @@
-{% extends 'base_grid.html'%}
+{% extends 'layouts/100.html' %}
 
-{% block title %} - Registration form{% endblock %}
+{% block title %}Registration form{% endblock %}
 
-{% block content_head %}
-<!-- CSS -->
-
-
-<!-- JS -->
-{% endblock %}
-
-{% block content_header %}	{% include "header.html"%} {% endblock %}
-
-{% block content %}
-
-	<h3>Create a new account</h3>
-
+{% block main_col %}
+    <h2>Rergistration form</h2>
 	<div class="row">
 		<div class="col-sm12 col-md7">
 			<div class="panel panel-body">
@@ -24,14 +13,18 @@
 				<form role="form" class="form-horizontal" action="" method="post">
 					{% csrf_token %}
 					{% include 'users/form_template.html' %}
-					<button type="submit" class="btn btn-success">Submit</button>
+				    <div class="col-sm-offset-2 col-sm-10">
+                      <button type="submit" class="btn btn-success">Register</button>
+                    </div>
 				</form>
-
 			</div>
 		</div>
 	</div>
-
 {% endblock %}
+
+
+
+
 
 
 

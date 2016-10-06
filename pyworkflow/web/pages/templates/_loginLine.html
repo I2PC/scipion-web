@@ -2,6 +2,7 @@
 {% if user.is_authenticated %}
 	{{ user.username }}
 	<a href="{{abs_url}}logout">logout</a>
+	<a href="{{abs_url}}userprofile">profile</a>
 {% else %}
 	<a href="{{abs_url}}login">login</a>
 {% endif %}

@@ -15,7 +15,9 @@
 				<form role="form" class="form-horizontal" action="" method="post">
 					{% csrf_token %}
 					{% include 'users/form_template.html' %}
-					<button type="submit" class="btn btn-success">Submit</button>
+					<div class="col-sm-offset-2 col-sm-10">
+						<button type="submit" class="btn btn-success">Submit</button>
+					</div>
 				</form>
 
 			</div>

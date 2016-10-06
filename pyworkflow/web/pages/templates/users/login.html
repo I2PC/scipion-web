@@ -4,9 +4,23 @@
 
 {% block main_col %}
   <h2>Login</h2>
-  <form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Login</button>
-  </form>
+  <div class="row">
+      <div class="col-sm12 col-md7">
+          <div class="panel panel-body">
+              {% if error_message %}
+              <p><strong>{{ error_message}}</strong></p>
+              {% endif %}
+              <form role="form" class="form-horizontal" action="" method="post">
+                  {% csrf_token %}
+                  {% include 'users/form_template.html' %}
+                  <div class="col-sm-offset-2 col-sm-10">
+                    <button type="submit" class="btn btn-success">Login</button>
+                  </div>
+              </form>
+
+          </div>
+      </div>
+  </div>
+
+  <a href="register">Don't have an account yet?</a>
 {% endblock %}

@@ -1,3 +1,4 @@
+from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login
 from django.views.generic import View
@@ -47,16 +48,24 @@ class UserProfileView(View):
     def get(self, request):
 
         if request.user.is_authenticated():
-            form = self.form_class(instance=request.user.userprofile)
+
+
+            userprofile = request.user.userprofile
+
+            form = self.form_class(instance=userprofile)
             return render(request, self.template_name, {'form': form})
         else:
             return redirect('register')
 
     # Process form data
     def post(self, request):
-        form = self.form_class(request.POST)
+
+        userprofile = request.user.userprofile
+
+        form = self.form_class(request.POST, instance=userprofile)
 
         if form.is_valid() and request.user.is_authenticated():
+
             form.instance.user = request.user
             form.save()
             return redirect('home')
