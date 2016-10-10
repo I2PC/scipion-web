@@ -32,7 +32,7 @@ from pyworkflow.web.app.views_util import (getResourceCss, getResourceJs, getRes
 from pyworkflow.web.app.views_base import base_grid
 from pyworkflow.web.app.views_project import contentContext
 from pyworkflow.web.app.views_protocol import contextForm
-from django.shortcuts import render_to_response
+from django.shortcuts import render_to_response, render
 from pyworkflow.web.pages import settings as django_settings
 from django.http import HttpResponse
 from pyworkflow.tests.tests import DataSet
@@ -65,7 +65,7 @@ def service_projects(request):
                }
     
     context = base_grid(request, context)
-    return render_to_response('service_projects.html', context)
+    return render(request,'service_projects.html', context)
 
 
 def writeCustomMenu(customMenu):
@@ -228,7 +228,7 @@ def service_content(request):
                     'daysLeft': daysLeft
                     })
     
-    return render_to_response('service_content.html', context)
+    return render(request,'service_content.html', context)
 
 def setProtocolParams(protocol, key):
     #Here we set protocol parameters for each test data

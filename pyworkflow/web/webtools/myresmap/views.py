@@ -57,7 +57,7 @@ def resmap_projects(request):
                }
 
     context = base_grid(request, context)
-    return render_to_response('resmap_projects.html', context)
+    return render(request,'resmap_projects.html', context)
 
 
 def writeCustomMenu(customMenu):
@@ -185,4 +185,4 @@ def resmap_content(request):
                     'daysLeft': daysLeft
                     })
 
-    return render_to_response('resmap_content.html', context)
+    return render(request, 'resmap_content.html', context)

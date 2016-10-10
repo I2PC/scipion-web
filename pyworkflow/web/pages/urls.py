@@ -25,7 +25,7 @@ from django.contrib.auth import views as auth_views
 mainUrls = [
     url(r'^admin/', include(admin.site.urls)),
     url(r'^$', app.views_home.home),
-    url(r'^services/', app.views_project.webservice_projects),
+    url(r'^services/', app.views_project.webservice_projects, name='services'),
     url(r'^intro/', app.views_project.webservice_projects),
 
     #PROJECT (CONTENT, RUNTABLE AND GRAPH)

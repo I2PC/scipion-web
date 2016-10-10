@@ -27,7 +27,7 @@ import os
 from os.path import exists, join, basename, dirname
 
 from django.http import HttpResponse
-from django.shortcuts import render_to_response
+from django.shortcuts import render_to_response, render
 
 import pyworkflow.utils as pwutils
 from pyworkflow.em import ProtImportParticles
@@ -62,7 +62,7 @@ def particleValidation_projects(request):
                }
 
     context = base_grid(request, context)
-    return render_to_response('pval_projects.html', context)
+    return render(request,'pval_projects.html', context)
 
 
 def writeCustomMenu(customMenu):
@@ -333,5 +333,5 @@ def particleValidation_content(request):
                     'daysLeft': daysLeft
                     })
 
-    return render_to_response('pval_content.html', context)
+    return render(request,'pval_content.html', context)
 

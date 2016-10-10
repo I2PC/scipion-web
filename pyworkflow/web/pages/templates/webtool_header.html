@@ -13,5 +13,6 @@
 {% endblock %}
 
 {% block header_menu %}
+	{% include '_loginLine.html' %}
 	<a href="{{abs_url}}services/" class="headerLink{% if view == 'projects' %} headerLinkSelected {% endif %}"><i class="fa fa-home"></i> Web tools home</a>
 {% endblock %}

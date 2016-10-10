@@ -27,7 +27,7 @@
 import json
 
 from django.http import HttpResponse
-from django.shortcuts import render_to_response
+from django.shortcuts import render_to_response, render
 
 from pyworkflow.em import getProtocols
 from pyworkflow.manager import Manager
@@ -401,4 +401,4 @@ def webservice_projects(request):
                }
 
     context = base_grid(request, context)
-    return render_to_response('webservice_projects.html', context)
+    return render(request,'webservice_projects.html', context)

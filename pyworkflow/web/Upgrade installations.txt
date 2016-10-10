@@ -39,3 +39,17 @@ Migrate DB:
 # To generate the database model
 ./scipion run python pyworkflow/web/manage.py makemigrations app
 ./scipion run python pyworkflow/web/manage.py migrate app
+
+
+For SAML2 implementation:
+
+Following
+https://github.com/fangli/django-saml2-auth
+
+# Run
+pip install django_saml2_auth
+
+it failed:
+
+I install python-cffi (I might need it under local python).
+sudo apt-get install python-cffi

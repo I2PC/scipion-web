@@ -26,7 +26,7 @@
 from os.path import exists
 
 from django.http import HttpResponse
-from django.shortcuts import render_to_response
+from django.shortcuts import render_to_response, render
 
 import pyworkflow.utils as pwutils
 from pyworkflow.tests.tests import DataSet
@@ -57,7 +57,7 @@ def service_movies(request):
                }
 
     context = base_grid(request, context)
-    return render_to_response('movies_projects.html', context)
+    return render(request, 'movies_projects.html', context)
 
 
 def writeCustomMenu(customMenu):
@@ -193,7 +193,7 @@ def movies_content(request):
         'daysLeft': daysLeft
     })
 
-    return render_to_response('movies_content.html', context)
+    return render(request, 'movies_content.html', context)
 
 
 def movies_form(request):
