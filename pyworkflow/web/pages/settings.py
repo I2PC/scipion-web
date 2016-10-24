@@ -42,11 +42,14 @@ ALLOWED_HOSTS = ['*']
 # ALLOWED_HOSTS = ['localhost']
 
 SITE_URL = WEB_CONF['SITE_URL']
-# Subpath where Scipion is hosted or working, can't start with a slash: m/
+# Subpath where Scipion is hosted or working, can't start with a slash: m/ and must have a / at the end
 ABSOLUTE_URL = WEB_CONF['ABSOLUTE_URL']
 
+# Root url: URL relative to ROOT --> http://domain.com
+ROOT_URL = '/' + ABSOLUTE_URL
 # Full url
-FULL_URL = SITE_URL + '/' + ABSOLUTE_URL
+FULL_URL = 'http://' + SITE_URL + ROOT_URL
+
 
 # Populate analytics script into DJANGO settings from .conf file.
 ANALYTICS_SCRIPT = WEB_CONF['ANALYTICS_SCRIPT']
@@ -105,7 +108,7 @@ STATIC_ROOT = 'static'
 
 # URL prefix for static files.
 # Example: "http://example.com/static/", "http://static.example.com/"
-STATIC_URL = '/' + ABSOLUTE_URL + 'static/'
+STATIC_URL = ROOT_URL + 'static/'
 
 # Additional locations of static files
 WS_ROOT = os.path.join(pw.HOME, 'web', 'webtools')
@@ -178,19 +181,131 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
 
-SESSION_ENGINE = (
-    'django.contrib.sessions.backends.cache'
-)
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.db.DatabaseCache',
+        'LOCATION': 'my_cache_table',
+    }
+}
+
+# SESSION_ENGINE = (
+#     'django.contrib.sessions.backends.cache'
+# )
    
 ROOT_URLCONF = 'pages.prefix_urls'
 
 # Python dotted path to the WSGI application used by Django's runserver.
 WSGI_APPLICATION = 'pages.wsgi.application'
 
-LOGIN_REDIRECT_URL = 'profile'
 
+# Authentication
+LOGIN_REDIRECT_URL = 'profile'
+LOGIN_URL = ROOT_URL + 'saml2/login/'
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend',
+    'djangosaml2.backends.Saml2Backend',
+)
+
+
+# SAML2 CONFIGURATION
+import os.path
+import saml2.saml
+
+SAML2_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'saml2')
+
+SAML_CONFIG = {
+    'xmlsec_binary': '/usr/bin/xmlsec1',
+
+    'entityid': FULL_URL + 'saml2/metadata/',
+
+    'attribute_map_dir': os.path.join(SAML2_DIR, 'attribute-maps'),
+
+    'service': {
+        'sp': {
+            'name': 'West-Life VRE Portal',
+            'name_id_format': saml2.saml.NAMEID_FORMAT_TRANSIENT,
+            # 'name_id_format': saml2.saml.NAMEID_FORMAT_PERSISTENT,
+            'endpoints': {
+                'assertion_consumer_service': [
+                    (FULL_URL + 'saml2/acs/',
+                     saml2.BINDING_HTTP_POST),
+                ],
+
+                'single_logout_service': [
+                    (FULL_URL + 'saml2/ls/',
+                     saml2.BINDING_HTTP_REDIRECT),
+                    (FULL_URL + 'saml2/ls/post',
+                     saml2.BINDING_HTTP_POST),
+                ],
+            },
+
+            "authn_requests_signed": True,
+            'allow_unsolicited': True,
+
+            'required_attributes': ['uid', 'mail', 'cn', 'sn'],
+
+            'optional_attributes': ['uid', 'email', 'eduPersonAffiliation'],
+        },
+    },
+
+    'metadata': {
+        'local': [os.path.join(SAML2_DIR, 'testshib-providers.xml')],
+    },
+
+    'debug': 1,
+
+    'key_file': os.path.join(SAML2_DIR, 'shib-test-2.key'),
+    'cert_file': os.path.join(SAML2_DIR, 'shib-test-2.pem'),
+
+    'encryption_keypairs': [
+        {
+            'key_file': os.path.join(SAML2_DIR, 'shib-test-2.key'),
+            'cert_file': os.path.join(SAML2_DIR, 'shib-test-2.pem'),
+        }
+    ],
+
+    'contact_person': [
+        {
+            'given_name': 'Pablo',
+            'sur_name': 'Conesa',
+            'company': 'CNB',
+            'email_address': 'pconesa@cnb.csic.es',
+            'contact_type': 'technical'
+        },
+        {
+            'given_name': 'Pablo',
+            'sur_name': 'Conesa',
+            'company': 'CNB',
+            'email_address': 'pconesa@cnb.csic.es',
+            'contact_type': 'administrative'
+        }
+    ],
+    'organization': {
+        'name': [
+            ('National Center for Biotechnology', 'en')
+        ],
+        'display_name': [
+            ('National Center for Biotechnology', 'en')
+        ],
+        'url': [
+            ('http://biocomp.cnb.csic.es', 'en')
+        ]
+    }
+}
+
+SAML_DJANGO_USER_MAIN_ATTRIBUTE = 'email'
+
+SAML_ATTRIBUTE_MAPPING = {
+    'cn': ('username',),
+    'mail': ('email',)
+    # 'givenName': ('first_name',),
+    # 'sn': ('last_name',),
+}
 
 INSTALLED_APPS = [
+    'djangosaml2',  # new application
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -201,8 +316,10 @@ INSTALLED_APPS = [
     # 'django.contrib.admindocs',
     # 'gunicorn',
     'pyworkflow.web.app',
-    'resumable'
+    'resumable',
+
 ]
+
 
 try:
     import imp

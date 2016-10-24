@@ -43,7 +43,7 @@ Migrate DB:
 
 For SAML2 implementation:
 
-Following
+Following (Didn't work)
 https://github.com/fangli/django-saml2-auth
 
 # Run
@@ -53,3 +53,23 @@ it failed:
 
 I install python-cffi (I might need it under local python).
 sudo apt-get install python-cffi
+
+# Undoing installation
+./scipion run pip uninstall django_saml2_auth
+
+
+Trying now https://pypi.python.org/pypi/djangosaml2/0.14.5#installation
+
+xmlsec1 required (have it) : if not --> sudo apt-get install xmlsec1
+
+# Installing the module
+./scipion run pip install djangosaml2
+
+
+
+
+
+
+
+
+

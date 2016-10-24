@@ -87,3 +87,4 @@ downloads.sqlite
 /pyworkflow/web/pages/resources/install
 *.log
 foo.txt
+/.gitignore

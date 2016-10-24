@@ -2,6 +2,7 @@
 import os, sys
 
 import django
+import djangosaml2
 
 import pyworkflow as pw
 from django.conf.urls import include, url
@@ -23,6 +24,7 @@ from django.contrib.auth import views as auth_views
 # ===============================================================================
 
 mainUrls = [
+
     url(r'^admin/', include(admin.site.urls)),
     url(r'^$', app.views_home.home),
     url(r'^services/', app.views_project.webservice_projects, name='services'),
@@ -120,6 +122,9 @@ mainUrls = [
     # Following https://simpleisbetterthancomplex.com/tutorial/2016/06/27/how-to-use-djangos-built-in-login-system.html
     url(r'^login', auth_views.login, {'template_name': 'users/login.html'}, name='login'),
     url(r'^logout', auth_views.logout, {'template_name': 'users/logout.html'}, name='logout'),
+
+    url(r'^saml2/', include('djangosaml2.urls')),
+    url(r'^test/', djangosaml2.views.echo_attributes),
 ]
 
 
