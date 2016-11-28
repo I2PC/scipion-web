@@ -30,6 +30,7 @@ from django.shortcuts import render_to_response
 
 import pyworkflow.utils as pwutils
 from pyworkflow.tests.tests import DataSet
+from pyworkflow.utils import makeFilePath
 from pyworkflow.utils.utils import prettyDelta
 from pyworkflow.web.app.views_base import base_grid, base_form
 from pyworkflow.web.app.views_project import contentContext
@@ -62,6 +63,7 @@ def service_movies(request):
 
 def writeCustomMenu(customMenu):
     if not exists(customMenu):
+        makeFilePath(customMenu)
         f = open(customMenu, 'w+')
         f.write('''
 [PROTOCOLS]
