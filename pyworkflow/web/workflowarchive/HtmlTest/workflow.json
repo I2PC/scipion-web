@@ -1,0 +1,72 @@
+[
+    {
+        "object.className": "ProtStress",
+        "object.id": "103",
+        "object.label": "scipion - stress 3",
+        "object.comment": "",
+        "runName": null,
+        "runMode": 0,
+        "noCpu": 0,
+        "noMem": 2,
+        "amountMem": 256,
+        "noIO": 0,
+        "timeout": 60,
+        "delay": 0,
+        "extraParams": " "
+    },
+    {
+        "object.className": "ProtMonitorSystem",
+        "object.id": "200",
+        "object.label": "scipion - system_monitor",
+        "object.comment": "",
+        "runName": null,
+        "runMode": 0,
+        "inputProtocols": [
+            "103"
+        ],
+        "samplingInterval": 1,
+        "cpuAlert": 90.0,
+        "memAlert": 90.0,
+        "swapAlert": 100.0,
+        "monitorTime": 300.0,
+        "doMail": false,
+        "emailFrom": "from@from.fakeadress.com",
+        "emailTo": "to@to.fakeadress.com",
+        "smtp": "smtp.fakeadress.com"
+    },
+    {
+        "object.className": "ProtStress",
+        "object.id": "467",
+        "object.label": "scipion - stress 3 (copy)",
+        "object.comment": "",
+        "runName": null,
+        "runMode": 0,
+        "noCpu": 0,
+        "noMem": 2,
+        "amountMem": 256,
+        "noIO": 0,
+        "timeout": 60,
+        "delay": 0,
+        "extraParams": " "
+    },
+    {
+        "object.className": "ProtMonitorSystem",
+        "object.id": "499",
+        "object.label": "scipion - system_monitor (copy)",
+        "object.comment": "",
+        "runName": null,
+        "runMode": 0,
+        "inputProtocols": [
+            "467"
+        ],
+        "samplingInterval": 1,
+        "cpuAlert": 90.0,
+        "memAlert": 90.0,
+        "swapAlert": 100.0,
+        "monitorTime": 300.0,
+        "doMail": false,
+        "emailFrom": "from@from.fakeadress.com",
+        "emailTo": "to@to.fakeadress.com",
+        "smtp": "smtp.fakeadress.com"
+    }
+]

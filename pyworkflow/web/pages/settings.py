@@ -12,8 +12,8 @@ DB_PATH = join(pw.HOME, 'web', 'scipion_web.db')
 
 WEB_CONF = pwconfig.loadWebConf()
 
-# DEBUG = True
-DEBUG = WEB_CONF['DEBUG']
+DEBUG = True
+#DEBUG = WEB_CONF['DEBUG']
 TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (
@@ -105,8 +105,10 @@ STATIC_URL = ABSOLUTE_URL + 'static/'
 
 # Additional locations of static files
 WS_ROOT = os.path.join(pw.HOME, 'web', 'webtools')
-serviceFolders = [os.path.join(WS_ROOT, f) for f in os.listdir(WS_ROOT) if os.path.isdir(os.path.join(WS_ROOT, f))]
-staticDirs = [os.path.join(pw.HOME, 'web', 'pages')] + serviceFolders
+serviceFolders = [os.path.join(WS_ROOT, f) for f in os.listdir(WS_ROOT)
+                  if os.path.isdir(os.path.join(WS_ROOT, f))]
+staticDirs = [os.path.join(pw.HOME, 'web', 'pages')] \
+            + serviceFolders
 
 # Put strings here, like "/home/html/static" or "C:/www/django/static".
 # Always use forward slashes, even on Windows.
@@ -123,7 +125,9 @@ STATICFILES_DIRS = tuple([os.path.join(d, 'resources') for d in staticDirs])
 # Always use forward slashes, even on Windows.
 # Don't forget to use absolute paths, not relative paths.
 templateDirs = [os.path.join(DIRECTORY_PROJECT)] + serviceFolders
-TEMPLATE_DIRS = tuple([os.path.join(d, 'templates') for d in templateDirs])        
+templateDirs += [os.path.join(pw.HOME, 'web', 'workflowarchive')]
+
+TEMPLATE_DIRS = tuple([os.path.join(d, 'templates') for d in templateDirs])
 
 # TEMPLATE_DIRS = (
 #     os.path.join(DIRECTORY_PROJECT, 'templates'),
@@ -179,7 +183,9 @@ INSTALLED_APPS = [
     # 'django.contrib.admindocs',
     # 'gunicorn',
     'app',
-    'resumable'
+    'resumable',
+    'workflowarchive',# workflow archive project
+    'tastypie',# web services support
 ]
 
 try:

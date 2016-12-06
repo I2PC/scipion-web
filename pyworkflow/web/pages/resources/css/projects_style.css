@@ -25,6 +25,10 @@
 	letter-spacing: 0.3em;
 	text-align: center;
 }
+.workFlowForm {
+	list-style: none;
+	margin: 10px;
+}
 .projList {
 	list-style: none;
 	margin: 10px;
@@ -52,6 +56,7 @@
 	overflow-x: hidden;
 	width: 100%;
 }
+
 li:nth-child(odd) {
     background-color: #FFF;
     padding: 0px 10px;

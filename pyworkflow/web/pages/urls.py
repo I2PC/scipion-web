@@ -8,12 +8,12 @@ from django.contrib import admin
 from pyworkflow.web import app
 from pyworkflow.web.app import views_util, views_home, views_showj
 from pyworkflow.web.app.views_management import ScipionResumableUploadView
-
+#from pyworkflow.web.workflowarchive import views as views_workflowarchive
 admin.autodiscover()
 from django.conf import settings
 from pyworkflow.web.pages.settings import WS_ROOT, serviceFolders
 from django.views.generic import TemplateView
-
+from django.conf.urls import include
 # ===============================================================================
 # URL ASSOCIATION
 # ===============================================================================
@@ -27,7 +27,11 @@ mainUrls = ['',
     #PROJECT (CONTENT, RUNTABLE AND GRAPH)
     url(r'^projects/', 'app.views_project.projects'),
     url(r'^create_project/$', 'app.views_project.create_project'),
+    #INFO: ROB next should finish in $?
     url(r'^workflows/', 'app.views_project.workflows'),
+    #TODO: ROB: I do not like to put all urls together
+    # I think they should be at their respective applications
+    url(r'^workflowarchive/', include('workflowarchive.urls')),
     url(r'^delete_project/$', 'app.views_project.delete_project'),
     url(r'^project_content/$', 'app.views_project.project_content'),
     url(r'^get_protocols/$', 'app.views_project.get_protocols'),
@@ -89,8 +93,9 @@ mainUrls = ['',
     #SHOWJ
     url(r'^showj/$', app.views_showj.showj), #Load showj web
     url(r'^update_session_table/$', 'app.views_showj.updateSessionTable'),
-    url(r'^jsmol/$', 'app.views_showj.jsmol'),
-    url(r'^get_chimera_html/$', 'app.views_showj.get_chimera_html'),
+    #TODO: ROB the following two modules do not exists!?
+    ####url(r'^jsmol/$', 'app.views_showj.jsmol'),
+    ####url(r'^get_chimera_html/$', 'app.views_showj.get_chimera_html'),
 
     #BROWSER & UPLOAD FILES
     url(r'^upload/', 'app.views_management.upload'),
@@ -131,3 +136,7 @@ handler404 = "app.views_util.handle404error"
 handler500 = "app.views_util.handle500error"
 
 urlpatterns = patterns(*mainUrls)
+
+#TODO ROB need css files
+from django.contrib.staticfiles.urls import staticfiles_urlpatterns
+urlpatterns += staticfiles_urlpatterns()
