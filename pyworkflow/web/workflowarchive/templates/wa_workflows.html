@@ -6,7 +6,7 @@
 <!-- CSS -->
 <link href="{{projects_css}}" rel="stylesheet" type="text/css">
 
-<!-- JS -->
+<!-- JS TODO: Do I need this function (ROB)-->
 <script src="{{project_utils_js}}" type="text/javascript"></script>
 <script type="text/javascript">
 
@@ -23,7 +23,7 @@
 		layout();
 
 		$(window).resize(layout); */
-		
+
 		var outerContainer = $('.layout-outer');
 
 		function layout() {
@@ -43,14 +43,14 @@
 
 {% block content %}
 <div class="projectsList">
-	<ul>				
+	<ul>
 	{% for workflow in workflows %}
 		<li class="projList">
-			<strong>
-<!--				<a href="{{abs_url}}project_content/?p={{workflow.project}}&m=workflow" class="projName">{{workflow.name}}</a>-->
-				{{workflow.name}} <a href="kk_view"     class="projName">(view_{{workflow.id}} </a>,
-                                  <a href="kk_download" class="projName">download_{{workflow.id}})</a>
-			</strong>
+				<span class="projName">{{workflow.name}}</span>
+
+               <a href="#" onclick="javascript:createProject('{{workflow.slug}}','http://{{ host }}/workflowarchive/download/{{workflow.id}}/')"   >(view </a>,
+               <a href="/workflowarchive/download/{{workflow.id}}/">download):</a>
+			{{workflow.description}}
 		</li>
 	{% endfor %}
 	</ul>
