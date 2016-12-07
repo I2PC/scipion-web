@@ -21,7 +21,3 @@ selenium==3.0.2
 singledispatch==3.4.0.3
 six==1.7.3
 tornado==4.4.2
-
-Scipion v1.0.1 (2016-02-20) Augusto
-
->>>>> "pip" "freeze"
