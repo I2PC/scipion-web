@@ -7,8 +7,7 @@ class Workflow(models.Model):
     name = models.CharField(max_length=128, unique=True)
     description = models.CharField(max_length=512, blank=True)
     content = models.CharField(max_length=16384)#For secury reasons this can not be unlimited
-    slug = models.SlugField(null=True, blank=True, unique=True)
-    pub_date = models.DateTimeField(default=now)# I do not what for but timestamp are always handy
+    slug = models.SlugField(null=True, blank=True)
 
     #name is going to work as PK and as part of URL
     #so we need to sanitize it (remove spaces, "/", etc
