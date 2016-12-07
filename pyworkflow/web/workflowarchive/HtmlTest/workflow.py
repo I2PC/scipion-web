@@ -7,6 +7,55 @@ from selenium.common.exceptions import NoSuchElementException
 from selenium.common.exceptions import NoAlertPresentException
 import unittest, time, re
 import string, random
+import tempfile
+
+example_content="""<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head profile="http://selenium-ide.openqa.org/profiles/test-case">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link rel="selenium.base" href="http://0.0.0.0:8000/" />
+<title>workflow</title>
+</head>
+<body>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">workflow</td></tr>
+</thead><tbody>
+<tr>
+	<td>open</td>
+	<td>/workflowarchive/</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>id=id_workflowName</td>
+	<td>workflow_random</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>id=id_description</td>
+	<td>Here goes a description of the tests</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>id=id_file</td>
+	<td>/home/roberto/Scipion/scipion-web/pyworkflow/web/workflowarchive/HtmlTest/workflow.json</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>css=button[type=&quot;submit&quot;]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertText</td>
+	<td>css=div.workFlowForm</td>
+	<td>workflow uploaded </td>
+</tr>
+
+</tbody></table>
+</body>
+</html>"""
 
 class Workflow(unittest.TestCase):
     def setUp(self):
@@ -16,7 +65,13 @@ class Workflow(unittest.TestCase):
         self.verificationErrors = []
         self.accept_next_alert = True
         self.workflowName= "wf_" + ''.join(random.choice(string.lowercase) for x in range(16))
-    
+        self.createJsonFile()
+
+    def createJsonFile(self):
+	self.f = tempfile.NamedTemporaryFile(delete=False)
+        self.f.write(example_content)
+        self.f.close()
+
     def test_workflow(self):
         #connect and paint upload workflow form
         driver = self.driver
@@ -28,7 +83,7 @@ class Workflow(unittest.TestCase):
         driver.find_element_by_id("id_description").clear()
         driver.find_element_by_id("id_description").send_keys("Here goes a description of the tests")
         driver.find_element_by_id("id_file").clear()
-        driver.find_element_by_id("id_file").send_keys("/home/roberto/Scipion/scipion-web/pyworkflow/web/workflowarchive/HtmlTest/workflow.json")
+        driver.find_element_by_id("id_file").send_keys(self.f.name)
         
         #wait two second before sending workflow
         time.sleep(2)
@@ -44,6 +99,8 @@ class Workflow(unittest.TestCase):
 
         # wait a bit before clossing window
         time.sleep(3)
+        os.unlink(self.f.name)
+        
     
     def is_element_present(self, how, what):
         try: self.driver.find_element(by=how, value=what)
