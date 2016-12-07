@@ -44,10 +44,8 @@ class FileUploadForm(forms.Form):
     def save(self):
         # We are not overriding the `save` method here because `form.Form` does not have it.
         # We just add it for convenience.
-        print "SSSSSAVE"
         instance = getattr(self, "instance", None)
         if instance:
-            print "save instance"
             instance.save()
         return instance
         #fields = ('description', 'document', )
