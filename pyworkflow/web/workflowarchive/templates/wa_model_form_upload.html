@@ -22,7 +22,14 @@ kk {
     {% else %}
         <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
-        {{ form.as_p }}<p>
+         <!-- category -->
+            {{ form.version.errors }}
+        {{ form.as_p }}
+
+
+
+
+
         <button type="submit">Upload</button>
         </form>
     {% endif %}
