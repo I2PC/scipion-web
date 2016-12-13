@@ -49,7 +49,7 @@
 				<span class="projName">{{workflow.name}}</span>
 
                <a href="#" onclick="javascript:createProject('{{workflow.slug}}','http://{{ host }}/workflowarchive/download/{{workflow.id}}/')"   >(view </a>,
-               <a href="/workflowarchive/download/{{workflow.id}}/">download):</a>
+               <a href="/workflowarchive/download/{{workflow.id}}/">download</a>{% if workflow.email.strip %}, [{{ workflow.email }}]{% endif %}{% ifnotequal  workflow.version '0.0' %}, V={{ workflow.version }}{% endifnotequal %})
 			{{workflow.description}}
 		</li>
 	{% endfor %}
