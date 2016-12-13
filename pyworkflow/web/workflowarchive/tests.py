@@ -65,12 +65,12 @@ def deleteWorkflow( name):
     except Workflow.DoesNotExist:
         pass
 
-def createWorkflow( name, description, content):
+def createWorkflow( name, description, content, version='1.0'):
     try:
         w = Workflow.objects.get(name=name)
     except Workflow.DoesNotExist:
-        #w = Workflow(name=name, description=description, content=content)
-        w = Workflow(name=name, description=description, content=content)
+        #w = Workflow(name=name, description=description, content=content, version=version)
+        w = Workflow(name=name, description=description, content=content, version=version)
         w.save()
     return w
 
@@ -140,15 +140,16 @@ class WorkflowResourceTest(ResourceTestCase, TestCase):
         _url = self.api + "1/"
         resp = self.api_client.get(_url, format='json')
         _queryResultDic = self.deserialize(resp)
-        self.assertEqual(_queryResultDic['name'],self.workflowName)
+        self.assertEqual(_queryResultDic['slug'],self.workflowName)
+      
+
 
     def test_query_many_objects_Api(self):
-        _url = self.api + "?name=%s"%self.workflowName2
-        print _url
+        _url = self.api + "?slug=%s"%self.workflowName2
         resp = self.api_client.get(_url, format='json')
         _queryResultDic = self.deserialize(resp)
         q = _queryResultDic["objects"][0]
-        self.assertEqual(q['name'],self.workflowName2)
+        self.assertEqual(q['slug'],self.workflowName2)
 
         #retieve all stored workflows
         #_url = self.url + self.api + "?name=%s&format=json"%self.workflowName2

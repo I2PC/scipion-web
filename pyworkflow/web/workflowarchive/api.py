@@ -25,6 +25,7 @@ class WorkflowResource(ModelResource):
         resource_name = 'workflow'
         filtering = {'id': ALL,
                      'name': ALL,
+                     'slug': ALL,
                      'uploaded_at': ['exact', 'lt', 'lte', 'gte', 'gt'],
                      }
         excludes = ['id','name','uploaded_at','description','resource_uri']
