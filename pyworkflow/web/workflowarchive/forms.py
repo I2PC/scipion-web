@@ -1,5 +1,5 @@
 from django import forms
-from workflowarchive.models import Workflow
+from .models import Workflow, VERSIONS
 
 #The basic idea is to create two forms; one with the FileField and the other
 # form with the document, description, ... fields.
@@ -8,16 +8,26 @@ from workflowarchive.models import Workflow
 # from the file (I can also delete the file at this step).
 
 class WorkflowForm(forms.ModelForm):
+
     class Meta:
         model = Workflow
 
 class FileUploadForm(forms.Form):
 
+
+    version = forms.ChoiceField(label="Scipion version", choices=VERSIONS, required=True )
     workflowName = forms.CharField(max_length=128, required=True)
     description = forms.CharField(widget=forms.Textarea(), max_length= 512)
+    email = forms.EmailField(label="Contact person (optinal)", max_length=128, required=False )
     file = forms.FileField(label='Attach workflow file')
 
     data_dict={}
+
+    def clean_email(self):
+        self.data_dict['email'] = self.cleaned_data["email"]
+
+    def clean_version(self):
+        self.data_dict['version'] = self.cleaned_data["version"]
 
     def clean_workflowName(self):
         self.data_dict['name'] = self.cleaned_data["workflowName"]
