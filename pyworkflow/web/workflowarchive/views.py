@@ -1,6 +1,6 @@
 # Create your views here.
 from django.http import HttpResponse
-from workflowarchive.forms import FileUploadForm
+from forms import FileUploadForm
 from django.shortcuts import render
 from app.views_util import loadProject, getResourceCss, getResourceIcon, getResourceJs
 from app.views_base import base_grid
