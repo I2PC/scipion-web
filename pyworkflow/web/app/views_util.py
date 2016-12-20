@@ -361,8 +361,11 @@ def getServiceManager(serviceName):
 
         serviceConf = os.path.join(os.environ['HOME'], '.config', 'scipion', servicePath)
         manager.config = os.path.join(serviceConf, 'scipion.conf')
+        # Protocols config is written by each webtool views.writeCustomMenu but hosts config should be written manually or taken as the default one at scipion config
         manager.protocols = os.path.join(serviceConf, 'protocols.conf')
         manager.hosts = os.path.join(serviceConf, 'hosts.conf')
+        if not exists(manager.hosts):
+            manager.hosts = os.environ['SCIPION_HOSTS']
         SERVICE_MANAGERS[serviceName] = manager
 
     return manager

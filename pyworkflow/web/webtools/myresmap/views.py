@@ -32,6 +32,7 @@ from django.shortcuts import render_to_response
 import pyworkflow.utils as pwutils
 from pyworkflow.tests.tests import DataSet
 from pyworkflow.utils.utils import prettyDelta
+from pyworkflow.utils import makeFilePath
 from pyworkflow.web.app.views_base import base_grid
 from pyworkflow.web.app.views_project import contentContext
 from pyworkflow.web.app.views_protocol import contextForm
@@ -62,6 +63,7 @@ def resmap_projects(request):
 
 def writeCustomMenu(customMenu):
     if not exists(customMenu):
+        makeFilePath(customMenu)
         f = open(customMenu, 'w+')
         f.write('''
 [PROTOCOLS]
