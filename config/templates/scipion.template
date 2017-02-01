@@ -84,3 +84,32 @@ CUDA = False
 DEBUG = False
 MATLAB = False
 OPENCV = True
+
+
+[WEB]
+SITE_URL = localhost:8000
+# Sub path if published behind a appache with a redirect
+ABSOLUTE_URL = webtools/
+ANALYTICS_SCRIPT =
+DEBUG = True
+# Path to log file: WEB_LOG_FILE = <path>/scipion_web_tools_django.log
+WEB_LOG_FILE = /home/pablo/desarrollo/scipion/scipion_web_tools_django.log
+
+[WEB_PROTOCOLS]
+# To fix MPI and threads per protocol.
+#XmippProtRansac = {"useQueue": 0, "numberOfThreads": 4, "numberOfMpi": 1, "queueParams" : ["cpu", {"JOB_MEMORY": "8192", "JOB_TIME": "72"}]}
+#EmanProtInitModela = {"useQueue": 0, "numberOfThreads": 4, "numberOfMpi": 1, "queueParams" : ["cpu", {"JOB_MEMORY": "8192", "JOB_TIME": "72"}]}
+#XmippProtReconstructSignificant = {"useQueue": 0, "numberOfThreads": 1, "numberOfMpi": 4, "queueParams" : ["cpu", {"JOB_MEMORY": "8192", "JOB_TIME": "72"}]}
+#XmippProtAlignVolumeForWeb = {"useQueue": 0, "numberOfThreads": 4, "numberOfMpi": 1, "queueParams" : ["cpu", {"JOB_MEMORY": "8192", "JOB_TIME": "72"}]}
+#ProtMovieAlignment = {"useQueue": 0, "numberOfThreads": 1, "numberOfMpi": 1, "queueParams" : ["gpu", {"JOB_MEMORY": "8192", "JOB_TIME": "72"}]}
+#XmippProtCreateMask3D = {"useQueue": 0, "numberOfThreads": 1, "numberOfMpi": 1, "queueParams" : ["cpu", {"JOB_MEMORY": "8192", "JOB_TIME": "72"}]}
+#ProtResMap = {"useQueue": 0, "numberOfThreads": 1, "numberOfMpi": 1, "queueParams" : ["cpu", {"JOB_MEMORY": "8192", "JOB_TIME": "72"}]}
+#XmippProtValidateNonTilt = {"useQueue": 0, "numberOfThreads": 4, "numberOfMpi": 1, "queueParams" : ["cpu", {"JOB_MEMORY": "8192", "JOB_TIME": "72"}]}
+
+[EMAIL]
+EMAIL_USE_TLS = False
+EMAIL_HOST = 127.0.0.1
+EMAIL_PORT = 25
+EMAIL_HOST_USER =
+EMAIL_HOST_PASSWORD =
+ADMIN_EMAIL =
