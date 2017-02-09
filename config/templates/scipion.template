@@ -93,7 +93,7 @@ ABSOLUTE_URL = webtools/
 ANALYTICS_SCRIPT =
 DEBUG = True
 # Path to log file: WEB_LOG_FILE = <path>/scipion_web_tools_django.log
-WEB_LOG_FILE = /home/pablo/desarrollo/scipion/scipion_web_tools_django.log
+WEB_LOG_FILE = scipion_web_tools_django.log
 
 [WEB_PROTOCOLS]
 # To fix MPI and threads per protocol.
