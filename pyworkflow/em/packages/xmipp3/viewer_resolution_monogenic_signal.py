@@ -92,9 +92,6 @@ class XmippMonoResViewer(ProtocolViewer):
         
         form.addParam('doShowVolumeSlices', LabelParam,
                       label="Show resolution slices")
-        
-        form.addParam('doShowOriginalVolumeSlices', LabelParam,
-                      label="Show original volume slices")
 
         form.addParam('doShowResHistogram', LabelParam,
                       label="Show resolution histogram")
@@ -125,8 +122,7 @@ class XmippMonoResViewer(ProtocolViewer):
 
         
     def _getVisualizeDict(self):
-        return {'doShowOriginalVolumeSlices': self._showOriginalVolumeSlices,
-                'doShowVolumeSlices': self._showVolumeSlices,
+        return {'doShowVolumeSlices': self._showVolumeSlices,
                 'doShowVolumeColorSlices': self._showVolumeColorSlices,
                 'doShowResHistogram': self._plotHistogram,
                 'doShowChimera': self._showChimera,
@@ -136,17 +132,7 @@ class XmippMonoResViewer(ProtocolViewer):
         cm = DataView(self.protocol.outputVolume.getFileName())
         
         return [cm]
-    
-    def _showOriginalVolumeSlices(self, param=None):
-        if self.protocol.halfVolumes.get() is True:
-            cm = DataView(self.protocol.inputVolume.get().getFileName())
-            cm2 = DataView(self.protocol.inputVolume2.get().getFileName())
-            return [cm, cm2]
-        else:
-            cm = DataView(self.protocol.inputVolumes.get().getFileName())
-            return [cm]
-        
-    
+
     def _showVolumeColorSlices(self, param=None):
         imageFile = self.protocol._getExtraPath(OUTPUT_RESOLUTION_FILE, abs=True)
         img = ImageHandler().read(imageFile)
@@ -159,7 +145,7 @@ class XmippMonoResViewer(ProtocolViewer):
         imgData2 = np.ma.masked_where(imgData < 0.1, imgData, copy=True)
         
         min_Res = np.amin(imgData2)
-        fig, im = self._plotVolumeSlices('MonoRes slices', imgData2,
+        fig, im = self._plotVolumeSlices('Resolution slices', imgData2,
                                          min_Res, max_Res, self.getColorMap(), dataAxis=self._getAxis())
         cax = fig.add_axes([0.9, 0.1, 0.03, 0.8])
         cbar = fig.colorbar(im, cax=cax)
@@ -183,9 +169,14 @@ class XmippMonoResViewer(ProtocolViewer):
             y_axis_ = md.getValue(MDL_COUNT, idx)
 
             i+=1
+            if (y_axis_ == 0):
+                continue
             x_axis.append(x_axis_)
             y_axis.append(y_axis_)
         delta = x1-x0
+        for ii in range(len(x_axis)):
+            x_axis[ii] = x_axis[ii]-0.5*delta
+
         figure = plt.figure()
         plt.bar(x_axis, y_axis, width = delta)
         plt.title("Resolutions Histogram")
