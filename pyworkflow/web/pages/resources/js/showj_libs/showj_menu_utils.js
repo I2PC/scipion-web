@@ -101,6 +101,42 @@ function changeMode(modeNew){
 	}
 }
 
+function submmitToPowerFit(mapPath, mapName){
+	/*
+	 * Function to submit a map to POWERFIT
+	 * Generate a form and submit to powerfit
+	 * For should be like:
+	 * <form action="/scipion" method="POST" enctype="application/json">
+     * 	<input id="map_path" name="map_path"  filename=ngloutput.mrc" type="text">
+     * </form>
+ 	 */
+
+
+	var form = document.createElement("form");
+    form.enctype="application/json";
+    form.target="_blank";
+    form.method = "POST";
+    form.action = "http://milou.science.uu.nl/cgi/servicesdevel/POWERFIT/powerfit/scipion";
+
+
+    var element1 = document.createElement("input");
+	element1.id = "map_path"
+
+	// Cut absolute path
+	var powerFitMapPath = mapPath + "&filename=" + mapName;
+	mapPathParts = powerFitMapPath.split("ScipionUserData");
+	powerFitMapPath = "ScipionUserData" + mapPathParts[1];
+
+	element1.value=powerFitMapPath;
+    element1.name="map_path";
+    form.appendChild(element1);
+
+    document.body.appendChild(form);
+
+    form.submit();
+
+}
+
 function updateListSession(id, attr, mode){
 	/*
 	 * Method to update the session variable about list depending on attr.
