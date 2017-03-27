@@ -116,18 +116,19 @@ function submmitToPowerFit(mapPath, mapName){
     form.enctype="application/json";
     form.target="_blank";
     form.method = "POST";
-    form.action = "http://milou.science.uu.nl/cgi/servicesdevel/POWERFIT/powerfit/scipion";
-
+    form.action = "http://milou.science.uu.nl/cgi/enmr/services/POWERFIT/powerfit/scipion";
 
     var element1 = document.createElement("input");
 	element1.id = "map_path"
 
-	// Cut absolute path
+	// Full url to get the map, like:
+	//http://0.0.0.0:8000/webtools/get_file/?path=/home/pablo/ScipionUserData/myresmap/projects/ribosomeTestData/Runs/000002_ProtImportVolumes/extra/mito_ribosome.map.mrc&filename=ngloutput.mrc
+	mapUrl =  getBaseURL() + "/get_file/?path=";
 	var powerFitMapPath = mapPath + "&filename=" + mapName;
-	mapPathParts = powerFitMapPath.split("ScipionUserData");
-	powerFitMapPath = "ScipionUserData" + mapPathParts[1];
 
-	element1.value=powerFitMapPath;
+	mapUrl = mapUrl + powerFitMapPath;
+
+	element1.value=mapUrl;
     element1.name="map_path";
     form.appendChild(element1);
 
