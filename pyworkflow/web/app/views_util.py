@@ -33,6 +33,8 @@ import json
 import mimetypes
 import pytz
 import datetime
+
+from django.http import HttpResponseNotAllowed
 from django.shortcuts import render_to_response
 from django.http import HttpResponse, HttpResponseForbidden, HttpResponseNotFound
 from django.utils.http import urlencode
@@ -595,6 +597,13 @@ def get_file(request):
     if not os.path.isabs(pathToFile):
         projectPath = getProjectPathFromRequest(request)
         pathToFile = os.path.join(projectPath, pathToFile)
+
+    # Do not serve any file outside Scipion data scope
+    mandatoryPath = os.environ['SCIPION_USER_DATA']
+
+    if mandatoryPath not in pathToFile or ".." in pathToFile:
+        return HttpResponseNotAllowed('%s is outside the mandatory path %s' %
+                                      (pathToFile, mandatoryPath))
 
     if not os.path.exists(pathToFile):
         return HttpResponseNotFound('Path not found: %s' % pathToFile)

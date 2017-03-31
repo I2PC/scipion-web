@@ -60,23 +60,14 @@
  			 "
 			 />
 
-			 {% endif %}
 
-			<!-- VOLUME VISUALIZE WITH JSMOL -->
-<!--			
- 			{% if dataset.getNumberSlices > 1 or form.typeVolume.value == 'pdb'%}  
-			<input type="button" id="volume_jsmol" name="select_mode" 
-			onclick="changeMode('volume_jsmol');"
-			class="submitButton
-			 {% if form.mode.value != 'volume_jsmol' %}
-			 visualizeVolOff
-			 {% else %}
-			  visualizeVolOn
-			 {% endif %}
-			 "
-			 />
-			 {% endif %} 
--->
+				{% if form.mode.value == 'volume_ngl' %}
+				<!-- SEND TO POWERFIT -->
+				<input type="button" id="powerfit" name="select_mode" title="Send to POWERFIT"
+				onclick="submmitToPowerFit('{{volPath}}','ScipionWebTools_{{projectName}}.mrc');" class="submitButton powerfit"/>
+				{% endif %}
+		 	{% endif %}
+
 
 		</div>
 		
