@@ -116,7 +116,7 @@ function submmitToPowerFit(mapPath, mapName){
     form.enctype="application/json";
     form.target="_blank";
     form.method = "POST";
-    form.action = "http://milou.science.uu.nl/cgi/enmr/services/POWERFIT/powerfit/scipion";
+    form.action = "https://milou.science.uu.nl/cgi/enmr/services/POWERFIT/powerfit/scipion";
 
     var element1 = document.createElement("input");
 	element1.id = "map_path"

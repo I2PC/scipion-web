@@ -229,10 +229,21 @@ footer .footerLink{
 	/* color: #6F3232; */
 	color: firebrick;
 }
+footer .footerLink a {
+    color: gray;
+    text-decoration: none;
+}
+footer .footerLink a:hover {
+    color: firebrick;
+}
+footer .logoLine {
+    float: right;
+    margin-top: 0px;
+}
 footer .logo{
 	max-height:30px;
+	margin-right:5px;
 }
-
 
 .project_name {
 	/* 	font-size: 1.5em; */
