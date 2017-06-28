@@ -30,6 +30,7 @@ def _parseVersionDate():
             version = line.split("'")[1]
         elif '__releasedate__ =' in line:
             date = line.split("'")[1]
+            break
 
     return version, date
 
@@ -58,7 +59,7 @@ os.chdir(dirname(SCIPION_HOME))
 cmdStr = """ tar czf scipion_%(version)s_%(date)s_%(label)s.tgz \\
 --exclude=.git --exclude='*.o' --exclude='*.os' --exclude='*pyc' \\
 --exclude='*.mrc' --exclude='*.stk' --exclude='*.gz' %(excludeTgz)s \\
---exclude='software/tmp/*' --exclude='*.scons*' scipion
+--exclude='software/tmp/*' --exclude='*.scons*' --exclude='config/*.conf' scipion
 """
 
 cmd = cmdStr % args
