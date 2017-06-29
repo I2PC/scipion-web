@@ -36,6 +36,7 @@ from pyworkflow.em.packages.xmipp3 import XmippProtReconstructSignificant, \
 from pyworkflow.em.packages.xmipp3.protocol_validate_overfitting import XmippProtValidateOverfitting
 from pyworkflow.tests.tests import DataSet
 from pyworkflow.utils.utils import prettyDelta
+from pyworkflow.utils import makeFilePath
 from pyworkflow.web.app.views_base import base_grid
 from pyworkflow.web.app.views_project import contentContext
 from pyworkflow.web.app.views_protocol import contextForm
@@ -67,6 +68,7 @@ def particleValidation_projects(request):
 
 def writeCustomMenu(customMenu):
     if not exists(customMenu):
+        makeFilePath(customMenu)
         # Make the parent path if it doesn't exists
         pwutils.makePath(dirname(customMenu))
 

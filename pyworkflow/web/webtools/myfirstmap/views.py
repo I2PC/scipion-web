@@ -36,7 +36,7 @@ from django.shortcuts import render_to_response
 from pyworkflow.web.pages import settings as django_settings
 from django.http import HttpResponse
 from pyworkflow.tests.tests import DataSet
-from pyworkflow.utils import copyFile
+from pyworkflow.utils import copyFile, makeFilePath
 from pyworkflow.utils.utils import prettyDelta
 from pyworkflow.em.packages.xmipp3 import XmippProtRansac
 from pyworkflow.em.packages.eman2.protocol_initialmodel import EmanProtInitModel
@@ -69,8 +69,9 @@ def service_projects(request):
 
 
 def writeCustomMenu(customMenu):
-    print
+
     if not exists(customMenu):
+        makeFilePath(customMenu)
         f = open(customMenu, 'w+')
         f.write('''
 [PROTOCOLS]

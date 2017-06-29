@@ -295,7 +295,7 @@ pytz = env.addModule(
     'pytz',
     tar='pytz-2016.1.tar.gz',
     targets=['pytz-2016.1*'],
-    default=False)
+    default=True)
 
 paramiko = env.addModule(
     'paramiko',
