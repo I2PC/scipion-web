@@ -22,6 +22,7 @@ mainUrls = ['',
     url(r'^admin/', include(admin.site.urls)),
     url(r'^$', 'app.views_project.webservice_projects'),
     url(r'^intro/', 'app.views_project.webservice_projects'),
+    url(r'^services/', 'app.views_project.webservice_projects'),
 
     #PROJECT (CONTENT, RUNTABLE AND GRAPH)
     url(r'^projects/', 'app.views_project.projects'),
