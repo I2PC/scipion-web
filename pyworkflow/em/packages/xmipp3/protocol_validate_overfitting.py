@@ -21,23 +21,21 @@
 # * 02111-1307  USA
 # *
 # *  All comments concerning this program package may be sent to the
-# *  e-mail address 'jmdelarosa@cnb.csic.es'
+# *  e-mail address 'scipion@cnb.csic.es'
 # *
 # **************************************************************************
-
-from pyworkflow.protocol.params import (PointerParam, FloatParam, NumericListParam, IntParam,
-                                        StringParam, BooleanParam, LEVEL_ADVANCED)
-from pyworkflow.em.data import Volume
+from pyworkflow import VERSION_1_1
+from pyworkflow.protocol.params import (PointerParam, FloatParam,
+                                        NumericListParam, IntParam,
+                                        StringParam, BooleanParam,
+                                        LEVEL_ADVANCED)
 from pyworkflow.em.protocol import ProtReconstruct3D
 from pyworkflow.em.packages.xmipp3.convert import writeSetOfParticles
 from pyworkflow.utils import getFloatListFromValues
-from pyworkflow.utils.path import cleanPattern, cleanPath, copyFile
-import os
+from pyworkflow.utils.path import cleanPattern
 import xmipp
 import glob
-from pyworkflow.object import Float, String
 from math import sqrt
-from plotter import XmippPlotter
 
 
 class XmippProtValidateOverfitting(ProtReconstruct3D):
@@ -58,7 +56,8 @@ class XmippProtValidateOverfitting(ProtReconstruct3D):
     (see References)
     """
     _label = 'validate overfitting'
-    #--------------------------- DEFINE param functions --------------------------------------------   
+    _lastUpdateVersion = VERSION_1_1
+    #--------------------------- DEFINE param functions --------------------------------------------
 
     def _defineParams(self, form):
         form.addSection(label='Input')
@@ -98,9 +97,9 @@ class XmippProtValidateOverfitting(ProtReconstruct3D):
                            "Note:\n"
                            "The number of particles in each subset should not "
                            "be larger than 1/2 of the input set of particles. "
-                           "The protocol considers this issue automatically. It "
-                           "means that if the input set of particles is lower "
-                           "than 10,000, you could leave the default value unchanged.")
+                           "The protocol consider this issue automatically. It "
+                           "means that if the input set of particles are lower "
+                           "than 10,000, you could leave default values unchanged.") 
         form.addParam('numberOfIterations', IntParam, default=10,
                       expertLevel=LEVEL_ADVANCED,
                       label="Number of times the randomization is performed")
@@ -111,8 +110,8 @@ class XmippProtValidateOverfitting(ProtReconstruct3D):
         form.addParam('angSampRate', FloatParam, default = 5,
                       expertLevel=LEVEL_ADVANCED,
                       label="Angular sampling rate")  
-                      
-        form.addParallelSection(threads=4, mpi=1)
+
+        form.addParallelSection(threads=0, mpi=4)
     #--------------------------- INSERT steps functions --------------------------------------------
 
     def _createFilenameTemplates(self):
@@ -153,15 +152,15 @@ class XmippProtValidateOverfitting(ProtReconstruct3D):
             self.runJob("xmipp_image_resize", args)
 
             oldSize = self.inputParticles.get().getDim()[0]
-            scaleFactor = oldSize/self.newSize.get()
+            scaleFactor = float(self.newSize.get())/float(oldSize)
 
             args = "-i %s" % fnNewImgMd
             args += " --operate modify_values 'shiftX=shiftX*%f'" % scaleFactor
-            self.runJob('xmipp_metadata_utilities', args)
+            self.runJob('xmipp_metadata_utilities', args, numberOfMpi=1)
 
             args =  "-i %s" % fnNewImgMd
             args += " --operate modify_values 'shiftY=shiftY*%f'" % scaleFactor
-            self.runJob('xmipp_metadata_utilities', args)
+            self.runJob('xmipp_metadata_utilities', args, numberOfMpi=1)
 
         #projections from reference volume
         if self.doResize.get():
@@ -222,31 +221,32 @@ class XmippProtValidateOverfitting(ProtReconstruct3D):
             params += ' --sym %s' % self.symmetryGroup.get()
             params += ' --max_resolution %0.3f' % self.maxRes
             params += ' --padding 2'
-            params += ' --thr %d' % 1 #  self.numberOfThreads.get()
+            params += ' --thr 1'
+            #params += ' --thr %d' % self.numberOfThreads.get()
             params += ' --sampling %f' % Ts
             self.runJob('xmipp_reconstruct_fourier', params)
             
             #for noise
             noiseStk = fnRoot+"_noises_%02d.stk"%i
             self.runJob ("xmipp_image_convert",
-                         "-i %s -o %s" % (fnImgs, noiseStk), numberOfMpi=1)
+                         "-i %s -o %s" % (fnImgs, noiseStk), numberOfMpi = 1)
             self.runJob("xmipp_image_operate",
                         "-i %s --mult 0" % noiseStk)
             self.runJob("xmipp_transform_add_noise",
-                        "-i %s --type gaussian 3" % noiseStk, numberOfMpi=1)
+                        "-i %s --type gaussian 3" % noiseStk, numberOfMpi = 1)
             fnImgsNL = fnRoot+"_noisesL_%02d.xmd" % i
             noiseStk2 = fnRoot+"_noises2_%02d.stk" % i
             self.runJob ("xmipp_image_convert",
                          "-i %s -o %s --save_metadata_stack %s" % (
-                         noiseStk, noiseStk2, fnImgsNL), numberOfMpi=1)
+                         noiseStk, noiseStk2, fnImgsNL), numberOfMpi = 1)
             fnImgsNoiseOld = fnRoot+"_noisesOld_%02d.xmd" % i
             fnImgsN = fnRoot+"_noises_%02d_%02d.xmd" % (i, iteration)
             self.runJob("xmipp_metadata_utilities",
                         '-i %s -o %s --operate drop_column "image"' % (
-                        fnImgs,fnImgsNoiseOld), numberOfMpi=1)
+                        fnImgs,fnImgsNoiseOld), numberOfMpi = 1)
             self.runJob("xmipp_metadata_utilities",
                         "-i %s  --set merge %s -o %s" % (
-                        fnImgsNL, fnImgsNoiseOld, fnImgsN), numberOfMpi=1)
+                        fnImgsNL, fnImgsNoiseOld, fnImgsN), numberOfMpi = 1)
             
             #alignment gaussian noise
             fnImgsAlign = self._getExtraPath("Nfraction_alignment%02d" % fractionCounter)
@@ -259,17 +259,19 @@ class XmippProtValidateOverfitting(ProtReconstruct3D):
             
             self.runJob('xmipp_angular_projection_matching',
                         args,
-                        numberOfMpi = self.numberOfMpi.get()) #  * self.numberOfThreads.get())
+                        numberOfMpi = self.numberOfMpi.get())
+                        #numberOfMpi = self.numberOfMpi.get() * self.numberOfThreads.get())
            
             params =  '  -i %s' % fnImgsAlignN
             params += '  -o %s' % fnRootN+"_%02d_%02d.vol"%(i, iteration)
             params += ' --sym %s' % self.symmetryGroup.get()
             params += ' --max_resolution %0.3f' % self.maxRes
             params += ' --padding 2'
-            params += ' --thr %d' % 1 #  self.numberOfThreads.get()
+            params += ' --thr 1'
+            #params += ' --thr %d' % self.numberOfThreads.get()
             params += ' --sampling %f' % Ts
             self.runJob('xmipp_reconstruct_fourier', params)
-            
+
         self.runJob('xmipp_resolution_fsc',
                     "--ref %s -i %s -o %s --sampling_rate %f" % \
                     (fnRoot + "_00_%02d.vol" % iteration,
@@ -293,7 +295,7 @@ class XmippProtValidateOverfitting(ProtReconstruct3D):
                      fnRootN + "_00_%02d.vol" % iteration,
                      fnRootN + "_01_%02d.vol" % iteration,
                      fnRootN + "_fsc_%02d.xmd" % iteration,Ts),
-                     numberOfMpi = 1)
+                     numberOfMpi=1)
         
         cleanPattern(fnRoot + "_noises_0?_0?.xmd")
         cleanPattern(fnRoot + "_noisesOld_0?.xmd")
@@ -407,7 +409,7 @@ class XmippProtValidateOverfitting(ProtReconstruct3D):
         validationMd.write(outputFn)
 
     def _defineResultsName(self):
-        return self._getExtraPath('results.xmd', abs=True)
-    
+        return self._getExtraPath('results.xmd')
+
     def _defineResultsNoiseName(self):
-        return self._getExtraPath('resultsNoise.xmd', abs=True)
+        return self._getExtraPath('resultsNoise.xmd')

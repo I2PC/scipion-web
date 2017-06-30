@@ -20,7 +20,7 @@
 # * 02111-1307  USA
 # *
 # *  All comments concerning this program package may be sent to the
-# *  e-mail address 'jmdelarosa@cnb.csic.es'
+# *  e-mail address 'scipion@cnb.csic.es'
 # *
 # **************************************************************************
 from os.path import exists
@@ -132,7 +132,7 @@ def create_movies_project(request):
             protImport.magnification.set(attr['magnification'])
             protImport.samplingRate.set(attr['samplingRate'])
 
-            project.launchProtocol(protImport, wait=True, chdir=False)
+            project.launchProtocol(protImport, wait=True)
         else:
             protImport = project.newProtocol(ProtImportMovies, objLabel='import movies')
             project.saveProtocol(protImport)

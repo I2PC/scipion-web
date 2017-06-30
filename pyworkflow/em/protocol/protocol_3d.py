@@ -20,7 +20,7 @@
 # * 02111-1307  USA
 # *
 # *  All comments concerning this program package may be sent to the
-# *  e-mail address 'jmdelarosa@cnb.csic.es'
+# *  e-mail address 'scipion@cnb.csic.es'
 # *
 # **************************************************************************
 """
@@ -59,10 +59,13 @@ class ProtFilterVolumes(ProtPreprocessVolumes):
     between the ProtPreprocessVolumes """
     pass
 
+
 class ProtOperateVolumes(ProtPreprocessVolumes):
     """ This is the base for the branch of filters,
     between the ProtPreprocessParticles """
-    pass
+    def __init__(self, **args):
+        ProtPreprocessVolumes.__init__(self, **args)
+
 
 class ProtMaskVolumes(ProtPreprocessVolumes):
     """ This is the base for the branch of mask, 

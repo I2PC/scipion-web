@@ -67,7 +67,7 @@ public class ExtractPickerJFrame extends ParticlePickerJFrame
 	private void initComponents()
 	{
 		setResizable(false);
-		setTitle("Xmipp Particle Picker - " + picker.getMode());
+		setTitle();
 		initMenuBar();
 		setJMenuBar(mb);
 		savemi.setEnabled(false);
@@ -190,8 +190,8 @@ public class ExtractPickerJFrame extends ParticlePickerJFrame
 		JPanel buttonspn = new JPanel(new FlowLayout(FlowLayout.LEFT));
 
 		buttonspn.add(resetbt);
+        buttonspn.add(usezoombt);
 		micrographpn.add(buttonspn, XmippWindowUtil.getConstraints(constraints, 0, 2, 2));
-
 		
 	}
 

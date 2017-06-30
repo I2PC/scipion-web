@@ -20,7 +20,7 @@
 # * 02111-1307  USA
 # *
 # *  All comments concerning this program package may be sent to the
-# *  e-mail address 'jmdelarosa@cnb.csic.es'
+# *  e-mail address 'scipion@cnb.csic.es'
 # *
 # **************************************************************************
 
@@ -33,8 +33,14 @@ def getEnviron():
     """ Setup the environment variables needed to launch Eman. """
     environ = Environ(os.environ)
     EMAN2DIR = os.environ['EMAN2DIR']
-    pathList = [os.path.join(EMAN2DIR, d) for d in ['lib', 'bin', 'extlib/site-packages']]
-    
+    pathList = [os.path.join(EMAN2DIR, d)
+                for d in ['lib', 'bin', 'extlib/site-packages']]
+
+    # This environment variable is used to setup OpenGL (Mesa)
+    # library in remote desktops
+    if 'REMOTE_MESA_LIB' in os.environ:
+        pathList.append(os.environ['REMOTE_MESA_LIB'])
+
     environ.update({
             'PATH': join(EMAN2DIR, 'bin'),
             'LD_LIBRARY_PATH': os.pathsep.join(pathList),

@@ -20,7 +20,7 @@
 # * 02111-1307  USA
 # *
 # *  All comments concerning this program package may be sent to the
-# *  e-mail address 'jmdelarosa@cnb.csic.es'
+# *  e-mail address 'scipion@cnb.csic.es'
 # *
 # **************************************************************************
 
@@ -118,7 +118,7 @@ def create_resmap_project(request):
             protImport.filesPath.set(dest)
             protImport.samplingRate.set(attr['samplingRate'])
 
-            project.launchProtocol(protImport, wait=True, chdir=False)
+            project.launchProtocol(protImport, wait=True)
         else:
             protImport = project.newProtocol(ProtImportVolumes, objLabel='import volumes')
             project.saveProtocol(protImport)
