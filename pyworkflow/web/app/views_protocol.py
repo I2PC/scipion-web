@@ -20,7 +20,7 @@
 # * 02111-1307  USA
 # *
 # *  All comments concerning this program package may be sent to the
-# *  e-mail address 'jmdelarosa@cnb.csic.es'
+# *  e-mail address 'scipion@cnb.csic.es'
 # *
 # **************************************************************************
 
@@ -313,7 +313,7 @@ def protocol(request):
         # No errors, launch the protocol
         try:
 
-            project.launchProtocol(protocol, chdir=False)
+            project.launchProtocol(protocol)
 
         except Exception, ex:
             errors = [parseText(str(ex))]

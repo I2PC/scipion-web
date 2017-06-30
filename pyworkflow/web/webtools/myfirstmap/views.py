@@ -20,7 +20,7 @@
 # * 02111-1307  USA
 # *
 # *  All comments concerning this program package may be sent to the
-# *  e-mail address 'jmdelarosa@cnb.csic.es'
+# *  e-mail address 'scipion@cnb.csic.es'
 # *
 # **************************************************************************
 
@@ -125,7 +125,7 @@ def create_service_project(request):
             protImport = project.newProtocol(ProtImportAverages, objLabel=label_import)
             protImport.filesPath.set(newFn)
             protImport.samplingRate.set(1.)
-            project.launchProtocol(protImport, wait=True, chdir=False)
+            project.launchProtocol(protImport, wait=True)
         else:
             protImport = project.newProtocol(ProtImportAverages, objLabel='import averages')
             project.saveProtocol(protImport)

@@ -20,7 +20,7 @@
 # * 02111-1307  USA
 # *
 # *  All comments concerning this program package may be sent to the
-# *  e-mail address 'jmdelarosa@cnb.csic.es'
+# *  e-mail address 'scipion@cnb.csic.es'
 # *
 # **************************************************************************
 """
@@ -64,7 +64,7 @@ class ProtProcessParticles(ProtParticles):
         """ Return the default value for thread and MPI
         for the parallel section definition.
         """
-        return (2, 1)
+        return (0, 0)
 
 
 class ProtFilterParticles(ProtProcessParticles):
@@ -74,7 +74,8 @@ class ProtFilterParticles(ProtProcessParticles):
 
 class ProtOperateParticles(ProtProcessParticles):
     """Base class for operations on particles of type ProtPreprocessParticles"""
-    pass
+    def __init__(self, **args):
+        ProtProcessParticles.__init__(self, **args)
 
 
 class ProtMaskParticles(ProtProcessParticles):
@@ -162,7 +163,7 @@ class ProtParticlePicking(ProtParticles):
 
     def _summary(self):
         summary = []
-        if self.getInputMicrographs() is  not None:
+        if self.getInputMicrographs() is not None:
             summary.append("Number of input micrographs: %d" % self.getInputMicrographs().getSize())
 
         if self.getOutputsSize() >= 1:
@@ -209,5 +210,5 @@ class ProtParticlePicking(ProtParticles):
         outputset.setObjComment(summary)
         outputs = {outputName: outputset}
         self._defineOutputs(**outputs)
-        self._defineSourceRelation(self.inputMicrographs, outputset)
+        self._defineSourceRelation(self.getInputMicrographsPointer(), outputset)
         self._store()
