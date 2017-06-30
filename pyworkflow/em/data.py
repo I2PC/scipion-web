@@ -494,7 +494,7 @@ class Image(EMObject):
             dimStr = str(ImageDim(*dim))
         else:
             dimStr = 'No-Dim'
-        return "%s (%s, %0.2f Å/px)" % (self.getClassName(), dimStr,
+        return u"%s (%s, %0.2f Å/px)" % (self.getClassName(), dimStr,
                                         self.getSamplingRate() or 99999.)
     
     def getFiles(self):
@@ -884,7 +884,7 @@ class SetOfImages(EMSet):
             print "FATAL ERROR: Object %s has no sampling rate!!!" % self.getName()
             sampling = -999.0
 
-        s = "%s (%d items, %s, %0.2f Å/px)" % (self.getClassName(),
+        s = u"%s (%d items, %s, %0.2f Å/px)" % (self.getClassName(),
                                                self.getSize(),
                                                self._dimStr(), sampling)
         return s

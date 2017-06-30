@@ -885,7 +885,7 @@ class Protocol(Step):
 
         return n
 
-    def __storeSteps(self):
+    def _storeSteps(self):
         """ Store the new steps list that can be retrieved
         in further execution of this protocol.
         """
@@ -1152,9 +1152,7 @@ class Protocol(Step):
             self.cleanTmp()
 
         self.info(pwutils.greenStr('------------------- PROTOCOL ' +
-
-                                   self.info(pwutils.greenStr('------------------- PROTOCOL ' +
-                                                              self.getStatusMessage().upper()))
+                                   self.getStatusMessage().upper()))
         self.__closeLogs()
 
     def __initLogs(self):
@@ -1277,8 +1275,8 @@ class Protocol(Step):
     def getMapper(self):
         return self.mapper
 
-    def getDbPath(self):
-        return self._getLogsPath('run.db')
+    def getDbPath(self, **kwargs):
+        return self._getLogsPath('run.db', **kwargs)
 
     def setStepsExecutor(self, executor=None):
         if executor is None:
@@ -1849,7 +1847,7 @@ def isProtocolUpToDate(protocol):
 
     if protTS is None: return False
 
-    dbTS = pwutils.getFileLastModificationDate(protocol.getDbPath())
+    dbTS = pwutils.getFileLastModificationDate(protocol.getDbPath(abs=True))
 
     if not (protTS and dbTS):
         print("Can't compare if protocol is up to date: "

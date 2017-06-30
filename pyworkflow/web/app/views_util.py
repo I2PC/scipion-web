@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # **************************************************************************
 # *
 # * Authors:    Jose Gutierrez (jose.gutierrez@cnb.csic.es)

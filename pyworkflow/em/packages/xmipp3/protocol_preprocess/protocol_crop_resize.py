@@ -66,7 +66,7 @@ class XmippResizeHelper():
                       '_Pyramid_: Use positive level value to expand and negative to reduce. \n')
         form.addParam('resizeSamplingRate', FloatParam, default=1.0,
                       condition='doResize and resizeOption==%d' % cls.RESIZE_SAMPLINGRATE,
-                      label='Resize sampling rate (Å/px)',
+                      label=u'Resize sampling rate (Å/px)',
                       help='Set the new output sampling rate.')
         form.addParam('doFourier', BooleanParam, default=False,
                       condition='doResize and resizeOption==%d' % cls.RESIZE_DIMENSIONS,

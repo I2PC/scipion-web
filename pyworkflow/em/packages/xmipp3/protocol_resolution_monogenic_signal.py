@@ -325,8 +325,8 @@ class XmippProtMonoRes(ProtAnalysis3D):
     
     def _summary(self):
         summary = []
-        summary.append("Highest resolution %.2f Å,   "
-                       "Lowest resolution %.2f Å. \n" % (self.min_res_init,
+        summary.append(u"Highest resolution %.2f Å,   "
+                       u"Lowest resolution %.2f Å. \n" % (self.min_res_init,
                                                          self.max_res_init))
         Nvox = self.readMetaDataOutput()
 

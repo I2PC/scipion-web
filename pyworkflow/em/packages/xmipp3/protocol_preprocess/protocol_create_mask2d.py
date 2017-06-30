@@ -49,7 +49,7 @@ class XmippProtCreateMask2D(ProtCreateMask2D, XmippGeometricalMask2D):
         
         # For geometrical sources
         form.addParam('samplingRate', FloatParam, default=1, 
-                      label="Sampling Rate (Å/px)")
+                      label=u"Sampling Rate (Å/px)")
         
         XmippGeometricalMask2D.defineParams(self, form, 
                                             isGeometry=True, 

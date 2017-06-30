@@ -135,7 +135,7 @@ def create_particleValidation_project(request):
 
             protImportVol.filesPath.set(dest)
             protImportVol.samplingRate.set(attr['samplingRate'])
-            project.launchProtocol(protImportVol, wait=True, chdir=False)
+            project.launchProtocol(protImportVol, wait=True)
 
             # 2. Import particles
             binary = linkTestData(attr['particles'], projectPath)

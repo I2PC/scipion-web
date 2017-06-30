@@ -313,7 +313,7 @@ def protocol(request):
         # No errors, launch the protocol
         try:
 
-            project.launchProtocol(protocol, chdir=False)
+            project.launchProtocol(protocol)
 
         except Exception, ex:
             errors = [parseText(str(ex))]

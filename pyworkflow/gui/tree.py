@@ -512,7 +512,7 @@ class ProjectRunsTreeProvider(TreeProvider):
         self._objDict[objId] = obj
         info = {'key': objId, 'text': objId,
                 'values': (obj.getRunName(), obj.getStatusMessage(),
-                           prettyDelta(obj.getElapsedTime(), obj.getObjLabel()))
+                           obj.getObjLabel(), prettyDelta(obj.getElapsedTime()))
                 }
         objPid = obj.getObjParentId()
         if objPid in self._objDict:

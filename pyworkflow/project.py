@@ -145,10 +145,10 @@ class Project(object):
     def getSettingsCreationTime(self):
         return self.settings.getCreationTime()
 
-    # def getElapsedTime(self):
-    #     """ Return the time since the project was created. """
-    #     return dt.datetime.now() - self.getCreationTime()
-    #
+    def getAge(self):
+        """ Return the time since the project was created. """
+        return dt.datetime.now() - self.getCreationTime()
+
     def getElapsedTime(self):
         """ Returns the time elapsed from the creation to the last execution time"""
 
@@ -160,13 +160,12 @@ class Project(object):
             return lastRunTs-creationTs
         return None
 
-
     def getLeftTime(self):
         lifeTime = self.settings.getLifeTime()
 
         if lifeTime:
             td = dt.timedelta(hours=lifeTime)
-            return td - self.getElapsedTime()
+            return td - self.getAge()
         else:
             return None
 
@@ -415,7 +414,7 @@ class Project(object):
         will be initiated. Actions done here are:
         1. Store the protocol and assign name and working dir
         2. Create the working dir and also the protocol independent db
-        3. Call the launch method in protocol.job to handle submition:
+        3. Call the launch method in protocol.job to handle submission:
            mpi, thread, queue,
         and also take care if the execution is remotely."""
 
@@ -436,7 +435,7 @@ class Project(object):
         # Prepare a separate db for this run
         # NOTE: now we are simply copying the entire project db, this can be
         # changed later to only create a subset of the db need for the run
-        pwutils.path.copyFile(self.dbPath, self.getAbsPath(protocol.getDbPath())
+        pwutils.path.copyFile(self.dbPath, self.getAbsPath(protocol.getDbPath()))
 
         # Launch the protocol, the jobId should be set after this call
         pwprot.launch(protocol, wait)

@@ -125,7 +125,7 @@ def create_service_project(request):
             protImport = project.newProtocol(ProtImportAverages, objLabel=label_import)
             protImport.filesPath.set(newFn)
             protImport.samplingRate.set(1.)
-            project.launchProtocol(protImport, wait=True, chdir=False)
+            project.launchProtocol(protImport, wait=True)
         else:
             protImport = project.newProtocol(ProtImportAverages, objLabel='import averages')
             project.saveProtocol(protImport)

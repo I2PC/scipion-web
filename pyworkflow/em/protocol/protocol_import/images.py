@@ -373,7 +373,7 @@ class ProtImportImages(ProtImportFiles):
                                                          self._getOutputItemName(),
                                                          self.getPattern()))
             summary.append("Is the data phase flipped : %s" % outputSet.isPhaseFlipped())
-            summary.append("Sampling rate : *%0.2f* Å/px" % outputSet.getSamplingRate())
+            summary.append(u"Sampling rate : *%0.2f* Å/px" % outputSet.getSamplingRate())
         
         return summary
     

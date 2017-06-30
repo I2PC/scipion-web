@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # **************************************************************************
 # *
 # * Authors:    Jose Gutierrez (jose.gutierrez@cnb.csic.es)
@@ -357,13 +358,13 @@ def protocol_info(request):
             input_obj = [{'name': name,
                           'nameId': attr.getNameId(),
                           'id': attr.getObjId(),
-                          'info': str(attr.get()) if attr.isPointer() else str(attr)}
+                          'info': unicode(attr.get()) if attr.isPointer() else unicode(attr)}
                          for name, attr in protocol.iterInputAttributes()]
 
             output_obj = [{'name': name,
                            'nameId': attr.getNameId(),
                            'id': attr.getObjId(),
-                           'info': str(attr)}
+                           'info': unicode(attr)}
                           for name, attr in protocol.iterOutputAttributes(EMObject)]
 
             # PROTOCOL SUMMARY
