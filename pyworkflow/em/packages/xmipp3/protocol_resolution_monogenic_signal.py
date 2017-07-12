@@ -264,7 +264,7 @@ class XmippProtMonoRes(ProtAnalysis3D):
         
         
     def readMetaDataOutput(self):
-        mData = md.MetaData(self._getExtraPath(METADATA_MASK_FILE))
+        mData = md.MetaData(self._getExtraPath(METADATA_MASK_FILE, abs=True))
         NvoxelsOriginalMask = float(mData.getValue(md.MDL_COUNT, mData.firstObject()))
         NvoxelsOutputMask = float(mData.getValue(md.MDL_COUNT2, mData.firstObject()))
         nvox = int(round(((NvoxelsOriginalMask-NvoxelsOutputMask)/NvoxelsOriginalMask)*100))

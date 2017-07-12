@@ -26,7 +26,7 @@
 
 from pyworkflow.gui.plotter import Plotter
 from pyworkflow.protocol.params import LabelParam, StringParam, EnumParam
-from pyworkflow.viewer import ProtocolViewer, DESKTOP_TKINTER
+from pyworkflow.viewer import ProtocolViewer, DESKTOP_TKINTER, WEB_DJANGO
 from pyworkflow.em.viewer import ChimeraView, DataView
 from protocol_resolution_monogenic_signal import XmippProtMonoRes, OUTPUT_RESOLUTION_FILE
 from pyworkflow.em.metadata import MetaData, MDL_X, MDL_COUNT
@@ -76,8 +76,8 @@ class XmippMonoResViewer(ProtocolViewer):
     microscopy (cryo-EM).
     """
     _label = 'viewer MonoRes'
-    _targets = [XmippProtMonoRes]      
-    _environments = [DESKTOP_TKINTER]
+    _targets = [XmippProtMonoRes]
+    _environments = [DESKTOP_TKINTER, WEB_DJANGO]
     
     @staticmethod
     def getColorMapChoices():
@@ -148,7 +148,7 @@ class XmippMonoResViewer(ProtocolViewer):
         
     
     def _showVolumeColorSlices(self, param=None):
-        imageFile = self.protocol._getExtraPath(OUTPUT_RESOLUTION_FILE)
+        imageFile = self.protocol._getExtraPath(OUTPUT_RESOLUTION_FILE, abs=True)
         img = ImageHandler().read(imageFile)
         imgData = img.getData()
         max_Res = np.amax(imgData)
@@ -165,11 +165,11 @@ class XmippMonoResViewer(ProtocolViewer):
         cbar = fig.colorbar(im, cax=cax)
         cbar.ax.invert_yaxis()
 
-        return plt.show(fig)
+        return [Plotter(figure=fig)]
 
     def _plotHistogram(self, param=None):
         md = MetaData()
-        md.read(self.protocol._getPath('extra/hist.xmd'))
+        md.read(self.protocol._getPath('extra/hist.xmd', abs=True))
         x_axis = []
         y_axis = []
 
@@ -186,13 +186,13 @@ class XmippMonoResViewer(ProtocolViewer):
             x_axis.append(x_axis_)
             y_axis.append(y_axis_)
         delta = x1-x0
-        plt.figure()
+        figure = plt.figure()
         plt.bar(x_axis, y_axis, width = delta)
         plt.title("Resolutions Histogram")
         plt.xlabel("Resolution (A)")
         plt.ylabel("Counts")
-        
-        return plt.show()
+
+        return [Plotter(figure=figure)]
 
 
     def _getAxis(self):

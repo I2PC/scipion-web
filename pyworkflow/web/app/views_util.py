@@ -436,7 +436,7 @@ def browse_objects(request):
                                     "nameId": obj.getNameId(),
                                     "objParentName": objParent.getRunName(),
                                     "objId": obj.getObjId(),
-                                    "info": str(obj)
+                                    "info": unicode(obj)
                                     }
         # Class Filter
         for obj in project.iterSubclasses("Set", filterObject.classFilter):

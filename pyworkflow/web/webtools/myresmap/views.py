@@ -1,6 +1,7 @@
 # **************************************************************************
 # *
 # * Authors:    Jose Gutierrez (jose.gutierrez@cnb.csic.es)
+# *             Pablo Conesa (pconesa@cnb.csic.es)
 # *
 # * Unidad de  Bioinformatica of Centro Nacional de Biotecnologia , CSIC
 # *
@@ -74,7 +75,8 @@ Local_Resolution = [
         {"tag": "protocol", "value": "ProtImportMask", "text": "import mask", "icon": "bookmark.png"}]},
     {"tag": "section", "text": "3. Analysis with ResMap", "children": [
         {"tag": "protocol", "value": "XmippProtCreateMask3D", "text": "xmipp3 - create 3D mask"},
-        {"tag": "protocol", "value": "ProtResMap", "text": "resmap - local resolution"}
+        {"tag": "protocol", "value": "ProtResMap", "text": "resmap - local resolution"},
+        {"tag": "protocol", "value": "XmippProtMonoRes", "text": "xmipp - local resolution"}
         ]}]
         ''')
         f.close()
