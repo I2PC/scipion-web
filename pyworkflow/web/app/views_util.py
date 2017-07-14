@@ -1075,7 +1075,7 @@ def handle404error(request):
 
 def handle500error(request):
     # So far use the same error page.
-    return handle404error(request);
+    return handle404error(request)
 
 
 def loadProtocolConf(protocol):
@@ -1108,6 +1108,11 @@ def loadProtocolConf(protocol):
 
         if 'queueParams' in protDict:
             protocol.setQueueParams(protDict.get('queueParams'))
+    else:
+        from pyworkflow.config import WEB_PROTOCOLS
+        print "WARNING: Not restrictions found for %s, please review %s " \
+              "section in scipion config file." % \
+              (protocol.getClassName(), WEB_PROTOCOLS)
 
 def zipdirSystem(dirPath, zipFilePath, includeDirInZip):
 

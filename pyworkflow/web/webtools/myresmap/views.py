@@ -31,6 +31,7 @@ from django.http import HttpResponse
 from django.shortcuts import render_to_response
 
 import pyworkflow.utils as pwutils
+from pyworkflow.em.packages.xmipp3 import XmippProtMonoRes
 from pyworkflow.tests.tests import DataSet
 from pyworkflow.utils.utils import prettyDelta
 from pyworkflow.utils import makeFilePath
@@ -132,6 +133,14 @@ def create_resmap_project(request):
         protResMap.inputVolume.setExtended('outputVolume')
         loadProtocolConf(protResMap)
         project.saveProtocol(protResMap)
+
+        # 3. Monres
+        protMonoRes = project.newProtocol(XmippProtMonoRes)
+        protMonoRes.setObjLabel('xmipp - local resolution')
+        protMonoRes.inputVolume.set(protImport)
+        protMonoRes.inputVolume.setExtended('outputVolume')
+        loadProtocolConf(protMonoRes)
+        project.saveProtocol(protMonoRes)
 
     return HttpResponse(content_type='application/javascript')
 

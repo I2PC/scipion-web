@@ -42,6 +42,8 @@ from pyworkflow import em
 from pyworkflow.mapper import SqliteMapper
 from pyworkflow.utils import strDate
 
+WEB_PROTOCOLS = 'WEB_PROTOCOLS'
+
 PATH = os.path.dirname(__file__)
 
 
@@ -283,9 +285,9 @@ def loadWebConf():
     protocols = OrderedDict()
     webConf['PROTOCOLS'] = protocols
     
-    if cp.has_section('WEB_PROTOCOLS'):
-        for protName in cp.options('WEB_PROTOCOLS'):
-            protocols[protName] = json.loads(cp.get('WEB_PROTOCOLS', protName)) 
+    if cp.has_section('%s' % WEB_PROTOCOLS):
+        for protName in cp.options(WEB_PROTOCOLS):
+            protocols[protName] = json.loads(cp.get(WEB_PROTOCOLS, protName))
     
     return webConf
 

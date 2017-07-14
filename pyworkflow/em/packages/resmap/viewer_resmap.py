@@ -99,23 +99,3 @@ class ResMapViewer(ProtocolViewer):
         cmdFile = self.protocol._getPath('volume1_resmap_chimera.cmd')
         view = ChimeraView(cmdFile)
         return [view]
-
-        
-        
-# class ResMapViewerWeb(ResMapViewer):
-#     """
-#     Same viewer for ResMap web, but using saved images of the plots.
-#     """
-#
-#     _environments = [WEB_DJANGO]
-#
-#     def _showVolumeSlices(self, param=None):
-#         return [ImageView(self.protocol._getExtraPath('volume1.map.png', abs=True))]
-#
-#     def _showResMapSlices(self, param=None):
-#         return [ImageView(self.protocol._getExtraPath('volume1_resmap.map.png', abs=True))]
-#
-#     def _plotHistogram(self, param=None):
-#         return [ImageView(self.protocol._getExtraPath('histogram.png', abs=True))]
-#
-#
