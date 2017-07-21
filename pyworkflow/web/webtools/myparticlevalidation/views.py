@@ -62,8 +62,16 @@ def particleValidation_projects(request):
                'hiddenTreeProt': True,
                }
 
+    context = getToolContext(context)
     context = base_grid(request, context)
     return render_to_response('pval_projects.html', context)
+
+
+def getToolContext(context):
+    imagesURL = getToolImagesURL()
+    resolutionContext = {'toolImages': imagesURL}
+    resolutionContext.update(context)
+    return resolutionContext
 
 
 def writeCustomMenu(customMenu):
@@ -317,7 +325,7 @@ def particleValidation_form(request):
 
 def particleValidation_content(request):
     projectName = request.GET.get('p', None)
-    path_files = getAbsoluteURL('resources_mypval/img/')
+    path_files = getToolImagesURL()
 
     # Get info about when the project was created
     manager = getServiceManager(MYPVAL_SERVICE)
@@ -338,3 +346,7 @@ def particleValidation_content(request):
 
     return render_to_response('pval_content.html', context)
 
+
+def getToolImagesURL():
+
+    return getAbsoluteURL('resources_mypval/img/')

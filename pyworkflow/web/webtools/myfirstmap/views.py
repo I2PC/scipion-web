@@ -51,8 +51,10 @@ MYFIRSTMAP_SERVICE_URL = MYFIRSTMAP_SERVICE
 
 def service_projects(request):
    
-    if CTX_PROJECT_NAME in request.session: request.session[CTX_PROJECT_NAME] = ""
-    if CTX_PROJECT_PATH in request.session: request.session[CTX_PROJECT_PATH] = ""
+    if CTX_PROJECT_NAME in request.session:
+        request.session[CTX_PROJECT_NAME] = ""
+    if CTX_PROJECT_PATH in request.session:
+        request.session[CTX_PROJECT_PATH] = ""
 
     myfirstmap_utils = getResource("js/myfirstmap_utils.js")
 
@@ -63,9 +65,18 @@ def service_projects(request):
                'hiddenTreeProt': True,
                SERVICE_NAME: MYFIRSTMAP_SERVICE
                }
-    
+
+    context = getToolContext(context)
+
     context = base_grid(request, context)
     return render_to_response('service_projects.html', context)
+
+
+def getToolContext(context):
+    imagesURL = getToolImagesURL()
+    resolutionContext = {'toolImages': imagesURL}
+    resolutionContext.update(context)
+    return resolutionContext
 
 
 def writeCustomMenu(customMenu):
@@ -76,17 +87,53 @@ def writeCustomMenu(customMenu):
         f.write('''
 [PROTOCOLS]
 
-Initial_Volume = [
-    {"tag": "section", "text": "1. Upload data", "children": [
-        {"tag": "protocol", "value": "ProtImportAverages",     "text": "import averages", "icon": "bookmark.png"}]},
-    {"tag": "section", "text": "2. Create a 3D volume", "children": [
-        {"tag": "protocol", "value": "XmippProtRansac", "text": "xmipp3 - ransac"},
-        {"tag": "protocol", "value": "EmanProtInitModel", "text": "eman2 - initial volume"},
-        {"tag": "protocol", "value": "XmippProtReconstructSignificant", "text": "xmipp3 - significant"}]},
-    {"tag": "section", "text": "3. Align volumes.", "children": [
-        {"tag": "protocol", "value": "XmippProtAlignVolumeForWeb", "text": "xmipp3 - align volumes"}
-        ]}]
-        ''')
+Initial_Volume =
+[
+   {
+      "tag":"section",
+      "text":"1. Upload data",
+      "children":[
+         {
+            "tag":"protocol",
+            "value":"ProtImportAverages",
+            "text":"import averages",
+            "icon":"bookmark.png"
+         }
+      ]
+   },
+   {
+      "tag":"section",
+      "text":"2. Create a 3D volume",
+      "children":[
+         {
+            "tag":"protocol",
+            "value":"XmippProtRansac",
+            "text":"xmipp3 - ransac"
+         },
+         {
+            "tag":"protocol",
+            "value":"EmanProtInitModel",
+            "text":"eman2 - initial volume"
+         },
+         {
+            "tag":"protocol",
+            "value":"XmippProtReconstructSignificant",
+            "text":"xmipp3 - significant"
+         }
+      ]
+   },
+   {
+      "tag":"section",
+      "text":"3. Align volumes.",
+      "children":[
+         {
+            "tag":"protocol",
+            "value":"XmippProtAlignVolumeForWeb",
+            "text":"xmipp3 - align volumes"
+         }
+      ]
+   }
+]''')
         f.close()
         
 
@@ -106,9 +153,8 @@ def create_service_project(request):
                                         protocolsConf=manager.protocols,
                                         chdir=False)
         
-        project.getSettings().setLifeTime(336) # 14 days * 24 hours
+        project.getSettings().setLifeTime(336)  # 14 days * 24 hours
         project.saveSettings()
-        #copyFile(customMenu, project.getPath('.config', 'protocols.conf'))
         
         # 1. Import averages
         
@@ -116,18 +162,21 @@ def create_service_project(request):
         # options are set in 'project_utils.js'
         dsMDA = DataSet.getDataSet('initial_volume')
         
-        if testDataKey :
+        if testDataKey:
             fn = dsMDA.getFile(testDataKey)
-            newFn = getImageFullPath(project.path, join(project.uploadPath, basename(fn)))
+            newFn = getImageFullPath(project.path, join(project.uploadPath,
+                                                        basename(fn)))
             copyFile(fn, newFn)
             
-            label_import = 'import averages ('+ testDataKey +')'
-            protImport = project.newProtocol(ProtImportAverages, objLabel=label_import)
+            label_import = 'import averages (' + testDataKey + ')'
+            protImport = project.newProtocol(ProtImportAverages,
+                                             objLabel=label_import)
             protImport.filesPath.set(newFn)
             protImport.samplingRate.set(1.)
             project.launchProtocol(protImport, wait=True)
         else:
-            protImport = project.newProtocol(ProtImportAverages, objLabel='import averages')
+            protImport = project.newProtocol(ProtImportAverages,
+                                             objLabel='import averages')
             project.saveProtocol(protImport)
         
         # 2a. Ransac 
@@ -175,19 +224,6 @@ def create_service_project(request):
 
         project.saveProtocol(protJoin)
         
-#         protValidate = project.newProtocol(XmippProtValidateNonTilt)
-#         protValidate.setObjLabel('validate nontilt')
-#         protValidate.inputVolumes.set(protJoin)
-#         protValidate.inputVolumes.setExtended('outputVolumes')
-#         protValidate.inputParticles.set(protImport)
-#         protValidate.inputParticles.setExtended('outputAverages')
-#         protValidate.numberOfThreads.set(8)
-#         if testDataKey :
-#             setProtocolParams(protValidate, testDataKey)
-# #         protJoin.inputVolumes.append(p4)
-#         project.saveProtocol(protValidate)
-        
-        
     return HttpResponse(content_type='application/javascript')
 
 
@@ -202,7 +238,7 @@ def get_testdata(request):
 def myfirstmap_form(request):
     from django.shortcuts import render_to_response
     context = contextForm(request)
-    context.update({'path_mode':'select',
+    context.update({'path_mode': 'select',
                     'formUrl': 'my_form',
                     'showHost': False,
                     'showParallel': True})
@@ -212,7 +248,7 @@ def myfirstmap_form(request):
 def service_content(request):
 
     projectName = request.GET.get('p', None)
-    path_files = getAbsoluteURL('resources_myfirstmap/img/')
+    path_files = getToolImagesURL()
     
     # Get info about when the project was created
     manager = getServiceManager(MYFIRSTMAP_SERVICE)
@@ -238,13 +274,14 @@ def service_content(request):
     
     return render_to_response('service_content.html', context)
 
+
 def setProtocolParams(protocol, key):
-    #Here we set protocol parameters for each test data
+    # Here we set protocol parameters for each test data
     if key:
         cls = type(protocol)
         
         if issubclass(cls, XmippProtRansac):
-            if(key == "bpv"):
+            if key == "bpv":
                 attrs = {"symmetryGroup": "i1",
                          "dimRed": False,
                          "numGrids": 2,
@@ -252,48 +289,47 @@ def setProtocolParams(protocol, key):
                          "maxFreq": 5,
                          "useAll": True
                         }
-            if(key == "groel"):
+            if key == "groel":
                 attrs = {"symmetryGroup": "d7",
                          "dimRed": False,
                          "numGrids": 3,
                          "maxFreq": 5,
                          "useAll": True
                          }
-            if(key == "ribosome"):
+            if key == "ribosome":
                 attrs = {"symmetryGroup": "c1",
                          "dimRed": True,
                          "numGrids": 3}
         
         elif issubclass(cls, EmanProtInitModel):
-            if(key == "bpv"):
+            if key == "bpv":
                 attrs = {"symmetry" : "icos"}
-            if(key == "groel"):
+            if key == "groel":
                 attrs = {"symmetry" : "d7"}
-            if(key == "ribosome"):
+            if key == "ribosome":
                 attrs = {"symmetry" : "c1"}
         
         elif issubclass(cls, XmippProtReconstructSignificant):
-            if(key == "bpv"):
+            if key == "bpv":
                 attrs = {"symmetryGroup" : "i1",
                          "alpha0": 99.5, 
                          "alphaF": 99.5}
-            if(key == "groel"):
+            if key == "groel":
                 attrs = {"symmetryGroup" : "d7",
                          "alpha0": 98, 
                          "alphaF": 99.9}
-            if(key == "ribosome"):
+
+            if key == "ribosome":
                 attrs = {"symmetryGroup" : "c1", 
                          "alpha0": 80, 
                          "alphaF": 99.5}
-        # if issubclass(cls, XmippProtValidateNonTilt):
-        #     if(key == "bpv"):
-        #         attrs = {"symmetryGroup" : "i1"}
-        #     if(key == "groel"):
-        #         attrs = {"symmetryGroup" : "d7"}
-        #     if(key == "ribosome"):
-        #         attrs = {"symmetryGroup" : "c1"}
+
         for key,value in attrs.iteritems():
             getattr(protocol, key).set(value)
     
     loadProtocolConf(protocol)
-    
+
+
+def getToolImagesURL():
+
+    return getAbsoluteURL('resources_myfirstmap/img/')

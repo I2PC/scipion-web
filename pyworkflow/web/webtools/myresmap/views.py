@@ -59,8 +59,17 @@ def resmap_projects(request):
                'hiddenTreeProt': True,
                }
 
+    context = getToolContext(context)
+
     context = base_grid(request, context)
     return render_to_response('resmap_projects.html', context)
+
+
+def getToolContext(context):
+    imagesURL = getToolImagesURL()
+    resolutionContext = {'toolImages': imagesURL}
+    resolutionContext.update(context)
+    return resolutionContext
 
 
 def writeCustomMenu(customMenu):
@@ -178,7 +187,7 @@ def resmap_form(request):
 
 def resmap_content(request):
     projectName = request.GET.get('p', None)
-    path_files = getAbsoluteURL('resources_myresmap/img/')
+    path_files = getToolImagesURL()
 
     # Get info about when the project was created
     manager = getServiceManager(MYRESMAP_SERVICE)
@@ -200,3 +209,8 @@ def resmap_content(request):
                     })
 
     return render_to_response('resmap_content.html', context)
+
+
+def getToolImagesURL():
+
+    return getAbsoluteURL('resources_myresmap/img/')
