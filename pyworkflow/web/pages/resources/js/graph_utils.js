@@ -160,7 +160,7 @@ function callPaintGraph(nodeSource, type) {
 		type : "GET",
 		url : URL,
 		dataType : "json",
-		async: false,
+		async : true,
 		success : function(json) {
 			processNodes(json, "runs", nameId, type)
 		}
@@ -180,7 +180,7 @@ function callPaintObjGraph(){
 		type : "GET",
 		url : URL,
 		dataType : "json",
-		async: false,
+		async : true,
 		success : function(json) {
 			// Paint the nodes
 			var aux = [];
@@ -205,7 +205,7 @@ function callPaintObjGraph(){
 				type : "GET",
 				url : URL,
 				dataType : "json",
-				async: false,
+				async : true,
 				success : function(json) {
 					processNodes(json, "objects", "graph_")
 				}

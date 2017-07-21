@@ -31,7 +31,8 @@ from django.http import HttpResponse
 from django.shortcuts import render_to_response
 
 import pyworkflow.utils as pwutils
-from pyworkflow.em.packages.xmipp3 import XmippProtMonoRes
+from pyworkflow.em.packages.xmipp3 import XmippProtMonoRes, ProtImportMask, \
+    XmippProtCreateMask3D
 from pyworkflow.tests.tests import DataSet
 from pyworkflow.utils.utils import prettyDelta
 from pyworkflow.utils import makeFilePath
@@ -143,11 +144,21 @@ def create_resmap_project(request):
         loadProtocolConf(protResMap)
         project.saveProtocol(protResMap)
 
-        # 3. Monres
+        # 3. Mask for monoRes
+        protMask = project.newProtocol(XmippProtCreateMask3D)
+        # protMask.setObjLabel(' - local resolution')
+        protMask.inputVolume.set(protImport)
+        protMask.inputVolume.setExtended('outputVolume')
+        loadProtocolConf(protMask)
+        project.saveProtocol(protMask)
+
+        # 4. MonoRes
         protMonoRes = project.newProtocol(XmippProtMonoRes)
         protMonoRes.setObjLabel('xmipp - local resolution')
-        protMonoRes.inputVolume.set(protImport)
-        protMonoRes.inputVolume.setExtended('outputVolume')
+        protMonoRes.inputVolumes.set(protImport)
+        protMonoRes.inputVolumes.setExtended('outputVolume')
+        protMonoRes.Mask.set(protMask)
+        protMonoRes.Mask.setExtended('outputMask')
         loadProtocolConf(protMonoRes)
         project.saveProtocol(protMonoRes)
 

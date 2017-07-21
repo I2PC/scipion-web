@@ -119,7 +119,7 @@ function callPaintObjTree(){
 		type : "GET",
 		url : URL,
 		dataType: "html",
-		async: false,
+		async : false,
 		success : function(data) {
 			$("ul#browser").html(data)
 		}

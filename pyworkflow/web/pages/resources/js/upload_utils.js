@@ -69,7 +69,7 @@ function browseUpload(paramName){
 		type : "GET",
 		url : URL,
 		dataType : "html",
-		async: false,
+		async : false,
 		success : function(html) {
 			new Messi(html, {
 				title : 'Select file',
