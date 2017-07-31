@@ -446,7 +446,7 @@ def browse_objects(request):
                        "nameId": obj.getNameId(),
                        "objParentName": objParent.getRunName(),
                        "objId": obj.getObjId(),
-                       "info": str(obj),
+                       "info": unicode(obj),
                        "objects": []}
             # Let's set manually now the projectPath
             # Quick fix to have absolute paths for the objects
@@ -454,7 +454,7 @@ def browse_objects(request):
             for child in obj.iterItems():
                 obj_context = {"nameId": child.getNameId(),
                                "objId": child.getObjId(),
-                               "info": str(child)}
+                               "info": unicode(child)}
                 context["objects"].append(obj_context)
             objs[obj.getObjId()] = context
 
