@@ -33,6 +33,7 @@ from django.shortcuts import render_to_response
 import pyworkflow.utils as pwutils
 from pyworkflow.em.packages.xmipp3 import XmippProtMonoRes, ProtImportMask, \
     XmippProtCreateMask3D
+from pyworkflow.em.packages.resmap import ProtResMap
 from pyworkflow.tests.tests import DataSet
 from pyworkflow.utils.utils import prettyDelta
 from pyworkflow.utils import makeFilePath
@@ -87,7 +88,7 @@ Local_Resolution = [
     {"tag": "section", "text": "3. Analysis with ResMap", "children": [
         {"tag": "protocol", "value": "XmippProtCreateMask3D", "text": "xmipp3 - create 3D mask"},
         {"tag": "protocol", "value": "ProtResMap", "text": "resmap - local resolution"},
-        {"tag": "protocol", "value": "XmippProtMonoRes", "text": "xmipp - local resolution"}
+        {"tag": "protocol", "value": "XmippProtMonoRes", "text": "monores - local resolution"}
         ]}]
         ''')
         f.close()
@@ -136,32 +137,34 @@ def create_resmap_project(request):
             protImport = project.newProtocol(ProtImportVolumes, objLabel='import volumes')
             project.saveProtocol(protImport)
 
-        # 2. ResMap 
+	# 2. Mask
+        protMask = project.newProtocol(XmippProtCreateMask3D)
+        protMask.inputVolume.set(protImport)
+        protMask.inputVolume.setExtended('outputVolume')
+        setProtocolParams(protMask, testDataKey)
+        project.saveProtocol(protMask)
+
+        # 3. ResMap
         protResMap = project.newProtocol(ProtResMap)
         protResMap.setObjLabel('resmap - local resolution')
         protResMap.inputVolume.set(protImport)
         protResMap.inputVolume.setExtended('outputVolume')
-        loadProtocolConf(protResMap)
+        protResMap.applyMask.set(True)
+        protResMap.maskVolume.set(protMask)
+        protResMap.maskVolume.setExtended('outputMask')
+        setProtocolParams(protResMap, testDataKey)
         project.saveProtocol(protResMap)
-
-        # 3. Mask for monoRes
-        protMask = project.newProtocol(XmippProtCreateMask3D)
-        # protMask.setObjLabel(' - local resolution')
-        protMask.inputVolume.set(protImport)
-        protMask.inputVolume.setExtended('outputVolume')
-        loadProtocolConf(protMask)
-        project.saveProtocol(protMask)
 
         # 4. MonoRes
         protMonoRes = project.newProtocol(XmippProtMonoRes)
-        protMonoRes.setObjLabel('xmipp - local resolution')
+        protMonoRes.setObjLabel('monores - local resolution')
         protMonoRes.inputVolumes.set(protImport)
         protMonoRes.inputVolumes.setExtended('outputVolume')
         protMonoRes.Mask.set(protMask)
         protMonoRes.Mask.setExtended('outputMask')
-        loadProtocolConf(protMonoRes)
+        setProtocolParams(protMonoRes, testDataKey)
         project.saveProtocol(protMonoRes)
-
+	
     return HttpResponse(content_type='application/javascript')
 
 
@@ -179,9 +182,14 @@ def getAttrTestFile(key):
                 }
 
     if key == "t20s_proteasome":
-        attr = {"file": resmap.getFile("t20s"),
+        attr = {"file": resmap.getFile("t20s_full"),
                 "samplingRate": 0.98,
                 }
+
+    if key == "betagal":
+	attr = {"file": resmap.getFile("betagal_map"),
+		"samplingRate": 0.637,
+		}
 
     return attr
 
@@ -221,6 +229,63 @@ def resmap_content(request):
 
     return render_to_response('resmap_content.html', context)
 
+def setProtocolParams(protocol, key):
+    # Here we set protocol parameters for each test data
+    if key:
+        cls = type(protocol)
+
+        if issubclass(cls, XmippProtCreateMask3D):
+            if key == "fcv":
+                attrs = {"threshold": 0.8
+                         }
+            if key == "betagal":
+                attrs = {"threshold": 0.047
+                         }
+            if key == "t20s_proteasome":
+                attrs = {"threshold": 0.008
+                         }
+
+        elif issubclass(cls, ProtResMap):
+            if key == "fcv":
+                attrs = {"prewhitenAng": 12.52,
+                         "prewhitenRamp": 0.97,
+                         "stepRes": 0.25
+                         }
+            if key == "betagal":
+                attrs = {"prewhitenAng": 4.94,
+                         "prewhitenRamp": 1.0,
+                         "stepRes": 0.25,
+                         "minRes": 1.0,
+                         "maxRes": 5.0
+                         }
+            if key == "t20s_proteasome":
+                attrs = {"prewhitenAng": 7.92,
+                         "prewhitenRamp": 1.0,
+                         "stepRes": 0.25,
+                         "minRes": 1.0,
+                         "maxRes": 6.0
+                         }
+
+        elif issubclass(cls, XmippProtMonoRes):
+            if key == "fcv":
+                attrs = {"symmetry": "I",
+                         "stepSize": 0.25
+                         }
+            if key == "betagal":
+                attrs = {"symmetry": "d2",
+                         "maxRes": 5.0
+                         }
+
+            if key == "t20s_proteasome":
+                attrs = {"symmetry": "c7",
+                         "stepSize": 0.25,
+                         "maxRes": 6.0
+                         }
+
+        for key, value in attrs.iteritems():
+            getattr(protocol, key).set(value)
+
+    loadProtocolConf(protocol)
 
 def getToolImagesURL():
 
