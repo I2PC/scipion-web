@@ -31,11 +31,12 @@ from pyworkflow import VERSION_1_1
 import pyworkflow.protocol.params as params
 from pyworkflow.utils import getExt
 from pyworkflow.em.protocol.protocol_3d import ProtAnalysis3D
-from .convert import ImageHandler
+from pyworkflow.em import ImageHandler
 from collections import OrderedDict
 from pyworkflow.em.packages.xmipp3 import readSetOfVolumes
+import numpy as np
+import pyworkflow.em.metadata as md
 
-       
 """
 Bsoft program: blocres
 
@@ -91,27 +92,26 @@ Bsoft version 1.9.0-20150223 (64 bit)
 OUTPUT_RESOLUTION_FILE = 'resolutionMap.map'
 
 # RESOLUTION CRITERIA
-CRITERION_FSC  = 0
-CRITERION_DPR  = 1
+CRITERION_FSC = 0
+CRITERION_DPR = 1
 CRITERION_SSNR = 2
-CRITERION_RAB  = 3
+CRITERION_RAB = 3
 
 CRITERION_CHOICES = OrderedDict()
 
-CRITERION_CHOICES[CRITERION_FSC]  = 'FSC'
-CRITERION_CHOICES[CRITERION_DPR]  = 'DPR'
+CRITERION_CHOICES[CRITERION_FSC] = 'FSC'
+CRITERION_CHOICES[CRITERION_DPR] = 'DPR'
 CRITERION_CHOICES[CRITERION_SSNR] = 'SSNR'
-CRITERION_CHOICES[CRITERION_RAB]  = 'RAB'
+CRITERION_CHOICES[CRITERION_RAB] = 'RAB'
 
-PAD_NONE  = 0
-PAD_BOX  = 1
+PAD_NONE = 0
+PAD_BOX = 1
 PAD_SHELL = 2
-
 
 PAD_CHOICES = OrderedDict()
 
-PAD_CHOICES[PAD_NONE]  = 'None'
-PAD_CHOICES[PAD_BOX]  = 'Box'
+PAD_CHOICES[PAD_NONE] = 'None'
+PAD_CHOICES[PAD_BOX] = 'Box'
 PAD_CHOICES[PAD_SHELL] = 'Shell'
 
 
@@ -121,18 +121,19 @@ class BsoftProtBlocres(ProtAnalysis3D):
     _label = 'blocres'
     _version = VERSION_1_1
 
-    #def __init__(self, **args):
-        #ProtAnalysis3D.__init__(self, **args)
+    def __init__(self, **args):
+        ProtAnalysis3D.__init__(self, **args)
+        self.halfVolumes = True
 
-    #--------------------------- DEFINE param functions --------------------------------------------
+    # --------------------------- DEFINE param functions --------------------------------------------
     def _defineParams(self, form):
         form.addSection(label='Input')
-        form.addParam('half1', params.PointerParam,
+        form.addParam('inputVolume', params.PointerParam,
                       pointerClass='Volume',
                       label="Half 1",
                       help="""Select first half volume to compute the local resolution.
                       """)
-        form.addParam('half2', params.PointerParam,
+        form.addParam('inputVolume2', params.PointerParam,
                       pointerClass='Volume',
                       label="Half 2",
                       help="""Select first half volume to compute the local resolution.
@@ -149,7 +150,8 @@ class BsoftProtBlocres(ProtAnalysis3D):
                       label='Shell',
                       help="""Shell width for determining radial resolution (pixels/voxels).""")
         line = form.addLine('Resolution Criterion')
-        line.addParam('resolutionCriterion', params.EnumParam, choices=CRITERION_CHOICES.values(),
+        line.addParam('resolutionCriterion', params.EnumParam,
+                      choices=CRITERION_CHOICES.values(),
                       default=CRITERION_FSC,
                       help="""Resolution criterion: FSC = Fourier Shell Correlation (default),
         	                DPR = Differential Phase Residual, SSNR = Spectral Signal-to-Noise Ratio,
@@ -169,14 +171,15 @@ class BsoftProtBlocres(ProtAnalysis3D):
         form.addParam('maxresolution', params.FloatParam, default=2,
                       label='Maximum Resolution',
                       help="""Maximum frequency available in the data (angstrom)""")
-        form.addParam('fill', params.IntParam, allowsNull=True,
+        form.addParam('fill', params.IntParam, allowsNull=True, default=0,
                       label='Fill',
                       help="""Value to fill the background (non-masked regions; default 0).
                           """)
         form.addParam('pad', params.EnumParam, choices=PAD_CHOICES.values(),
                       default=PAD_BOX,
                       label='Padding Factor',
-                      help="""Resolution box padding factor (0 = none, default: 1 (box) and 0 (shell)).
+                      help="""Resolution box padding factor
+                       (0 = none, default: 1 (box) and 0 (shell)).
                           """)
         form.addParam('symmetry', params.StringParam, allowsNull=True,
                       default='',
@@ -186,24 +189,24 @@ class BsoftProtBlocres(ProtAnalysis3D):
                       label='Smooth',
                       help="""Smooth the shell edge.""")
 
-
-    #--------------------------- INSERT steps functions --------------------------------------------
+    # --------------------------- INSERT steps functions --------------------------------------------
     def _insertAllSteps(self):
         # Insert processing steps
-        self.fnvol1 = self.half1.get().getFileName()
-        self.fnvol2 = self.half2.get().getFileName()
+        self.fnvol1 = self.inputVolume.get().getFileName()
+        self.fnvol2 = self.inputVolume2.get().getFileName()
         if self.mask.get().getFileName() != '':
             self.fnmask = self.mask.get().getFileName()
 
-        self._insertFunctionStep('convertInputStep')
-        self._insertFunctionStep('resolutionStep')
-        self._insertFunctionStep('createOutputStep')
+        convertId = self._insertFunctionStep('convertInputStep')
+        ResId = self._insertFunctionStep('resolutionStep',
+                                         prerequisites=[convertId])
+        self._insertFunctionStep('createOutputStep', prerequisites=[ResId])
 
-    #--------------------------- STEPS functions --------------------------------------------   
+    # --------------------------- STEPS functions --------------------------------------------
     def convertInputStep(self):
         # blocres works with .map
-        vol1Fn = self.half1.get().getFileName()
-        vol2Fn = self.half2.get().getFileName()
+        vol1Fn = self.inputVolume.get().getFileName()
+        vol2Fn = self.inputVolume2.get().getFileName()
         if self.mask.get().getFileName() != '':
             maskFn = self.mask.get().getFileName()
 
@@ -222,17 +225,17 @@ class BsoftProtBlocres(ProtAnalysis3D):
                 self.fnmask = self._getTmpPath('mask.map')
                 ImageHandler().convert(maskFn, self.fnmask)
 
-
     def resolutionStep(self):
         """ blocres parameters. """
-        sampling = self.half1.get().getSamplingRate()
-        #Actions
-        params =  ' -v 1'  # No Verbose
-        params += ' -criterion %s' % CRITERION_CHOICES[self.resolutionCriterion.get()]
-        params += ' -box %f' %self.box.get()
+        sampling = self.inputVolume.get().getSamplingRate()
+        # Actions
+        params = ' -v 1'  # No Verbose
+        params += ' -criterion %s' % CRITERION_CHOICES[
+            self.resolutionCriterion.get()]
+        params += ' -box %f' % self.box.get()
         params += ' -shell %f' % self.shell.get()
 
-        #Parameters
+        # Parameters
         params += ' -sampling %f,%f,%f' % (sampling, sampling, sampling)
         params += ' -step %f' % self.step.get()
         params += ' -maxresolution %f' % self.maxresolution.get()
@@ -240,42 +243,44 @@ class BsoftProtBlocres(ProtAnalysis3D):
         if self.fill.get() != '':
             params += ' -fill %f' % self.fill.get()
 
-        #Parameters for local resolution
+        # Parameters for local resolution
         params += ' -pad %f' % self.pad.get()
-        if self.symmetry.get() !='':
+        if self.symmetry.get() != '':
             params += ' -symmetry %s' % self.symmetry.get()
         if self.smooth.get():
             params += ' -smooth'
-        if self.mask.get().getFileName() !='':
+        if self.mask.get().getFileName() != '':
             params += ' -Mask %s' % self.fnmask
 
         # Input
         # input halves and output map
-        params += ' %s %s %s' % (self.fnvol1, self.fnvol2, self._getExtraPath(OUTPUT_RESOLUTION_FILE))
+        params += ' %s %s %s' % (
+        self.fnvol1, self.fnvol2, self._getExtraPath(OUTPUT_RESOLUTION_FILE))
 
         self.runJob('blocres', params)
-        
+
     def createOutputStep(self):
         fnResolutionMap = self._getExtraPath(OUTPUT_RESOLUTION_FILE)
         self.volumesSet = self._createSetOfVolumes('resolutionVol')
-        self.volumesSet.setSamplingRate(self.half1.get().getSamplingRate())
+        self.volumesSet.setSamplingRate(
+            self.inputVolume.get().getSamplingRate())
         readSetOfVolumes(fnResolutionMap, self.volumesSet)
         self._defineOutputs(outputVolume=self.volumesSet)
-        self._defineSourceRelation(self.half1, self.volumesSet)
+        self._defineSourceRelation(self.inputVolume, self.volumesSet)
 
-#--------------------------- INFO functions -------------------------------------------- 
+    # --------------------------- INFO functions --------------------------------------------
     def _validate(self):
         errors = []
         return errors
-    
+
     def _citations(self):
         cites = ['Cardone2013']
         return cites
-    
+
     def _summary(self):
         summary = []
         return summary
-    
+
     def _methods(self):
         methods = []
         return methods

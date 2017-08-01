@@ -62,4 +62,4 @@ keywords = "Local Resolution",
 
 from pyworkflow.utils import parseBibTex
 
-_bibtex = parseBibTex(_bibtexStr)  
+_bibtex = parseBibTex(_bibtexStr)

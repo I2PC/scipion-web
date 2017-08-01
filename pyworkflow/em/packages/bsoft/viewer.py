@@ -30,15 +30,14 @@ from pyworkflow.viewer import ProtocolViewer
 from pyworkflow.em.data import Volume
 from protocol_blocres import BsoftProtBlocres
 from convert import getEnviron
-from pyworkflow.em.packages.xmipp3.viewer_resolution_monogenic_signal import XmippMonoResViewer
+from pyworkflow.em.viewer_local_resolution import localResolutionViewer
 
 
-#------------------------ Some views and  viewers ------------------------
-        
+# ------------------------ Some views and  viewers ------------------------
+
 
 class BsoftVolumeView(CommandView):
     def __init__(self, inputFile, **kwargs):
-
         # Small trick to handle .vol Spider volumes
         if inputFile.endswith('.vol'):
             inputFile += ":spi"
@@ -46,11 +45,11 @@ class BsoftVolumeView(CommandView):
         CommandView.__init__(self, 'bshow "%s" &' % inputFile,
                              env=getEnviron(), **kwargs)
 
-             
+
 class BsoftViewer(Viewer):
     _environments = [DESKTOP_TKINTER]
     _targets = [Volume]
-    
+
     def __init__(self, **kwargs):
         Viewer.__init__(self, **kwargs)
 
@@ -61,7 +60,7 @@ class BsoftViewer(Viewer):
         BsoftVolumeView(fn).show()
 
 
-class BsoftViewerBlocres(XmippMonoResViewer):
+class BsoftViewerBlocres(localResolutionViewer):
     """
     Visualization tools for blocres results.
 
@@ -71,14 +70,14 @@ class BsoftViewerBlocres(XmippMonoResViewer):
     """
     _label = 'viewer blocres'
     _targets = [BsoftProtBlocres]
-    _environments = [DESKTOP_TKINTER]
 
     def __init__(self, **kwargs):
-        _label = 'viewer MonoRes'
-        _targets = [BsoftProtBlocres]
-        _environments = [DESKTOP_TKINTER]
-        from protocol_blocres import OUTPUT_RESOLUTION_FILE
-        print OUTPUT_RESOLUTION_FILE
         ProtocolViewer.__init__(self, **kwargs)
+        from protocol_blocres import OUTPUT_RESOLUTION_FILE
+        localResolutionViewer.OUTPUT_RESOLUTION_FILE = OUTPUT_RESOLUTION_FILE
+        localResolutionViewer.OUTPUT_RESOLUTION_FILE_CHIMERA = OUTPUT_RESOLUTION_FILE
+        localResolutionViewer.halves = True
+        localResolutionViewer.backgroundValue = 0
+
 
 
