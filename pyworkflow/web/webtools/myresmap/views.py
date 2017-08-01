@@ -31,6 +31,7 @@ from django.http import HttpResponse
 from django.shortcuts import render_to_response
 
 import pyworkflow.utils as pwutils
+from pyworkflow.em.packages.bsoft import BsoftProtBlocres
 from pyworkflow.em.packages.xmipp3 import XmippProtMonoRes, ProtImportMask, \
     XmippProtCreateMask3D
 from pyworkflow.em.packages.resmap import ProtResMap
@@ -138,7 +139,17 @@ def create_resmap_project(request):
             protImport = project.newProtocol(ProtImportVolumes, objLabel='import volumes')
             project.saveProtocol(protImport)
 
-	# 2. Mask
+            # BlocRes
+            protBlocRes = project.newProtocol(BsoftProtBlocres)
+            # protBlocRes.inputVolume.set(protImport)
+            # protBlocRes.inputVolume.setExtended('outputVolume.1')
+            # protBlocRes.inputVolume2.set(protImport)
+            # protBlocRes.inputVolume2.setExtended('outputVolume.2')
+            setProtocolParams(protBlocRes, None)
+            project.saveProtocol(protBlocRes)
+
+
+        # 2. Mask
         protMask = project.newProtocol(XmippProtCreateMask3D)
         protMask.inputVolume.set(protImport)
         protMask.inputVolume.setExtended('outputVolume')
@@ -177,20 +188,15 @@ def getAttrTestFile(key):
                 "samplingRate": 2.33,
                 }
 
-    if key == "mito_ribosome":
-        attr = {"file": resmap.getFile("mito_ribo"),
-                "samplingRate": 1.34,
-                }
-
     if key == "t20s_proteasome":
         attr = {"file": resmap.getFile("t20s_full"),
                 "samplingRate": 0.98,
                 }
 
     if key == "betagal":
-	attr = {"file": resmap.getFile("betagal_map"),
-		"samplingRate": 0.637,
-		}
+        attr = {"file": resmap.getFile("betagal_map"),
+                "samplingRate": 0.637,
+                }
 
     return attr
 
