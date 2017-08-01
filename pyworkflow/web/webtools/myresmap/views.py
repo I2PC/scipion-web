@@ -85,10 +85,11 @@ Local_Resolution = [
     {"tag": "section", "text": "2. Import your data", "children": [
         {"tag": "protocol", "value": "ProtImportVolumes", "text": "import volumes", "icon": "bookmark.png"},
         {"tag": "protocol", "value": "ProtImportMask", "text": "import mask", "icon": "bookmark.png"}]},
-    {"tag": "section", "text": "3. Analysis with ResMap", "children": [
+    {"tag": "section", "text": "3. Local resolution tools", "children": [
         {"tag": "protocol", "value": "XmippProtCreateMask3D", "text": "xmipp3 - create 3D mask"},
         {"tag": "protocol", "value": "ProtResMap", "text": "resmap - local resolution"},
-        {"tag": "protocol", "value": "XmippProtMonoRes", "text": "monores - local resolution"}
+        {"tag": "protocol", "value": "XmippProtMonoRes", "text": "monores - local resolution"},
+        {"tag": "protocol", "value": "BsoftProtBlocres", "text": "bsoft - local resolution"}
         ]}]
         ''')
         f.close()
@@ -164,7 +165,7 @@ def create_resmap_project(request):
         protMonoRes.Mask.setExtended('outputMask')
         setProtocolParams(protMonoRes, testDataKey)
         project.saveProtocol(protMonoRes)
-	
+
     return HttpResponse(content_type='application/javascript')
 
 

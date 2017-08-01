@@ -27,21 +27,23 @@
 This package contains the protocols and data for BSOFT
 """
 
-from bibtex import _bibtex # Load bibtex dict with references
- 
+from bibtex import _bibtex  # Load bibtex dict with references
+
 _logo = "bsoft_logo.png"
 _references = ['Heymann2007']
 
-
 from protocol_particle_pick import BsoftProtParticlePicking
 from protocol_bfilter import BsoftProtBfilter
+from protocol_blocres import BsoftProtBlocres
 
 from wizard import BsoftFilterParticlesWizard
 
+from viewer import BsoftViewerBlocres
 
 from convert import getEnviron, getVersion
+
 _environ = getEnviron()
 
 # Since bsoft is not installed by default,
 # remove for now the viewer
-#from viewer import BsoftViewer
+# from viewer import BsoftViewer

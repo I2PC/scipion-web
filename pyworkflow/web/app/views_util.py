@@ -1091,6 +1091,11 @@ def loadProtocolConf(protocol):
     protocol
     """
     from pyworkflow.web.pages.settings import WEB_CONF
+
+    from pyworkflow.viewer import Viewer
+    # If it is a viewer do not load any config
+    if issubclass(protocol.getClass(), Viewer): return
+
     protDict = WEB_CONF['PROTOCOLS'].get(protocol.getClassName(), None)
 
     if protDict:
