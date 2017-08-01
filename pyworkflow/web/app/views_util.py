@@ -398,7 +398,7 @@ def browse_relations(request):
 
         objs = {}
         for obj in project.getRelatedObjects(relationName, item, direction):
-            objs[obj.getObjId()] = {"nameId": obj.getNameId(), "info": str(obj)}
+            objs[obj.getObjId()] = {"nameId": obj.getNameId(), "info":unicode(obj)}
 
         jsonStr = json.dumps(objs, ensure_ascii=False)
         return HttpResponse(jsonStr, content_type='application/javascript')
@@ -446,7 +446,7 @@ def browse_objects(request):
                        "nameId": obj.getNameId(),
                        "objParentName": objParent.getRunName(),
                        "objId": obj.getObjId(),
-                       "info": str(obj),
+                       "info": unicode(obj),
                        "objects": []}
             # Let's set manually now the projectPath
             # Quick fix to have absolute paths for the objects
@@ -454,7 +454,7 @@ def browse_objects(request):
             for child in obj.iterItems():
                 obj_context = {"nameId": child.getNameId(),
                                "objId": child.getObjId(),
-                               "info": str(child)}
+                               "info": unicode(child)}
                 context["objects"].append(obj_context)
             objs[obj.getObjId()] = context
 
