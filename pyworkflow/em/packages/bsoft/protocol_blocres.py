@@ -194,7 +194,7 @@ class BsoftProtBlocres(ProtAnalysis3D):
         # Insert processing steps
         self.fnvol1 = self.inputVolume.get().getFileName()
         self.fnvol2 = self.inputVolume2.get().getFileName()
-        if self.mask.get().getFileName() != '':
+        if self.mask.hasValue():
             self.fnmask = self.mask.get().getFileName()
 
         convertId = self._insertFunctionStep('convertInputStep')
@@ -207,23 +207,27 @@ class BsoftProtBlocres(ProtAnalysis3D):
         # blocres works with .map
         vol1Fn = self.inputVolume.get().getFileName()
         vol2Fn = self.inputVolume2.get().getFileName()
-        if self.mask.get().getFileName() != '':
+
+        self.fnvol1 = self._convertToMap(vol1Fn, 'half1.map')
+        self.fnvol2 = self._convertToMap(vol2Fn, 'half2.map')
+
+        if self.mask.hasValue():
             maskFn = self.mask.get().getFileName()
+            self.fnmask = self._convertToMap(maskFn, 'mask.map')
+        else:
+            self.fnmask = None
 
-        extVol1 = getExt(vol1Fn)
-        extVol2 = getExt(vol2Fn)
+    def _convertToMap(self, volumeFile, mapName):
 
-        if self.mask.get().getFileName() != '':
-            extMask = getExt(maskFn)
+        ext = getExt(volumeFile)
 
-        if (extVol1 != '.map') or (extVol2 != '.map') or (extMask != '.map'):
-            self.fnvol1 = self._getTmpPath('half1.map')
-            self.fnvol2 = self._getTmpPath('half2.map')
-            ImageHandler().convert(vol1Fn, self.fnvol1)
-            ImageHandler().convert(vol2Fn, self.fnvol2)
-            if self.mask.get().getFileName() != '':
-                self.fnmask = self._getTmpPath('mask.map')
-                ImageHandler().convert(maskFn, self.fnmask)
+        if (ext !='.map'):
+
+            map = self._getTmpPath(mapName)
+            ImageHandler().convert(volumeFile, map)
+            return map
+        else:
+            return volumeFile
 
     def resolutionStep(self):
         """ blocres parameters. """
@@ -249,7 +253,7 @@ class BsoftProtBlocres(ProtAnalysis3D):
             params += ' -symmetry %s' % self.symmetry.get()
         if self.smooth.get():
             params += ' -smooth'
-        if self.mask.get().getFileName() != '':
+        if self.fnmask:
             params += ' -Mask %s' % self.fnmask
 
         # Input
