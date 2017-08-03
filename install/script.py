@@ -392,7 +392,7 @@ sklearn = env.addModule(
 
 env.addPackage('bsoft', version='1.8.8',
                tar='bsoft1_8_8_Fedora_12.tgz',
-               default = False)
+               default = True)
 
 env.addPackage('bsoft', version='1.9.0',
                tar='bsoft1_9_0_Fedora_20.tgz',

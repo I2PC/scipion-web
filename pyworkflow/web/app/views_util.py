@@ -1213,7 +1213,7 @@ def dateNaiveToAware(naiveDate):
 
     print repr(datetime.date)
 
-    if not isinstance(newDate, datetime):
+    if not isinstance(newDate, datetime.datetime):
         newDate = strDate(newDate)
 
     loacalizeDate = serverTZ.localize(newDate)
