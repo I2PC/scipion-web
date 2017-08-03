@@ -20,7 +20,7 @@
  * 02111-1307  USA
  *
  *  All comments concerning this program package may be sent to the
- *  e-mail address 'jmdelarosa@cnb.csic.es'
+ *  e-mail address 'scipion@cnb.csic.es'
  *
  ******************************************************************************/
 
@@ -110,7 +110,7 @@ function createMovProject(elm) {
 	$.ajax({
 		type : "GET",
 		url : URL,
-		async: false,
+		async : false,
 		success : function() {
 			var title = "ACCESS CODE"
 			

@@ -20,7 +20,7 @@
  * 02111-1307  USA
  *
  *  All comments concerning this program package may be sent to the
- *  e-mail address 'jmdelarosa@cnb.csic.es'
+ *  e-mail address 'scipion@cnb.csic.es'
  *
  ******************************************************************************/
 /******************************************************************************
@@ -160,7 +160,7 @@ function callPaintGraph(nodeSource, type) {
 		type : "GET",
 		url : URL,
 		dataType : "json",
-		async: false,
+		async : true,
 		success : function(json) {
 			processNodes(json, "runs", nameId, type)
 		}
@@ -180,7 +180,7 @@ function callPaintObjGraph(){
 		type : "GET",
 		url : URL,
 		dataType : "json",
-		async: false,
+		async : true,
 		success : function(json) {
 			// Paint the nodes
 			var aux = [];
@@ -205,7 +205,7 @@ function callPaintObjGraph(){
 				type : "GET",
 				url : URL,
 				dataType : "json",
-				async: false,
+				async : true,
 				success : function(json) {
 					processNodes(json, "objects", "graph_")
 				}

@@ -1,10 +1,11 @@
 {% extends "layouts/100.html" %}
 
-{% block title %}Scipion - My First Map{% endblock %}
+{% block title %}Scipion - My first map{% endblock %}
 
 {% block css %}
     {{ block.super }}
 	<link href="{{messi_css}}" rel="stylesheet" type="text/css" />
+	<link href="{{font_awesome}}" rel="stylesheet" type="text/css" />
 
 {% endblock %}
 
@@ -24,63 +25,57 @@
 	{% include '_scipion_context.html' %}
 </script>
 
-	<div id="box">
-		<h1>My first map</h1>
-		<br />
-		<h4 style="text-align:justify;">Use this web tool to obtain an initial 3D map
+	<h1>My first map</h1>
+	<div class="row">
+		<div class="col-md-12 col-sm-12 col-xs-12">
+			<p style="text-align:justify;">
+			Use this web tool to obtain an initial 3D map
 			from your average images. Several methods are available from different packages (Xmipp3 and Eman2).
 			At the end of the processing you will be able to compare and download the output volumes from the different methods.
-			<br />
-			It is recommended to read the
+			</p>
+			<p>It is recommended to read the
 			<a href="https://github.com/I2PC/scipion/wiki/User-Documentation#tutorials" style="color:firebrick;" target="_blank">
 				"Initial model estimation" tutorial
-			</a> before using this tool.
-		</h4>
-
-		<div id="minibox">
-			<div id="steps">
-				<h2>
-					<strong>
-						Choose your project
-					</strong>
-				</h2>
-			</div>
-			<br />
-			<div id="lineOpt">
-				<p>Create an empty project</p>
-				<span id="buttons">
-					<!-- CREATE NEW PROJECT -->
-					<a href="javascript:serviceProjForm();">
-						<button class="btn btn_wide button2 primary_inv" type="button">
-							Create
-						</button>
-					</a>
-				</span>
-			</div>
-			<br />
-			<div id="lineOpt">
-				<p>Create a project with Test data</p>
-				<span id="buttons">
-					<!-- TEST DATA -->
-					<a href="javascript:serviceTestDataForm();">
-						<button class="btn btn_wide button2 primary_inv" type="button">
-							Test data
-						</button>
-					</a>
-				</span>
-			</div>
-			<br />
-			<div id="lineOpt">
-				<p>Explore project with Test data (read-only)</p>
-				<span id="buttons">
-					<!-- EXAMPLE PROJECT -->
-					<a href="javascript:goExampleForm();">
-						<button class="btn btn_wide button2 primary_inv" type="button">
-							Explore
-						</button>
-					</a>
-				</span>
-			</div>
+			</a> before using this tool.</p>
 		</div>
 	</div>
+	<img class="img-responsive center-block" src="{{toolImages}}/intro.png"/>
+    <div class="row">
+	 	<div class="col-md-4 col-sm-6 col-xs-12">
+			<div class="wrap-item text-center">
+				<h1 class="pad-bt15"><i class="fa fa-eye" aria-hidden="true"></i></h1>
+				<!-- EXAMPLE PROJECT -->
+				<a href="javascript:goExampleForm();">
+					<button class="btn btn_wide button2 primary_inv" type="button">
+					Explore
+					</button>
+				</a>
+				<p>Click here to explore finished sample projects (read-only)</p>
+			</div>
+		</div>
+		<div class="col-md-4 col-sm-6 col-xs-12">
+			<div class="wrap-item text-center">
+				<h1 class="pad-bt15"><i class="fa fa-flask" aria-hidden="true"></i></h1>
+				<!-- TEST DATA -->
+				<a href="javascript:serviceTestDataForm();">
+					<button class="btn btn_wide button2 primary_inv" type="button">
+						Try it!
+					</button>
+				</a>
+				<p>Click here to create a project with some of our test data already imported.</p>
+			</div>
+		</div>
+        <div class="col-md-4 col-sm-6 col-xs-12">
+            <div class="wrap-item text-center">
+		  		<h1 class="pad-bt15"><i class="fa fa-plus-circle" aria-hidden="true"></i></h1>
+				<!-- CREATE NEW PROJECT -->
+				<a href="javascript:serviceProjForm();">
+					<button class="btn btn_wide button2 primary_inv" type="button">
+					Use it!
+					</button>
+				</a>
+				<p>Click here to create an empty project where you will provide your own data</p>
+			</div>
+	  	</div>
+    </div>
 {% endblock %}

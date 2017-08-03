@@ -30,7 +30,7 @@ import java.awt.Point;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
-import javax.swing.JTable;
+import javax.swing.*;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
@@ -51,8 +51,8 @@ import xmipp.viewer.windows.ImagesWindowFactory;
 
 public class MetadataTableModel extends MetadataGalleryTableModel {
 	private static final long serialVersionUID = 1L;
-
-	int sortColumnIndex = -1;
+    final static int NO_COLUMN_INDEX = -1;
+	int sortColumnIndex = NO_COLUMN_INDEX;
 	boolean ascending = true;
         
 
@@ -443,14 +443,19 @@ public class MetadataTableModel extends MetadataGalleryTableModel {
 		public String getToolTipText(MouseEvent e) {
 			java.awt.Point p = e.getPoint();
 			int index = columnModel.getColumnIndexAtX(p.x);
-			if (index > -1)
-				return visibleLabels.get(index).comment;
+			if (index > -1){
+                int col =  table.convertColumnIndexToModel(index);
+                return visibleLabels.get(col).comment;
+            }
+
 			return null;
 		}
 	}
 
 	public class MetadataColumnListener extends MouseAdapter {
-		protected JTable table;
+        public static final String ASCENDING_PREFIX = "\u25B2 ";
+        public static final String DESCENDING_PREFIX = "\u25BC ";
+        protected JTable table;
 
 		public MetadataColumnListener(JTable t) {
 			table = t;
@@ -461,9 +466,13 @@ public class MetadataTableModel extends MetadataGalleryTableModel {
 			TableColumnModel colModel = table.getColumnModel();
 			// Get the clicked column index
 			int columnModelIndex = colModel.getColumnIndexAtX(e.getX());
-			// Take into account a possible reordering of columns
-			int modelIndex = colModel.getColumn(columnModelIndex)
-					.getModelIndex();
+
+            // Get the column
+            final TableColumn column = colModel.getColumn(columnModelIndex);
+
+            // Take into account a possible reordering of columns
+			int modelIndex = column.getModelIndex();
+
 			// Take into account possible invisible columns indexing
 			modelIndex = data.getVisibleColumnIndex(modelIndex);
 			if (modelIndex < 0)
@@ -471,15 +480,60 @@ public class MetadataTableModel extends MetadataGalleryTableModel {
 			if (sortColumnIndex == modelIndex)
 				ascending = !ascending;
 			else
-				sortColumnIndex = modelIndex;
-			data.sortMd(data.labels.get(sortColumnIndex), ascending);
-			clearSelection();
-			updateTableSelection(table);
-			cache.clear();
 
-			// fireTableDataChanged();
+                // Remove previous sorting icon
+                removePreviousSortingIcon();
+                sortColumnIndex = modelIndex;
+
+
+            final String columnName = data.labels.get(sortColumnIndex).labelName;
+
+            column.setHeaderValue( "\u231B " + columnName);
+            Runnable sort = new Runnable() {
+                @Override
+                public void run() {
+
+                    data.sortMd(data.labels.get(sortColumnIndex), ascending);
+                    column.setHeaderValue((ascending? ASCENDING_PREFIX : DESCENDING_PREFIX)+columnName);
+                    table.getTableHeader().repaint();
+                    clearSelection();
+                    updateTableSelection(table);
+                    cache.clear();
+                    table.repaint();
+
+                }
+            };
+
+            SwingUtilities.invokeLater(sort);
+
 		}
-	}
+
+        protected void removePreviousSortingIcon() {
+
+            // If there is a previous column sorted
+            if (sortColumnIndex != NO_COLUMN_INDEX){
+                // Get the column model
+                TableColumnModel colModel = table.getColumnModel();
+
+                // For each column
+                for (int i=0; i<colModel.getColumnCount();i++){
+                    TableColumn col = colModel.getColumn(i);
+                    String header = col.getHeaderValue().toString();
+
+                    // If it has the ascending prefix
+                    if (header.startsWith(ASCENDING_PREFIX) ){
+                        // remove it
+                        col.setHeaderValue(header.replaceFirst(ASCENDING_PREFIX, ""));
+                        return;
+                    } else if (header.startsWith(DESCENDING_PREFIX)) {
+                        // remove it
+                        col.setHeaderValue(header.replaceFirst(DESCENDING_PREFIX, ""));
+                        return;
+                    }
+                }
+            }
+        }
+    }
         
 	@Override
 	public int getIndex(int row, int col) {

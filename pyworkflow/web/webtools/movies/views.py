@@ -20,7 +20,7 @@
 # * 02111-1307  USA
 # *
 # *  All comments concerning this program package may be sent to the
-# *  e-mail address 'jmdelarosa@cnb.csic.es'
+# *  e-mail address 'scipion@cnb.csic.es'
 # *
 # **************************************************************************
 from os.path import exists
@@ -57,8 +57,16 @@ def service_movies(request):
                'movies_utils': movies_utils,
                }
 
+    context = getToolContext(context)
     context = base_grid(request, context)
     return render_to_response('movies_projects.html', context)
+
+
+def getToolContext(context):
+    imagesURL = getToolImagesURL()
+    resolutionContext = {'toolImages': imagesURL}
+    resolutionContext.update(context)
+    return resolutionContext
 
 
 def writeCustomMenu(customMenu):
@@ -132,7 +140,7 @@ def create_movies_project(request):
             protImport.magnification.set(attr['magnification'])
             protImport.samplingRate.set(attr['samplingRate'])
 
-            project.launchProtocol(protImport, wait=True, chdir=False)
+            project.launchProtocol(protImport, wait=True)
         else:
             protImport = project.newProtocol(ProtImportMovies, objLabel='import movies')
             project.saveProtocol(protImport)
@@ -175,7 +183,7 @@ def getAttrTestFile(key):
 
 def movies_content(request):
     projectName = request.GET.get('p', None)
-    path_files = getAbsoluteURL('resources_movies/img/')
+    path_files = getToolImagesURL()
     command = getSyncCommand(request)
 
     manager = getServiceManager(MOVIES_SERVICE)
@@ -220,3 +228,8 @@ def getSyncCommand(request):
     projectName = getVarFromRequest(request, PROJECT_NAME)
     command = "rsync -av --port 3333 YOUR_FOLDER_WITH_MICROGRAPHS/ %s::mws/%s" % (domain, projectName)
     return command
+
+
+def getToolImagesURL():
+
+    return getAbsoluteURL('resources_movies/img/')

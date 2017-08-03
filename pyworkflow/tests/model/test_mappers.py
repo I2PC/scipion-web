@@ -21,7 +21,7 @@
 # * 02111-1307  USA
 # *
 # *  All comments concerning this program package may be sent to the
-# *  e-mail address 'jmdelarosa@cnb.csic.es'
+# *  e-mail address 'scipion@cnb.csic.es'
 # *
 # **************************************************************************
 
@@ -42,7 +42,8 @@ from pyworkflow.mapper.sqlite_db import SqliteDb
 
 
 class TestSqliteMapper(BaseTest):
-    
+    _labels = [SMALL]
+
     @classmethod
     def setUpClass(cls):
         setupTestOutput(cls)
@@ -175,6 +176,10 @@ class TestSqliteMapper(BaseTest):
             # Note compare the scalar objects, which have a well-defined comparison
             if isinstance(a1, Scalar):
                 self.assertEqual(a1, a2)
+
+        # Test select all batch approach
+        allBatch = mapper2.selectAllBatch()
+
             
         # Test relations
         childs = mapper2.getRelationChilds(relName, i)
@@ -219,11 +224,57 @@ class TestSqliteMapper(BaseTest):
         #Check the mapper was properly stored when
         # set to None and the _extended property cleanned
         self.assertIsNone(p2.get())
-        
-        
+
+    def test_removeFromLists(self):
+        """ Check that lists are properly stored after removing some elements. """
+        fn = self.getOutputPath("lists.sqlite")
+
+        print ">>> Using db: ", fn
+
+        # Let's create a Mapper to store a simple List containing two integers
+        mapper = SqliteMapper(fn, globals())
+        iList = List()
+        i1 = Integer(4)
+        i2 = Integer(3)
+        iList.append(i1)
+        iList.append(i2)
+        # Store the list and commit changes to db, then close db.
+        mapper.store(iList)
+        mapper.commit()
+        mapper.close()
+
+        # Now let's open again the db with a different connection
+        # and load the previously stored list
+        mapper2 = SqliteMapper(fn, globals())
+        iList2 = mapper2.selectByClass('List')[0]
+        # Let's do some basic checks
+        self.assertEqual(iList2.getSize(), 2)
+        self.assertTrue(Integer(4) in iList2)
+        self.assertTrue(Integer(3) in iList2)
+
+        # Now remove one of the integers in the list
+        # check consistency in the list elements
+        iList2.remove(Integer(4))
+        self.assertEqual(iList2.getSize(), 1)
+        self.assertTrue(Integer(4) not in iList2)
+        self.assertTrue(Integer(3) in iList2)
+        # Store once again the new list with one element
+        mapper2.store(iList2)
+        mapper2.commit()
+        mapper2.close()
+
+        # Open the db and load the list once again
+        mapper3 = SqliteMapper(fn, globals())
+        iList3 = mapper3.selectByClass('List')[0]
+        # Check the same consistency before it was stored
+        self.assertEqual(iList3.getSize(), 1)
+        self.assertTrue(Integer(4) not in iList3)
+        self.assertTrue(Integer(3) in iList3)
+
         
 class TestSqliteFlatMapper(BaseTest):
     """ Some tests for DataSet implementation. """
+    _labels = [SMALL]
 
     @classmethod
     def setUpClass(cls):
@@ -248,13 +299,32 @@ class TestSqliteFlatMapper(BaseTest):
         dbName = self.getOutputPath('images.sqlite')
         print ">>> test_insertObjects: dbName = '%s'" % dbName
         mapper = SqliteFlatMapper(dbName, globals())
+        self.assertEqual(0, mapper.count())
+        self.assertEqual(0, mapper.maxId())
         n = 10
         
         for i in range(n):
             img = Image()
             img.setLocation(i+1, 'images.stk')
-            mapper.store(img)
-            
+            mapper.insert(img)
+
+        self.assertEqual(n, mapper.count())
+        self.assertEqual(n, mapper.maxId())
+
+        # Store one more image with bigger id
+        img = Image()
+        bigId = 1000
+        img.setLocation(bigId, 'images.stk')
+        img.setObjId(bigId)
+        mapper.insert(img)
+        self.assertEqual(bigId, mapper.maxId())
+
+        # Insert another image with None as id, it should take bigId + 1
+        img.setLocation(bigId+1, 'images.stk')
+        img.setObjId(None)
+        mapper.insert(img)
+        self.assertEqual(bigId+1, mapper.maxId())
+
         mapper.setProperty('samplingRate', '3.0')
         mapper.setProperty('defocusU', 1000)
         mapper.setProperty('defocusV', 1000)
@@ -273,23 +343,24 @@ class TestSqliteFlatMapper(BaseTest):
         
         self.assertEqual(mapper2.getProperty('samplingRate'), '3.0')
         self.assertEqual(mapper2.getProperty('defocusU'), '2000')
+
+        # Make sure that maxId() returns the proper value after loading db
+        self.assertEqual(bigId+1, mapper2.maxId())
         
     def test_emtpySet(self):
         dbName = self.getOutputPath('empty.sqlite')
-        #dbName = '/tmp/downloads.sqlite'
-        
         print ">>> test empty set: dbName = '%s'" % dbName
         # Check that writing an emtpy set do not fail
         objSet = Set(filename=dbName)      
         objSet.write()
         objSet.close()       
-        
         # Now let's try to open an empty set
         objSet = Set(filename=dbName)
         self.assertEqual(objSet.getSize(), 0)
         items = [obj.clone() for obj in objSet]
         self.assertEqual(len(items), 0)
-        
+
+
 class TestXmlMapper(BaseTest):
     
     @classmethod
@@ -316,6 +387,7 @@ class TestXmlMapper(BaseTest):
 
 class TestDataSet(BaseTest):
     """ Some tests for DataSet implementation. """
+    _labels = [SMALL]
 
     @classmethod
     def setUpClass(cls):
@@ -345,4 +417,3 @@ class TestDataSet(BaseTest):
         row = table.getRow(1)
         print row
         self.assertEqual(row.name, 'pepe', "Error updating name in row")
-        

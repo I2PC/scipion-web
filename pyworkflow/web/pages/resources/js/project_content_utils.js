@@ -20,7 +20,7 @@
  * 02111-1307  USA
  *
  *  All comments concerning this program package may be sent to the
- *  e-mail address 'jmdelarosa@cnb.csic.es'
+ *  e-mail address 'scipion@cnb.csic.es'
  *
  ******************************************************************************/
 /******************************************************************************
@@ -364,11 +364,11 @@ function refreshSelectedRuns(list_marked) {
 	var URL = getSubDomainURL() + '/save_selection/?mark='
 			+ listToString(list_marked)
 
-	$.ajax({
-		type : "GET",
-		url : URL,
-		async : false
-	});
+	// $.ajax({
+	// 	type : "GET",
+	// 	url : URL,
+	// 	async : false
+	// });
 }
 
 /** Graph Methods ********************************************** */
@@ -854,11 +854,11 @@ function updateGraphView(status) {
 	 * case, will be inactive.
 	 */
 	var URL = getSubDomainURL() + "/update_graph_view/?status=" + status + projectToGETParams()
-	$.ajax({
-		type : "GET",
-		url : URL,
-		async : false
-	});
+	// $.ajax({
+	// 	type : "GET",
+	// 	url : URL,
+	// 	async : false
+	// });
 }
 
 function editObject(objId) {
