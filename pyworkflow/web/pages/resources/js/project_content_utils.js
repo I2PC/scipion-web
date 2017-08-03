@@ -364,11 +364,11 @@ function refreshSelectedRuns(list_marked) {
 	var URL = getSubDomainURL() + '/save_selection/?mark='
 			+ listToString(list_marked)
 
-	$.ajax({
-		type : "GET",
-		url : URL,
-		async : false
-	});
+	// $.ajax({
+	// 	type : "GET",
+	// 	url : URL,
+	// 	async : false
+	// });
 }
 
 /** Graph Methods ********************************************** */
@@ -854,11 +854,11 @@ function updateGraphView(status) {
 	 * case, will be inactive.
 	 */
 	var URL = getSubDomainURL() + "/update_graph_view/?status=" + status + projectToGETParams()
-	$.ajax({
-		type : "GET",
-		url : URL,
-		async : false
-	});
+	// $.ajax({
+	// 	type : "GET",
+	// 	url : URL,
+	// 	async : false
+	// });
 }
 
 function editObject(objId) {

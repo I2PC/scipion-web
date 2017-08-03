@@ -235,8 +235,8 @@ def formatProvider(provider, mode):
         info = objInfo["values"]
 
         if mode == "runs":
-            status = info[0]
-            time = info[1]
+            status = info[1]
+            time = info[3]
             label = info[2]
             objs.append((objId, [objId, name, status, time, label]))
 

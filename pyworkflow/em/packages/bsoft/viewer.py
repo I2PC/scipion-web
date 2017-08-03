@@ -26,17 +26,18 @@
 
 
 from pyworkflow.em.viewer import CommandView, Viewer, DESKTOP_TKINTER
+from pyworkflow.viewer import ProtocolViewer
 from pyworkflow.em.data import Volume
-
+from protocol_blocres import BsoftProtBlocres
 from convert import getEnviron
+from pyworkflow.em.viewer_local_resolution import localResolutionViewer
 
 
-#------------------------ Some views and  viewers ------------------------
-        
+# ------------------------ Some views and  viewers ------------------------
+
 
 class BsoftVolumeView(CommandView):
     def __init__(self, inputFile, **kwargs):
-
         # Small trick to handle .vol Spider volumes
         if inputFile.endswith('.vol'):
             inputFile += ":spi"
@@ -44,11 +45,11 @@ class BsoftVolumeView(CommandView):
         CommandView.__init__(self, 'bshow "%s" &' % inputFile,
                              env=getEnviron(), **kwargs)
 
-             
+
 class BsoftViewer(Viewer):
     _environments = [DESKTOP_TKINTER]
     _targets = [Volume]
-    
+
     def __init__(self, **kwargs):
         Viewer.__init__(self, **kwargs)
 
@@ -57,4 +58,26 @@ class BsoftViewer(Viewer):
 
         fn = obj.getFileName()
         BsoftVolumeView(fn).show()
+
+
+class BsoftViewerBlocres(localResolutionViewer):
+    """
+    Visualization tools for blocres results.
+
+    blocres is a bsoft package for computing the local resolution of 3D
+    density maps studied in structural biology, primarily by cryo-electron
+    microscopy (cryo-EM).
+    """
+    _label = 'viewer blocres'
+    _targets = [BsoftProtBlocres]
+
+    def __init__(self, **kwargs):
+        ProtocolViewer.__init__(self, **kwargs)
+        from protocol_blocres import OUTPUT_RESOLUTION_FILE
+        localResolutionViewer.OUTPUT_RESOLUTION_FILE = OUTPUT_RESOLUTION_FILE
+        localResolutionViewer.OUTPUT_RESOLUTION_FILE_CHIMERA = OUTPUT_RESOLUTION_FILE
+        localResolutionViewer.halves = True
+        localResolutionViewer.backgroundValue = 0
+
+
 

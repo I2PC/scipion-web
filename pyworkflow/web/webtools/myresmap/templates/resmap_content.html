@@ -9,14 +9,33 @@
 			<p>Upload and import your volume file by clicking on the <strong>import volumes</strong> box. Finally press "Execute"!</p>
 		</div>
 	</li>
+        <li class="tlypageguide_right" data-tourtarget="div[data-label*='mask']">
+                <div>
+                        <p>Click on the <strong>scipion - create 3d mask</strong> box.</p>
+                        <br />
+                        <p> Customize the parameters to create the mask and press "Execute"!</p>
+                </div>
+        </li>
 	<li class="tlypageguide_right" data-tourtarget="div[data-label*='resmap']">
 		<div>
 			<p>Click on the <strong>resmap - local resolution</strong> box.</p>
 			<br />
-			<p>Parameters can be easily customized. Two levels of usages are supported: Normal or Advanced, which
-         should be chosen according to your experience. Finally press "Execute"!</p>
+			<p>ResMap is software tool for computing the local resolution of 3D density maps studied in structural biology, primarily by cryo-electron
+			 microscopy (cryo-EM). Visit <a href="http://resmap.sourceforge.net">resmap</a> for help.</p>
 		</div>
 	</li>
+    <li class="tlypageguide_right" data-tourtarget="div[data-label*='monores']">
+        <div>
+            <p>monores is a fully automatic method to determine the local resolution of electron microscopy maps.</p>
+            <p><strong>Note</strong>: Some volumes are inside a spherical mask, if this is the case, please set "Is the original premasked?" to yes and provide the radius of the spherical mask.</p>
+            <p>Visit <a href="https://github.com/I2PC/scipion/wiki/XmippProtMonoRes">monores - wiki</a> for a deep help.</p>
+        </div>
+    </li>
+    <li class="tlypageguide_right" data-tourtarget="div[data-label*='blocres']">
+        <div>
+            <p>Blocres must use 2 half maps. You must import the 2 halves and then choose them separetely in "Half 1" and "Half 2" parameters.</p>
+        </div>
+    </li>
     <li class="tlypageguide_top" data-tourtarget="#tabs">
       <div>
         <p>Once a method has finished, click on its box to show the <strong>Summary</strong> of Inputs and Outputs.</p>

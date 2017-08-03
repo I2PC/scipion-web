@@ -425,7 +425,7 @@ function getImagePath(ext){
 		type : "GET",
 		url : URL,
 		dataType : "text",
-		async: false,
+		async : false,
 		success : function(text) {
 			res = text
 		}

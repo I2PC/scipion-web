@@ -112,7 +112,7 @@ function downloadTestdata(elm){
 		type : "GET",
 		url : URL,
 		dataType: "text",
-		async: false,
+		async : false,
 		success : function(text) {
 			var str = text.split("/")
 			var fn = str[str.length-1]
@@ -135,7 +135,7 @@ function createServProject(elm) {
 	$.ajax({
 		type : "GET",
 		url : URL,
-		async: false,
+		async : false,
 		success : function() {
 			var title = "ACCESS CODE"
 			

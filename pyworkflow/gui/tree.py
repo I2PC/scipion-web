@@ -510,7 +510,7 @@ class ProjectRunsTreeProvider(TreeProvider):
     def getObjectInfo(self, obj):
         objId = obj.getObjId()
         self._objDict[objId] = obj
-        info = {'key': objId, 'text': objId,
+        info = {'key': objId, 'text': obj.getRunName(),
                 'values': (obj.getRunName(), obj.getStatusMessage(),
                            obj.getObjLabel(), prettyDelta(obj.getElapsedTime()))
                 }

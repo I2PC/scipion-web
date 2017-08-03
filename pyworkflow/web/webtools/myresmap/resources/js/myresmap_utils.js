@@ -49,8 +49,8 @@ function serviceTestDataForm(){
 		dialog += '&nbsp;&nbsp;&nbsp;<input type="radio" name="data" value="fcv" checked>';
 		dialog += '&nbsp;&nbsp;' + getRefTestData("fcv");
 		dialog += '<br />';
-		dialog += '&nbsp;&nbsp;&nbsp;<input type="radio" name="data" value="mito_ribosome">';
-		dialog += '&nbsp;&nbsp;' + getRefTestData("mito_ribosome");
+		dialog += '&nbsp;&nbsp;&nbsp;<input type="radio" name="data" value="betagal">';
+		dialog += '&nbsp;&nbsp;' + getRefTestData("betagal");
 		dialog += '<br />';
 		dialog += '&nbsp;&nbsp;&nbsp;<input type="radio" name="data" value="t20s_proteasome">';
 		dialog += '&nbsp;&nbsp;' + getRefTestData("t20s_proteasome");
@@ -75,8 +75,8 @@ function goExampleForm(){
 	dialog += '&nbsp;&nbsp;&nbsp;<input type="radio" name="data" value="fcv" checked>';
 	dialog += '&nbsp;&nbsp;' + getRefTestData("fcv");
 	dialog += '<br />';
-	dialog += '&nbsp;&nbsp;&nbsp;<input type="radio" name="data" value="mito_ribosome">';
-	dialog += '&nbsp;&nbsp;' + getRefTestData("mito_ribosome");
+	dialog += '&nbsp;&nbsp;&nbsp;<input type="radio" name="data" value="betagal">';
+	dialog += '&nbsp;&nbsp;' + getRefTestData("betagal");
 	dialog += '<br />';
 	dialog += '&nbsp;&nbsp;&nbsp;<input type="radio" name="data" value="t20s_proteasome">';
 	dialog += '&nbsp;&nbsp;' + getRefTestData("t20s_proteasome");
@@ -94,8 +94,8 @@ function getProjExample(elm){
 		case "fcv":
 			var url = "/r_content?p=fcvTestData";
 			break;
-		case "mito_ribosome":
-			var url ="/r_content?p=ribosomeTestData";
+		case "betagal":
+			var url ="/r_content?p=betagalTestData";
 			break;
 		case "t20s_proteasome":
 			var url ="/r_content?p=t20TestData";
@@ -118,7 +118,7 @@ function createResMapProject(elm) {
 	$.ajax({
 		type : "GET",
 		url : URL,
-		async: false,
+		async : false,
 		success : function() {
 			var title = "ACCESS CODE"
 			
@@ -153,8 +153,11 @@ function getRefTestData(id){
 			ref = "<strong>T20S Proteasome</strong> (Resolution 2.8 Å , <a href='http://emsearch.rutgers.edu/atlas/6287_summary.html' style='color:firebrick;' target='_blank'>from Campbell MG et al. eLIFE, 2015</a>)"
 			break;
 		
-		case "mito_ribosome":
-			ref = "<strong>Human mitochondrial ribosome</strong> (Resolution 3.4 Å , <a href='http://emsearch.rutgers.edu/atlas/2762_summary.html' style='color:firebrick;' target='_blank'>from Brown A et al. Science, 2014</a>)"
+//		case "mito_ribosome":
+//			ref = "<strong>Human mitochondrial ribosome</strong> (Resolution 3.4 Å , <a href='http://emsearch.rutgers.edu/atlas/2762_summary.html' style='color:firebrick;' target='_blank'>from Brown A et al. Science, 2014</a>)"
+//			break;
+		case "betagal":
+			ref = "<strong>β-galactosidase</strong>Resolution 2.2 Å , <a href='http://dx.doi.org/10.1126/science.aab1576' style='color:firebrick;' target='_blank'>from A. Bartesaghi et. al. Science. 2015</a>)"
 			break;
 			
 //		case "cpv":

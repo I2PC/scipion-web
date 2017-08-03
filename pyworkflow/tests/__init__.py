@@ -281,9 +281,11 @@ DataSet(name='resmap',  folder='resmap',
                'betagal_half1': 'betaGal_half01.mrc',
                'betagal_half2': 'betaGal_half02.mrc',
                'betagal_mask': 'betaGal_mask.mrc',
+	       'betagal_map': 'betaGal.map',
                'fcv': 'fcv.map',
                'mito_ribo': 'mito_ribosome.map',
-               't20s': 't20s_proteasome.map'
+               't20s': 't20s_proteasome.map',
+	       't20s_full': 't20s_proteasome_full.map'
                })
 
 DataSet(name='10010',  folder='10010',

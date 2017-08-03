@@ -398,7 +398,7 @@ def browse_relations(request):
 
         objs = {}
         for obj in project.getRelatedObjects(relationName, item, direction):
-            objs[obj.getObjId()] = {"nameId": obj.getNameId(), "info": str(obj)}
+            objs[obj.getObjId()] = {"nameId": obj.getNameId(), "info":unicode(obj)}
 
         jsonStr = json.dumps(objs, ensure_ascii=False)
         return HttpResponse(jsonStr, content_type='application/javascript')
@@ -436,7 +436,7 @@ def browse_objects(request):
                                     "nameId": obj.getNameId(),
                                     "objParentName": objParent.getRunName(),
                                     "objId": obj.getObjId(),
-                                    "info": str(obj)
+                                    "info": unicode(obj)
                                     }
         # Class Filter
         for obj in project.iterSubclasses("Set", filterObject.classFilter):
@@ -446,7 +446,7 @@ def browse_objects(request):
                        "nameId": obj.getNameId(),
                        "objParentName": objParent.getRunName(),
                        "objId": obj.getObjId(),
-                       "info": str(obj),
+                       "info": unicode(obj),
                        "objects": []}
             # Let's set manually now the projectPath
             # Quick fix to have absolute paths for the objects
@@ -454,7 +454,7 @@ def browse_objects(request):
             for child in obj.iterItems():
                 obj_context = {"nameId": child.getNameId(),
                                "objId": child.getObjId(),
-                               "info": str(child)}
+                               "info": unicode(child)}
                 context["objects"].append(obj_context)
             objs[obj.getObjId()] = context
 
@@ -1075,7 +1075,7 @@ def handle404error(request):
 
 def handle500error(request):
     # So far use the same error page.
-    return handle404error(request);
+    return handle404error(request)
 
 
 def loadProtocolConf(protocol):
@@ -1091,6 +1091,11 @@ def loadProtocolConf(protocol):
     protocol
     """
     from pyworkflow.web.pages.settings import WEB_CONF
+
+    from pyworkflow.viewer import Viewer
+    # If it is a viewer do not load any config
+    if issubclass(protocol.getClass(), Viewer): return
+
     protDict = WEB_CONF['PROTOCOLS'].get(protocol.getClassName(), None)
 
     if protDict:
@@ -1108,6 +1113,11 @@ def loadProtocolConf(protocol):
 
         if 'queueParams' in protDict:
             protocol.setQueueParams(protDict.get('queueParams'))
+    else:
+        from pyworkflow.config import WEB_PROTOCOLS
+        print "WARNING: Not restrictions found for %s, please review %s " \
+              "section in scipion config file." % \
+              (protocol.getClassName(), WEB_PROTOCOLS)
 
 def zipdirSystem(dirPath, zipFilePath, includeDirInZip):
 
