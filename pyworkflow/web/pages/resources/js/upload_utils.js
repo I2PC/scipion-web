@@ -20,7 +20,7 @@
  * 02111-1307  USA
  *
  *  All comments concerning this program package may be sent to the
- *  e-mail address 'jmdelarosa@cnb.csic.es'
+ *  e-mail address 'scipion@cnb.csic.es'
  *
  ******************************************************************************/
 /******************************************************************************
@@ -69,7 +69,7 @@ function browseUpload(paramName){
 		type : "GET",
 		url : URL,
 		dataType : "html",
-		async: false,
+		async : false,
 		success : function(html) {
 			new Messi(html, {
 				title : 'Select file',

@@ -36,6 +36,7 @@ from pyworkflow.em.packages.xmipp3 import XmippProtReconstructSignificant, \
 from pyworkflow.em.packages.xmipp3.protocol_validate_overfitting import XmippProtValidateOverfitting
 from pyworkflow.tests.tests import DataSet
 from pyworkflow.utils.utils import prettyDelta
+from pyworkflow.utils import makeFilePath
 from pyworkflow.web.app.views_base import base_grid
 from pyworkflow.web.app.views_project import contentContext
 from pyworkflow.web.app.views_protocol import contextForm
@@ -61,12 +62,21 @@ def particleValidation_projects(request):
                'hiddenTreeProt': True,
                }
 
+    context = getToolContext(context)
     context = base_grid(request, context)
     return render_to_response('pval_projects.html', context)
 
 
+def getToolContext(context):
+    imagesURL = getToolImagesURL()
+    resolutionContext = {'toolImages': imagesURL}
+    resolutionContext.update(context)
+    return resolutionContext
+
+
 def writeCustomMenu(customMenu):
     if not exists(customMenu):
+        makeFilePath(customMenu)
         # Make the parent path if it doesn't exists
         pwutils.makePath(dirname(customMenu))
 
@@ -133,7 +143,7 @@ def create_particleValidation_project(request):
 
             protImportVol.filesPath.set(dest)
             protImportVol.samplingRate.set(attr['samplingRate'])
-            project.launchProtocol(protImportVol, wait=True, chdir=False)
+            project.launchProtocol(protImportVol, wait=True)
 
             # 2. Import particles
             binary = linkTestData(attr['particles'], projectPath)
@@ -315,7 +325,7 @@ def particleValidation_form(request):
 
 def particleValidation_content(request):
     projectName = request.GET.get('p', None)
-    path_files = getAbsoluteURL('resources_mypval/img/')
+    path_files = getToolImagesURL()
 
     # Get info about when the project was created
     manager = getServiceManager(MYPVAL_SERVICE)
@@ -336,3 +346,7 @@ def particleValidation_content(request):
 
     return render_to_response('pval_content.html', context)
 
+
+def getToolImagesURL():
+
+    return getAbsoluteURL('resources_mypval/img/')

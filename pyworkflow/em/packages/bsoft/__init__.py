@@ -20,24 +20,30 @@
 # * 02111-1307  USA
 # *
 # *  All comments concerning this program package may be sent to the
-# *  e-mail address 'jmdelarosa@cnb.csic.es'
+# *  e-mail address 'scipion@cnb.csic.es'
 # *
 # **************************************************************************
 """
 This package contains the protocols and data for BSOFT
 """
 
-from bibtex import _bibtex # Load bibtex dict with references
- 
+from bibtex import _bibtex  # Load bibtex dict with references
+
 _logo = "bsoft_logo.png"
 _references = ['Heymann2007']
 
-
 from protocol_particle_pick import BsoftProtParticlePicking
 from protocol_bfilter import BsoftProtBfilter
+from protocol_blocres import BsoftProtBlocres
 
 from wizard import BsoftFilterParticlesWizard
 
+from viewer import BsoftViewerBlocres
 
 from convert import getEnviron, getVersion
+
 _environ = getEnviron()
+
+# Since bsoft is not installed by default,
+# remove for now the viewer
+# from viewer import BsoftViewer

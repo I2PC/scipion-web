@@ -21,7 +21,7 @@
  * 02111-1307  USA
  *
  *  All comments concerning this program package may be sent to the
- *  e-mail address 'jmdelarosa@cnb.csic.es'
+ *  e-mail address 'scipion@cnb.csic.es'
  *
  ******************************************************************************/
 /******************************************************************************
@@ -99,6 +99,43 @@ function changeMode(modeNew){
 		form.mode.value = modeNew;
  		form.submit();
 	}
+}
+
+function submmitToPowerFit(mapPath, mapName){
+	/*
+	 * Function to submit a map to POWERFIT
+	 * Generate a form and submit to powerfit
+	 * For should be like:
+	 * <form action="/scipion" method="POST" enctype="application/json">
+     * 	<input id="map_path" name="map_path"  filename=ngloutput.mrc" type="text">
+     * </form>
+ 	 */
+
+
+	var form = document.createElement("form");
+    form.enctype="application/json";
+    form.target="_blank";
+    form.method = "POST";
+    form.action = "https://milou.science.uu.nl/cgi/enmr/services/POWERFIT/powerfit/scipion";
+
+    var element1 = document.createElement("input");
+	element1.id = "map_path"
+
+	// Full url to get the map, like:
+	//http://0.0.0.0:8000/webtools/get_file/?path=/home/pablo/ScipionUserData/myresmap/projects/ribosomeTestData/Runs/000002_ProtImportVolumes/extra/mito_ribosome.map.mrc&filename=ngloutput.mrc
+	mapUrl =  getBaseURL() + "/get_file/?path=";
+	var powerFitMapPath = mapPath + "&filename=" + mapName;
+
+	mapUrl = mapUrl + powerFitMapPath;
+
+	element1.value=mapUrl;
+    element1.name="map_path";
+    form.appendChild(element1);
+
+    document.body.appendChild(form);
+
+    form.submit();
+
 }
 
 function updateListSession(id, attr, mode){

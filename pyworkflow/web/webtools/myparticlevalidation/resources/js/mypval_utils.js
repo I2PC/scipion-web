@@ -120,7 +120,7 @@ function createPvalProject(elm) {
 	$.ajax({
 		type : "GET",
 		url : URL,
-		async: false,
+		async : false,
 		success : function() {
 			var title = "ACCESS CODE"
 			

@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # **************************************************************************
 # *
 # * Authors:    Jose Gutierrez (jose.gutierrez@cnb.csic.es)
@@ -21,7 +22,7 @@
 # * 02111-1307  USA
 # *
 # *  All comments concerning this program package may be sent to the
-# *  e-mail address 'jmdelarosa@cnb.csic.es'
+# *  e-mail address 'scipion@cnb.csic.es'
 # *
 # **************************************************************************
 
@@ -33,6 +34,8 @@ import json
 import mimetypes
 import pytz
 import datetime
+
+from django.http import HttpResponseNotAllowed
 from django.shortcuts import render_to_response
 from django.http import HttpResponse, HttpResponseForbidden, HttpResponseNotFound
 from django.utils.http import urlencode
@@ -361,8 +364,11 @@ def getServiceManager(serviceName):
 
         serviceConf = os.path.join(os.environ['HOME'], '.config', 'scipion', servicePath)
         manager.config = os.path.join(serviceConf, 'scipion.conf')
+        # Protocols config is written by each webtool views.writeCustomMenu but hosts config should be written manually or taken as the default one at scipion config
         manager.protocols = os.path.join(serviceConf, 'protocols.conf')
         manager.hosts = os.path.join(serviceConf, 'hosts.conf')
+        if not exists(manager.hosts):
+            manager.hosts = os.environ['SCIPION_HOSTS']
         SERVICE_MANAGERS[serviceName] = manager
 
     return manager
@@ -392,7 +398,7 @@ def browse_relations(request):
 
         objs = {}
         for obj in project.getRelatedObjects(relationName, item, direction):
-            objs[obj.getObjId()] = {"nameId": obj.getNameId(), "info": str(obj)}
+            objs[obj.getObjId()] = {"nameId": obj.getNameId(), "info":unicode(obj)}
 
         jsonStr = json.dumps(objs, ensure_ascii=False)
         return HttpResponse(jsonStr, content_type='application/javascript')
@@ -430,7 +436,7 @@ def browse_objects(request):
                                     "nameId": obj.getNameId(),
                                     "objParentName": objParent.getRunName(),
                                     "objId": obj.getObjId(),
-                                    "info": str(obj)
+                                    "info": unicode(obj)
                                     }
         # Class Filter
         for obj in project.iterSubclasses("Set", filterObject.classFilter):
@@ -440,7 +446,7 @@ def browse_objects(request):
                        "nameId": obj.getNameId(),
                        "objParentName": objParent.getRunName(),
                        "objId": obj.getObjId(),
-                       "info": str(obj),
+                       "info": unicode(obj),
                        "objects": []}
             # Let's set manually now the projectPath
             # Quick fix to have absolute paths for the objects
@@ -448,7 +454,7 @@ def browse_objects(request):
             for child in obj.iterItems():
                 obj_context = {"nameId": child.getNameId(),
                                "objId": child.getObjId(),
-                               "info": str(child)}
+                               "info": unicode(child)}
                 context["objects"].append(obj_context)
             objs[obj.getObjId()] = context
 
@@ -595,6 +601,13 @@ def get_file(request):
     if not os.path.isabs(pathToFile):
         projectPath = getProjectPathFromRequest(request)
         pathToFile = os.path.join(projectPath, pathToFile)
+
+    # Do not serve any file outside Scipion data scope
+    mandatoryPath = os.environ['SCIPION_USER_DATA']
+
+    if mandatoryPath not in pathToFile or ".." in pathToFile:
+        return HttpResponseNotAllowed('%s is outside the mandatory path %s' %
+                                      (pathToFile, mandatoryPath))
 
     if not os.path.exists(pathToFile):
         return HttpResponseNotFound('Path not found: %s' % pathToFile)
@@ -1062,7 +1075,7 @@ def handle404error(request):
 
 def handle500error(request):
     # So far use the same error page.
-    return handle404error(request);
+    return handle404error(request)
 
 
 def loadProtocolConf(protocol):
@@ -1078,6 +1091,11 @@ def loadProtocolConf(protocol):
     protocol
     """
     from pyworkflow.web.pages.settings import WEB_CONF
+
+    from pyworkflow.viewer import Viewer
+    # If it is a viewer do not load any config
+    if issubclass(protocol.getClass(), Viewer): return
+
     protDict = WEB_CONF['PROTOCOLS'].get(protocol.getClassName(), None)
 
     if protDict:
@@ -1095,6 +1113,11 @@ def loadProtocolConf(protocol):
 
         if 'queueParams' in protDict:
             protocol.setQueueParams(protDict.get('queueParams'))
+    else:
+        from pyworkflow.config import WEB_PROTOCOLS
+        print "WARNING: Not restrictions found for %s, please review %s " \
+              "section in scipion config file." % \
+              (protocol.getClassName(), WEB_PROTOCOLS)
 
 def zipdirSystem(dirPath, zipFilePath, includeDirInZip):
 
@@ -1190,7 +1213,7 @@ def dateNaiveToAware(naiveDate):
 
     print repr(datetime.date)
 
-    if not isinstance(newDate, datetime):
+    if not isinstance(newDate, datetime.datetime):
         newDate = strDate(newDate)
 
     loacalizeDate = serverTZ.localize(newDate)

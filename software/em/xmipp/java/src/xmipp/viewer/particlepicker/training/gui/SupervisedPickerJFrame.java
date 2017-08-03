@@ -72,6 +72,8 @@ public class SupervisedPickerJFrame extends ParticlePickerJFrame {
     protected JButton iconbt;
     protected JLabel manuallb;
     protected JLabel autolb;
+    protected JLabel savedlb;
+
     protected JSlider thresholdsl;
     protected JPanel thresholdpn;
     protected JFormattedTextField thresholdtf;
@@ -114,6 +116,10 @@ public class SupervisedPickerJFrame extends ParticlePickerJFrame {
         return centerparticlebt.isSelected();
     }
 
+    public boolean centerParticle() {
+        return centerparticlebt.isSelected() && isNormalMode();
+    }
+
     @Override
     public ParticlesDialog initParticlesJDialog() {
         return new ParticlesDialog(this);
@@ -122,12 +128,6 @@ public class SupervisedPickerJFrame extends ParticlePickerJFrame {
     public SupervisedPickerMicrograph getMicrograph() {
         return ppicker.getMicrograph();
     }
-
-//    @Override
-//    protected void openHelpURl() {
-//        XmippWindowUtil.openURI("http://xmipp.cnb.csic.es/twiki/bin/view/Xmipp/Micrograph_particle_picking_v3");
-//
-//    }
 
     public double getThreshold() {
         if (thresholdsl == null) {
@@ -256,7 +256,10 @@ public class SupervisedPickerJFrame extends ParticlePickerJFrame {
         ppicker.setChanged(changed);
         savemi.setEnabled(changed);
         savebt.setEnabled(changed);
-        
+    }
+    public void setSaved(boolean saved) {
+        ppicker.setSaved(saved);
+        // Do not print anything: for debugging --> savedlb.setText(saved?"Saved":"");
     }
 
     public void updateMicrographsModel(boolean all) {
@@ -285,7 +288,7 @@ public class SupervisedPickerJFrame extends ParticlePickerJFrame {
         try {
 
             setResizable(false);
-            setTitle("Xmipp Particle Picker - " + ppicker.getMode());
+            setTitle();
             initMenuBar();
             setJMenuBar(mb);
 
@@ -294,10 +297,10 @@ public class SupervisedPickerJFrame extends ParticlePickerJFrame {
             constraints.anchor = GridBagConstraints.WEST;
             setLayout(new GridBagLayout());
 
-            initToolBar();
             centerparticlebt = new JToggleButton(bundle.getString("center"), XmippResource.getIcon("center.png"));
+            initToolBar();
             centerparticlebt.setSelected(true);
-            tb.add(centerparticlebt, 0);
+            tb.add(centerparticlebt);
             add(tb, XmippWindowUtil.getConstraints(constraints, 0, 0, 2, 1, GridBagConstraints.WEST));
 
             //add(shapepn, XmippWindowUtil.getConstraints(constraints, 1, 1));
@@ -372,7 +375,7 @@ public class SupervisedPickerJFrame extends ParticlePickerJFrame {
                     if (isautopick) {
                         ppicker.setMode(Mode.Supervised);
                         ppicker.trainAndAutopick(SupervisedPickerJFrame.this, trainmic);
-                        setTitle("Xmipp Particle Picker - " + ppicker.getMode());
+                        setTitle();
 
                     } else if (autopickchb.isSelected()) {
                         autopickchb.setSelected(false);
@@ -389,7 +392,7 @@ public class SupervisedPickerJFrame extends ParticlePickerJFrame {
                             }
                             getMicrograph().resetParticlesRectangle();
                             canvas.refreshActive(null);
-                            setTitle("Xmipp Particle Picker - " + ppicker.getMode());
+                            setTitle();
                         } else {
                             autopickchb.setSelected(true);
                         }
@@ -548,7 +551,7 @@ public class SupervisedPickerJFrame extends ParticlePickerJFrame {
         thresholdlb = new JLabel("Threshold:");
         thresholdpn.add(thresholdlb);
         thresholdsl = new JSlider(0, 100, 0);
-        thresholdsl.setPaintTicks(true);
+        thresholdsl.setPaintTicks(false);
         thresholdsl.setMajorTickSpacing(5);
         int height = (int) thresholdsl.getPreferredSize().getHeight();
         thresholdsl.setPreferredSize(new Dimension(50, height));
@@ -645,6 +648,8 @@ public class SupervisedPickerJFrame extends ParticlePickerJFrame {
         formatMicrographsTable();
         sp.setViewportView(micrographstb);
         micrographpn.add(sp, XmippWindowUtil.getConstraints(constraints, 0, 0, 1));
+
+        // Info panel
         JPanel infopn = new JPanel();
         manuallb = new JLabel(Integer.toString(ppicker.getManualParticlesNumber()));
         autolb = new JLabel(Integer.toString(ppicker.getAutomaticParticlesNumber(getThreshold())));
@@ -652,10 +657,16 @@ public class SupervisedPickerJFrame extends ParticlePickerJFrame {
         infopn.add(manuallb);
         infopn.add(new JLabel("Automatic:"));
         infopn.add(autolb);
+
+        // Saved
+        savedlb = new JLabel("");
+        infopn.add(savedlb);
+
         micrographpn.add(infopn, XmippWindowUtil.getConstraints(constraints, 0, 1, 1));
         JPanel buttonspn = new JPanel(new FlowLayout(FlowLayout.LEFT));
 
         buttonspn.add(resetbt);
+        buttonspn.add(usezoombt);
         micrographpn.add(buttonspn, XmippWindowUtil.getConstraints(constraints, 0, 2, 2));
 
     }
@@ -671,7 +682,15 @@ public class SupervisedPickerJFrame extends ParticlePickerJFrame {
         if (micindex == index && canvas != null && canvas.getIw().isVisible()) {
             return;
         }
-        
+
+        // Save particles first before moving and loading the clicked micrograph.
+        if (ppicker.isChanged() && ppicker.getMode() != Mode.Supervised)
+        {
+            if (!saveData(false)) {
+                micrographstb.getSelectionModel().setSelectionInterval(micindex,micindex);
+                return;
+            }
+        }
 
         SupervisedPickerMicrograph next = ppicker.getMicrographs().get(index);
         SupervisedPickerMicrograph current = getMicrograph();
@@ -685,11 +704,6 @@ public class SupervisedPickerJFrame extends ParticlePickerJFrame {
                 return;
             }
             
-        }
-        if (ppicker.isChanged() && ppicker.getMode() != Mode.Supervised) 
-        {
-            ppicker.saveData(current);
-            setChanged(false);
         }
         ppicker.setMicrograph(next);
         ppicker.saveConfig();
@@ -857,9 +871,12 @@ public class SupervisedPickerJFrame extends ParticlePickerJFrame {
     	List<Classifier.Parameter> parameters = ppicker.getClassifier().getParams();
     	paramtfs = new HashMap<JTextField, Classifier.Parameter>();
     	JTextField tf;
+    	JLabel lb;
     	for(Classifier.Parameter param: parameters)
     	{
-    		gpickerpn.add(new JLabel(param.label));
+    		lb = new JLabel(param.label);
+    		lb.setToolTipText(param.help);
+    		gpickerpn.add(lb);
     		tf = new JTextField(3);
     		tf.setToolTipText(param.help);
     		tf.setText(param.value);
@@ -891,6 +908,9 @@ public class SupervisedPickerJFrame extends ParticlePickerJFrame {
 				{
 					JTextField tf = (JTextField)e.getSource();
 					updateParam(tf);
+					for(SupervisedPickerMicrograph m: ppicker.getMicrographs())
+						ppicker.resetMicrograph(m);
+					ppicker.autopick(SupervisedPickerJFrame.this, getMicrograph());
 					
 				}
 			});
@@ -922,6 +942,11 @@ public class SupervisedPickerJFrame extends ParticlePickerJFrame {
 		if(param.name.equals("diameter") || param.name.equals("boxSize"))//classifier diameter and particle size are the same
 			updateSize(Integer.parseInt(tf.getText()));
 		param.value = tf.getText();
+    }
+    @Override
+    protected void showHideModeParameters(){
+        super.showHideModeParameters();
+        centerparticlebt.setVisible(isNormalMode());
     }
 
 }

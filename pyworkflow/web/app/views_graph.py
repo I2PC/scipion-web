@@ -20,7 +20,7 @@
 # * 02111-1307  USA
 # *
 # *  All comments concerning this program package may be sent to the
-# *  e-mail address 'jmdelarosa@cnb.csic.es'
+# *  e-mail address 'scipion@cnb.csic.es'
 # *
 # **************************************************************************
 
@@ -103,7 +103,7 @@ def project_graph(request):
                 info = ""
                 if str(node.id) != "PROJECT":
                     protocol = project.getProtocol(int(node.id))
-                    info = provider.getObjectInfo(protocol)["values"][0]
+                    info = provider.getObjectInfo(protocol)["values"][1]
                 
                 nodeList.append({'id': node.getName(),
                                  'x': node.item.x - hx, 

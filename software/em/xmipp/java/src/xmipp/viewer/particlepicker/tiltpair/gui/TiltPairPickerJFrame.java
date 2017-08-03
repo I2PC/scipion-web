@@ -147,6 +147,11 @@ public class TiltPairPickerJFrame extends ParticlePickerJFrame {
 		viewmn.add(ijmi);
 	}
 
+    @Override
+    protected void setCanvasCursor(){
+        super.setCanvasCursor();
+        tiltedcanvas.setCustomCursor();
+    }
 	protected void showImportFromFilesDialog() {
 		if (importffilesjd == null)
 			importffilesjd = new ImportParticlesFromFilesTiltPairJDialog(this);
@@ -176,6 +181,7 @@ public class TiltPairPickerJFrame extends ParticlePickerJFrame {
 		JPanel buttonspn = new JPanel(new FlowLayout(FlowLayout.LEFT));
 
 		buttonspn.add(resetbt);
+        buttonspn.add(usezoombt);
 		micrographpn.add(buttonspn,
 				XmippWindowUtil.getConstraints(constraints, 0, 2, 2));
 
@@ -302,16 +308,23 @@ public class TiltPairPickerJFrame extends ParticlePickerJFrame {
 
 	@Override
 	protected void loadMicrograph() {
-		if (this.micrographstb.getSelectedRow() == -1)
-			return;// Probably from fireTableDataChanged raised
-		int index = tppicker.getMicrographIndex();
-		if (index == micrographstb.getSelectedRow() && canvas != null
-				&& canvas.getIw().isVisible())// micrograph open, no need to
-												// reopen
-			return;
-		if (tppicker.isChanged()) 
-			tppicker.saveData();
-		getMicrograph().releaseImage();
+        if (this.micrographstb.getSelectedRow() == -1)
+            return;// Probably from fireTableDataChanged raised
+
+        int index = tppicker.getMicrographIndex();
+
+        if (index == micrographstb.getSelectedRow() && canvas != null && canvas.getIw().isVisible())
+            // micrograph open, no need to reopen
+            return;
+
+        if (tppicker.isChanged()){
+            if (!saveData(false)) {
+                micrographstb.getSelectionModel().setSelectionInterval(index, index);
+                return;
+            }
+        }
+
+        getMicrograph().releaseImage();
 
 		index = micrographstb.getSelectedRow();
 		tppicker.setMicrograph(tppicker.getMicrographs().get(index));

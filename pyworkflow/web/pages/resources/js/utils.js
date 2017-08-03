@@ -21,74 +21,74 @@
  * 02111-1307  USA
  *
  *  All comments concerning this program package may be sent to the
- *  e-mail address 'jmdelarosa@cnb.csic.es'
+ *  e-mail address 'scipion@cnb.csic.es'
  *
  ******************************************************************************/
 /******************************************************************************
  * DESCRIPTION:
- * 
+ *
  * Generic library with commons methods.
- * 
+ *
  * ATTRIBUTES LIST:
- * 
+ *
  * METHODS LIST:
- * 
+ *
  * function detectWebBrowser()
  * 	->	Function to detect the web browser used in the navigation.
- * 
+ *
  * function popup(URL)
  * 	-> Launch a basic popup (600x500) opening the URL passed by argument.
- * 
+ *
  * function customPopup(URL, widthValue, heightValue)
- * 	->	Launch a popup opening the URL passed by argument. 
+ * 	->	Launch a popup opening the URL passed by argument.
  * 		The size of the popup is customized with the width and height chosen.
- * 
+ *
  * function customPopupHTML(html, widthValue, heightValue)
  * 	->	Launch a popup with the HTML code passed by argument.
  *  	The size of the popup is customized with the width and height chosen.
- *  
+ *
  * function popUpJSON(json)
- * 	->	This method recive a JSON, and depending of the key content, open a 
+ * 	->	This method recive a JSON, and depending of the key content, open a
  * 		different popups with different settings.
  * 		This function in the analyze results of the protocols runs.
- * 
+ *
  * function showPlot(url)
  * 	->	Function to show a xplotter(PNG) in a adjusted popup.
- * 
+ *
  * function getUrlParameters(parameter, staticURL, decode)
  * 	->	Auxiliar function to obtain individual parameters from a URL.
- * 
- * function infoPopup(title, msgText, autoclose, closeFunc) 
+ *
+ * function infoPopup(title, msgText, autoclose, closeFunc)
  * 	->	Creates a messi popup with a title and message passed by arguments.
  * 		If autoclose then the opener window will be closed when confirm button is pressed and closeFunc if provided will be executed.
  * 		It is used to show the help content in the protocol form and info message anywhere.
- * 
- * function warningPopup(title, msgText, funcName) 
+ *
+ * function warningPopup(title, msgText, funcName)
  * 	->	Creates a messi popup with a title and message passed by arguments.
  * 		funcName is the function that will be executed if 'Yes' option is selected
  * 		It is used to show any warning message
- * 
- * function errorPopup(title, msgText) 
+ *
+ * function errorPopup(title, msgText)
  * 	->	Creates a messi popup with a title and message passed by arguments.
  * 		It is used to show any error message
- * 
+ *
  * function isNaturalNumber(n)
  *  ->  Check if n is natural and returns true or false
  *
- * function editObjParam(id, title_label, value_label, title_comment, 
+ * function editObjParam(id, title_label, value_label, title_comment,
  * 			value_comment, msg_comment, typeObj)
  *  ->	Launch a messi popup with an input and textarea to edit the label and comment
  * 		for an object.
- * 
+ *
  * function updateLabelComment()
  * 	->	Method to store the label and comment for an object.
- * 
+ *
  *  * function launchViewer(id)
  * 	->	Launch the viewers to analyze the results for an object (protocol or object).
- * 
+ *
  * function getKnownExt()
  * 	->	Return the all extensions used in Scipion to be mapped in a filebrowser.
- * 
+ *
  ******************************************************************************/
 
 /** OBJECTS ***************************************************************** */
@@ -115,7 +115,7 @@ function detectWebBrowser(){
 	/*
 	 * Function to detect the web browser used in the navigation.
 	 */
-	
+
 	var res = ""
 
 	if(!!window.opera || navigator.userAgent.indexOf(' OPR/') >= 0){
@@ -128,7 +128,7 @@ function detectWebBrowser(){
 	}
 	else if(Object.prototype.toString.call(window.HTMLElement).indexOf('Constructor') > 0){
 		// At least Safari 3+: "[object HTMLElementConstructor]"
-		res = "safari"; 
+		res = "safari";
 	}
 	else if(!!window.chrome){
 		// Chrome 1+
@@ -138,7 +138,7 @@ function detectWebBrowser(){
 		// At least IE6
 		res = "ie";
 	}
-	
+
 	return res;
 }
 
@@ -148,18 +148,18 @@ function popup(URL) {
 	/*
 	 * Launch a basic popup (600x500) opening the URL passed by argument.
 	 */
-	
+
 	if (URL.indexOf('/form/') == 0) {
 		URL = setFormURL(URL)
 	}
-	
+
 	var URL = getAbsoluteURL(URL)
 
 	var popup_width = 600;
 	var popup_height = 500;
 	var day = new Date();
 	var id = day.getTime();
-	
+
 	if(detectWebBrowser()=="safari"){
 		window.location.href = URL;
 	}
@@ -174,18 +174,18 @@ function popup(URL) {
 
 function customPopup(URL, widthValue, heightValue) {
 	/*
-	 * Launch a popup opening the URL passed by argument. 
+	 * Launch a popup opening the URL passed by argument.
 	 * The size of the popup is customized with the width and height chosen.
 	 */
-	
+
 	if (URL.indexOf('/form/') == 0) {
 		URL = setFormURL(URL)
 	}
-	
+
 	var URL = getAbsoluteURL(URL)
 	var day = new Date();
 	var id = day.getTime();
-	
+
 	if(detectWebBrowser()=="safari"){
 		newTab.location.href = URL;
 	}
@@ -206,7 +206,7 @@ function customPopupFileHTML(html, title, widthValue, heightValue) {
 	var day = new Date();
 	var id = day.getTime();
 	var popup = window.open('', id, 'height='+heightValue+',width='+widthValue);
-	
+
 	var style = "background-color:black;color:white;font-family:Monospace;padding:1em;"
     var title = "<title>"+ title + "</title>"
     var body = "<div style="+ style +">" + title + html + "</div>"
@@ -223,7 +223,7 @@ function customPopupHTML(html, widthValue, heightValue) {
 	var day = new Date();
 	var id = day.getTime();
 	var popup = window.open('', id, 'height='+heightValue+',width='+widthValue);
-	
+
 	popup.document.write(html);
 	popup.document.close();
 }
@@ -237,12 +237,12 @@ function customPopUpFile(url){
 		success : function(html) {
 			customPopupHTML(html,600,500);
 		}
-	});	
+	});
 }
 
 function popUpJSON(json){
 	/*
-	 * This method receive a JSON, and depending of the key content, open a 
+	 * This method receive a JSON, and depending of the key content, open a
 	 * different popups with different settings.
 	 * This function in the analyze results of the protocols runs.
 	 */
@@ -280,17 +280,17 @@ function getUrlParameters(parameter, staticURL, decode){
    var currLocation = (staticURL.length)? staticURL : window.location.search,
        parArr = currLocation.split("?")[1].split("&"),
        returnBool = true;
-   
+
    for(var i = 0; i < parArr.length; i++){
         parr = parArr[i].split("=");
         if(parr[0] == parameter){
             return (decode) ? decodeURIComponent(parr[1]) : parr[1];
             returnBool = true;
         }else{
-            returnBool = false;            
+            returnBool = false;
         }
    }
-   if(!returnBool) return false;  
+   if(!returnBool) return false;
 }
 
 function infoPopup(title, msgText, autoclose, closeFunc) {
@@ -299,12 +299,12 @@ function infoPopup(title, msgText, autoclose, closeFunc) {
 	 * If autoclose then the opener window will be closed when confirm button is pressed and closeFunc if provided will be executed.
 	 * It is used to show the help content in the protocol form and info message anywhere.
 	 */
-	
+
 	//HTML to be used in the information popup
 	msg="<table><tr><td><i class=\"fa fa-info-circle fa-4x\" style=\"color:#6fabb5;\"></i>"
 		+ "</td><td>"+ msgText +"</td></tr></table>";
-	
-	
+
+
 	if(autoclose){
 		new Messi(msg, {
 			title : title,
@@ -336,7 +336,7 @@ function infoPopup(title, msgText, autoclose, closeFunc) {
 				btnClass : 'fa-times'
 			} ]
 		});
-	}	
+	}
 }
 
 function warningPopup(title, msgText, funcName, icon){
@@ -345,7 +345,7 @@ function warningPopup(title, msgText, funcName, icon){
 	 * funcName is the function that will be executed if 'Yes' option is selected
 	 * It is used to show any warning message
 	 */
-	
+
 	// HTML to be used in the warning popup
 	msg = "<table><tr><td>"
 	msg += "<i class=\"fa fa-warning fa-4x\" style=\"color:#fad003;\"></i>"
@@ -374,11 +374,11 @@ function errorPopup(title, msgText){
 	 * Creates a messi popup with a title and message passed by arguments.
 	 * It is used to show any error message
 	 */
-	
+
 	//HTML to be used in the error popup
 	msg = "<table><tr><td><i class=\"fa fa-times-circle fa-4x\" style=\"color:firebrick;\"></i>"
 	+ "</td><td>"+ msgText +"</td></tr></table>"
-	
+
 	new Messi(msg, {
 		title : title,
 		modal : true,
@@ -414,9 +414,9 @@ function accessPopup(title, msgText, funcName, btnYes, btnNo){
 	});
 }
 
-function accessPopup2opt(title, msgText, 
-						 btn1, ico1, funcName1, 
-						 btn2, ico2, funcName2, 
+function accessPopup2opt(title, msgText,
+						 btn1, ico1, funcName1,
+						 btn2, ico2, funcName2,
 						 btnNo){
 
 	msg = "<table><tr><td>"
@@ -459,7 +459,7 @@ function removeWaitPopup(){
 
 function listToString(list){
 	var res = "";
-	
+
 	for (var x=0;x<list.length;x++){
 		var elm = list[x];
 		if(res.length == 0){
@@ -468,11 +468,11 @@ function listToString(list){
 			res += "," + elm;
 		}
 	}
-	
+
 	if(res.length == 0){
 		res="None";
 	}
-	
+
 	return res;
 }
 
@@ -480,34 +480,34 @@ function isNaturalNumber(n) {
     n = n.toString(); // force the value incase it is not
     var n1 = Math.abs(n),
         n2 = parseInt(n, 10);
-    
+
     return !isNaN(n1) && n2 === n1 && n1.toString() === n && n2>0;
 }
 
 
 function processObjParam(id, title_label, title_comment,
                       msg_comment, typeObj) {
-	
+
 	// New values
 	var value_label = $("input#runName").val();
 	var value_comment= $("input#comment").val();
-		
-	editObjParam(id, title_label, value_label, 
+
+	editObjParam(id, title_label, value_label,
 	    title_comment, value_comment,
 	    msg_comment, typeObj);
 
 }
 
-function editObjParam(id, title_label, value_label, 
+function editObjParam(id, title_label, value_label,
                       title_comment, value_comment,
                       msg_comment, typeObj) {
 	/*
 	 * Launch a messi popup with an input and textarea to edit the label and comment
 	 * for an object.
 	 */
-	
+
 	// Create the form table to edit label and comment
-	var html = "<table id='params' data-type='"+ typeObj +"'value='"+ id +"'>" + 
+	var html = "<table id='params' data-type='"+ typeObj +"'value='"+ id +"'>" +
 		 	"<tr>" +
 		 	"<td>" +"<h3>"+ title_label +"</h3>" +"</td>" +
 		 	"<td>" + "<input id='label_new' value='"+ value_label+"'>" + "</td>" +
@@ -517,9 +517,9 @@ function editObjParam(id, title_label, value_label,
 		 	"<td>" + "</h3><textarea id='comment_new'>"+ value_comment + "</textarea>" + "</td>" +
 			"</tr>"+
 			"</table>"
-	
+
 	// Some replaces to note up: &#013;&#010;
-	
+
 	// Launch the form with messi.js to start the edition
 	new Messi(html, {
 		title : 'Object Editor',
@@ -547,32 +547,32 @@ function updateLabelComment(){
 	var elm_table = $("table#params");
 	var id = elm_table.attr('value');
 	var typeObj = elm_table.attr('data-type');
-	
+
 	// New values
 	var value_label = $("input#label_new").val();
 	var value_comment= $("textarea#comment_new").val();
-		
+
 	if (id == 'new'){
 		// Return the new values to the source form
 		returnLabelComment(value_label, value_comment);
-		
+
 	} else {
 		var url_param = "/set_attributes/?" +
-			"id=" + id + 
-			"&label=" + value_label + 
+			"id=" + id +
+			"&label=" + value_label +
 			"&comment=" + value_comment +
 			 projectToGETParams()
 		var URL = getSubDomainURL() + url_param
 		$.ajax({
 			type : "GET",
 			url : encodeURI(URL),
-			async: false,
+			async : true,
 			success : function() {
 				// Return the new values to the source form
 				returnLabelComment(value_label, value_comment);
 			}
 		});
-		
+
 	}
 }
 
@@ -594,26 +594,26 @@ function launchViewer(id){
 	var URL = getSubDomainURL() + "/launch_viewer/?objectId=" + id + projectToGETParams()
 	$.ajax({
 		type : "GET",
-		// Execute the viewer 
+		// Execute the viewer
 		url : URL,
 		dataType : "json",
 		success : function(json) {
 			popUpJSON(json);
 		}
-	});	
+	});
 }
 
 function getKnownExt(){
 	return ['txt', 'log', 'out', 'err', 'stdout', 'stderr', 'emx','py', 'pyc',
-	        'java','xmd', 'star', 'pos','sqlite', 'db','xmp', 'tif', 'tiff', 
-	        'spi', 'mrc', 'map', 'raw', 'inf', 'dm3', '.em', 'pif', 'psd', 
+	        'java','xmd', 'star', 'pos','sqlite', 'db','xmp', 'tif', 'tiff',
+	        'spi', 'mrc', 'map', 'raw', 'inf', 'dm3', '.em', 'pif', 'psd',
 	        'spe', 'ser', 'img', 'hed', 'vol','stk', 'mrcs', 'st', 'pif',
 	        'png', 'gif', 'jpg', 'jpeg']
 }
 
 function randomString(length, chars) {
     var mask = '';
-    
+
     if (chars.indexOf('a') > -1) mask += 'abcdefghijklmnopqrstuvwxyz';
     if (chars.indexOf('A') > -1) mask += 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
     if (chars.indexOf('#') > -1) mask += '0123456789';
@@ -622,7 +622,7 @@ function randomString(length, chars) {
     for (var i = length; i > 0; --i){
     	result += mask[Math.round(Math.random() * (mask.length - 1))];
     }
-    
+
     return result;
 }
 
@@ -631,7 +631,7 @@ function zoomImagePopUp(imagePath){
 	$.ajax({
 		type : "GET",
 		url : encodeURI(URL),
-		async: false,
+		async : true,
 		datatype: "json",
 		success : function(res) {
 			res = res.replace("[", "")
@@ -639,14 +639,14 @@ function zoomImagePopUp(imagePath){
 			res = res.split(",")
 			var width = res[0]
 			var height = res[1]
-			
+
 			// getSubDomainURL() not necessary
 			getImage = "/get_image/?image=" + imagePath + "&dim="+height + projectToGETParams()
 			customPopup(getImage, width, height)
 		}
 	});
-	
 
-	
+
+
 
 }

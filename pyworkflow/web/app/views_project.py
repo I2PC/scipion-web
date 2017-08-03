@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # **************************************************************************
 # *
 # * Authors:    Jose Gutierrez (jose.gutierrez@cnb.csic.es)
@@ -20,7 +21,7 @@
 # * 02111-1307  USA
 # *
 # *  All comments concerning this program package may be sent to the
-# *  e-mail address 'jmdelarosa@cnb.csic.es'
+# *  e-mail address 'scipion@cnb.csic.es'
 # *
 # **************************************************************************
 
@@ -232,8 +233,8 @@ def formatProvider(provider, mode):
         info = objInfo["values"]
 
         if mode == "runs":
-            status = info[0]
-            time = info[1]
+            status = info[1]
+            time = info[3]
             label = info[2]
             objs.append((objId, [objId, name, status, time, label]))
 
@@ -355,13 +356,13 @@ def protocol_info(request):
             input_obj = [{'name': name,
                           'nameId': attr.getNameId(),
                           'id': attr.getObjId(),
-                          'info': str(attr.get()) if attr.isPointer() else str(attr)}
+                          'info': unicode(attr.get()) if attr.isPointer() else unicode(attr)}
                          for name, attr in protocol.iterInputAttributes()]
 
             output_obj = [{'name': name,
                            'nameId': attr.getNameId(),
                            'id': attr.getObjId(),
-                           'info': str(attr)}
+                           'info': unicode(attr)}
                           for name, attr in protocol.iterOutputAttributes(EMObject)]
 
             # PROTOCOL SUMMARY
