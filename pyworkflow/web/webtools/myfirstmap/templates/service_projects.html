@@ -5,7 +5,6 @@
 {% block css %}
     {{ block.super }}
 	<link href="{{messi_css}}" rel="stylesheet" type="text/css" />
-	<link href="{{font_awesome}}" rel="stylesheet" type="text/css" />
 
 {% endblock %}
 
@@ -25,7 +24,7 @@
 	{% include '_scipion_context.html' %}
 </script>
 
-	<h1>My first map</h1>
+	<h1 class="my-5">My first map</h1>
 	<div class="row">
 		<div class="col-md-12 col-sm-12 col-xs-12">
 			<p style="text-align:justify;">
@@ -39,7 +38,7 @@
 			</a> before using this tool.</p>
 		</div>
 	</div>
-	<img class="img-responsive center-block" src="{{toolImages}}/intro.png"/>
+	<img class="mx-auto d-block  my-4" src="{{toolImages}}/intro.png"/>
     <div class="row">
 	 	<div class="col-md-4 col-sm-6 col-xs-12">
 			<div class="wrap-item text-center">
