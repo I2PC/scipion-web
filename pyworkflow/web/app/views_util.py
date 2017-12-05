@@ -161,7 +161,6 @@ jsDict = {'jquery': 'jquery/jquery.js',
           'protocol_form_utils': 'protocol_form_utils.js',
           'wizard_utils': 'wizard_utils.js',
           'upload_utils': 'upload_utils.js',
-          'download_utils': 'download_utils.js',
 
           #          'tabs_config': 'tabs_config.js',
           'jquery_colreorder': 'DataTables-1.10.6/extensions/ColReorder/js/dataTables.colReorder.js',
