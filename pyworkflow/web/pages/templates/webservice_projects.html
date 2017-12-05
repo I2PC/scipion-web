@@ -1,101 +1,70 @@
 {% extends "layouts/100.html" %}
+{% load staticfiles %}
 
 {% block title %}Scipion Web Tools{% endblock %}
 
 {% block css %}
     {{ block.super }}
-	<link href="{{messi_css}}" rel="stylesheet" type="text/css" />
 {% endblock %}
 
 {% block js %}
     {{ block.super }}
-	<script type="text/javascript" src="{{messi_js}}"></script>
-	<script type="text/javascript" src="{{utils}}"></script>
-	<script type="text/javascript" src="{{config}}"></script>
 {% endblock %}
 
 {% block main_col %}
 
-	<div id="box">
-		<h1>Scipion Web Tools</h1>
-		<br />
-		<div id="minibox">
-			<div id="steps">
-				<h2>Single particle analysis tools</h2>
-			</div>
-			<br/>
+  <!-- Main jumbotron for a primary marketing message or call to action -->
+  <div class="jumbotron backimage">
+    <div class="container mainHead">
+      <h2>Scipion web tools</h2>
+      <p>Some of the Scipion framework methods available<br/>
+      online to process your cryo electron microscopy data.
+      </p>
+    </div>
+  </div>
 
-			<div id="lineOpt">
-				<P>
-			Align your movies
-			</P>
-				<span id="buttons">
-					<a href="{{abs_url}}mymovies"><button type="button" class="btn btn_wide button2 primary_inv">My movie alignment</button></a>
-				</span>
-			</div>
-			<br/>
-
-			<div id="lineOpt">
-				<P>
-					Create your initial volume
-				</P>
-				<span id="buttons">
-					<a href="{{abs_url}}myfirstmap"><button type="button" class="btn btn_wide button2 primary_inv">My first map</button></a>
-				</span>
-			</div>
-			<br/>
-
-			<div id="lineOpt">
-				<P>
-					Analyze your maps
-				</P>
-				<span id="buttons">
-					<a href="{{abs_url}}myresmap"><button type="button" class="btn btn_wide button2 primary_inv">My resolution map</button></a>
-				</span>
-			</div>
-			<br/>
-
-			<div id="steps">
-				<h2>Reliability tools</h2>
-			</div>
-			<br/>
-
-			<div id="lineOpt">
-				<P>
-					Explore protein interactions
-				</P>
-				<span id="buttons">
-					<!-- EXAMPLE PROJECT -->
-					<a href="http://3diana.cnb.csic.es/DIMERO/run_dimero_form.html">
-						<img src="http://3diana.cnb.csic.es/DIMERO/IMG/3diana_logo.png" style="height:35px;margin-bottom:15px"/>
-					</a>
-				</span>
-			</div>
-			<div id="lineOpt">
-				<P>
-					Check the reliability of your data
-				</P>
-				<span id="buttons">
-					<!-- EXAMPLE PROJECT -->
-					<a href="{{abs_url}}mypval"><button type="button" class="btn btn_wide button2 primary_inv">My reliability tool</button></a>
-				</span>
-			</div>
-			<br />
-			<!--<div id="lineOpt">-->
-				<!--<h3 id="textbtn">-->
-					<!--Calculate you quality map score-->
-				<!--</h3>-->
-				<!--<span id="buttons">-->
-					<!--&lt;!&ndash; EXAMPLE PROJECT &ndash;&gt;-->
-					<!--<a href="{{abs_url}}myscoring">-->
-						<!--<button class="btn button2 validation_inv" type="button">-->
-							<!--My map scoring-->
-						<!--</button>-->
-					<!--</a>-->
-				<!--</span>-->
-			<!--</div>-->
-			<!--<br />-->
-		</div>
-	</div>
-
+  <div class="card-group">
+    <div class="card" >
+      <img class="card-img-top img-fluid" src="{{abs_url}}resources_movies/img//intro.png" alt="">
+      <div class="card-body">
+        <h4 class="card-title">Align your movies</h4>
+        <p class="card-text">Try the Xmipp optical flow local alignment method to align your movies.</p>
+        <a href="{{abs_url}}mymovies" class="btn btn-danger">My movie alignment</a>
+      </div>
+    </div>
+    <div class="card">
+      <img class="card-img-top img-fluid" src="{{abs_url}}resources_myfirstmap/img/intro.png" alt="">
+      <div class="card-body">
+        <h4 class="card-title">Create your initial volume</h4>
+        <p class="card-text">You may want to try 3 different methods to generate an initial volume.</p>
+        <a href="{{abs_url}}myfirstmap" class="btn btn-danger">My first map</a>
+      </div>
+    </div>
+    <div class="card">
+      <img class="card-img-top img-fluid" src="{{abs_url}}resources_myresmap/img//intro.png" alt="">
+      <div class="card-body">
+        <h4 class="card-title">Get your map local resolution</h4>
+        <p class="card-text">Try 3 different methods to assess the local resolution of your map.</p>
+        <a href="{{abs_url}}myresmap" class="btn btn-danger">My resolution map</a>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-img-top h-100">
+        <img class="img-fluid align-middle" src="http://3diana.cnb.csic.es/DIMERO/IMG/3diana_logo.png" alt="">
+      </div>
+      <div class="card-body">
+        <h4 class="card-title">Explore protein interactions</h4>
+        <p class="card-text">Use 3D diana to explore possible domain-domain interactions.</p>
+        <a href="http://3diana.cnb.csic.es/DIMERO/run_dimero_form.html" class="btn btn-danger">3D diana</a>
+      </div>
+    </div>
+    <div class="card">
+      <img class="card-img-top img-fluid" src="{{abs_url}}resources_mypval/img//intro.png" alt="">
+      <div class="card-body">
+        <h4 class="card-title">Can you trust your map?</h4>
+        <p class="card-text">Run 2 methods to assess the reliability of your map reconstruction.</p>
+        <a href="{{abs_url}}mypval" class="btn btn-danger">My reliability tool</a>
+      </div>
+    </div>
+  </div>
 {% endblock %}
