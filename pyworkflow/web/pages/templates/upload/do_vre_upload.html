@@ -1,0 +1,25 @@
+{% load staticfiles %}
+<script type="text/javascript">
+function openVRE() {
+    popup=window.open('https://portal.west-life.eu/virtualfolder/filepickercomponent.html', 'newwindow', 'width=640, height=480');
+}
+function receiveMessage(event) {
+   if (event.data != "") {
+      document.getElementById("file").value=event.data;
+      $('#'+target).trigger("change");
+   }
+}
+window.addEventListener("message", receiveMessage, false);
+</script>
+<div class="box">
+   {% csrf_token %}
+   <!--{{ form.as_p }}-->
+   <br/>
+   <form id="VREform" action="{{abs_url}}uploadFromUrl/" method="POST" data-mode="">{% csrf_token %}
+      <input name="file" id="file" value=""/>
+	   <button type="button" onclick="javascript:openVRE();">Choose VRE file</button>
+      <input type="hidden" id="project_folder" name="project_folder" value="{{project_folder}}"/>
+	   <br/>
+      <input type="submit" value="Upload"/>
+   </form>
+</div>

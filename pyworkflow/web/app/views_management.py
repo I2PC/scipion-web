@@ -31,7 +31,7 @@ import shutil
 
 import matplotlib
 from django.forms import Form
-from django.shortcuts import render_to_response, HttpResponse
+from django.shortcuts import render_to_response, HttpResponse, redirect
 from django.template import RequestContext
 from django.views.generic import FormView
 from resumable.views import ResumableUploadView
@@ -41,7 +41,8 @@ from pyworkflow.web.pages import settings as django_settings
 from models import Document
 from forms import DocumentForm
 from views_base import base_form, base
-from views_util import getResourceIcon, getResourceJs, getProjectPathFromRequest, CTX_PROJECT_PATH
+from views_util import getResourceIcon, getResourceJs, getProjectPathFromRequest, CTX_PROJECT_PATH, \
+    getVarFromRequest, download_url
 from django.conf import settings
 from django.core.urlresolvers import reverse
 from resumable.fields import ResumableFileField
@@ -291,3 +292,17 @@ def health(request):
     # Render list page with the documents and the form
     return render_to_response('health.html', context,
                               context_instance=RequestContext(request))
+
+def uploadFromUrl(request):
+    # Load documents for the list page
+    projectPath = getVarFromRequest(request, "project_folder")
+
+    projectUploadPath = os.path.join(projectPath, PROJECT_UPLOAD)
+
+    file = getVarFromRequest(request, "file")
+
+    download_url(file, projectUploadPath, os.path.basename(file))
+
+    referer = request.META.get('HTTP_REFERER')
+
+    return redirect(referer)
