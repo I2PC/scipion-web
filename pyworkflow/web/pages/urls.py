@@ -6,7 +6,7 @@ from django.conf.urls import patterns, include, url
 from django.contrib import admin
 
 from pyworkflow.web import app
-from pyworkflow.web.app import views_util, views_home, views_showj
+from pyworkflow.web.app import views_util, views_showj
 from pyworkflow.web.app.views_management import ScipionResumableUploadView
 
 admin.autodiscover()
@@ -20,9 +20,9 @@ from django.views.generic import TemplateView
 
 mainUrls = ['',
     url(r'^admin/', include(admin.site.urls)),
-    url(r'^$', 'app.views_home.home'),
-    url(r'^services/', 'app.views_project.webservice_projects'),
+    url(r'^$', 'app.views_project.webservice_projects'),
     url(r'^intro/', 'app.views_project.webservice_projects'),
+    url(r'^services/', 'app.views_project.webservice_projects'),
 
     #PROJECT (CONTENT, RUNTABLE AND GRAPH)
     url(r'^projects/', 'app.views_project.projects'),
@@ -105,13 +105,6 @@ mainUrls = ['',
 
     # MANAGEMENT
     url(r'^health$', app.views_management.health),
-
-    url(r'^home/', 'app.views_home.home'),
-    url(r'^download_form', 'app.views_home.download_form'),
-    url(r'^startdownload/', 'app.views_home.startDownload'),
-    url(r'^download/', 'app.views_home.doDownload'),
-    url(r'^getdownloadsdata', views_home.getDownloadsStats),
-    url(r'^downloadstats', views_home.showDownloadStats),
 
     # To serve different static files
     (r'^resources/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.MEDIA_ROOT}),
