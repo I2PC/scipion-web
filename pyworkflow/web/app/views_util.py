@@ -1231,7 +1231,6 @@ def ownRedirect(request, url, permanent=False, queryString=True):
 
 # Utility method to download a file locally from a URL
 def download_url(file_url, work_dir, fname):
-    print "VF URL: {}".format(file_url)
     try:
         u = urllib2.urlopen(file_url)
         f = open(join(work_dir, fname), 'wb')

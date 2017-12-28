@@ -62,6 +62,7 @@ def upload(request):
                'logo_scipion_small': getResourceIcon('logo_scipion_small'),
                "upload_utils": getResourceJs('upload_utils'),
                "mode": mode,
+               'loading': getResourceIcon('loading')
                }
 
     context = base_form(request, context)
