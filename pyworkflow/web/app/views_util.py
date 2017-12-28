@@ -34,10 +34,11 @@ import json
 import mimetypes
 import pytz
 import datetime
+import urllib2
 
 from django.http import HttpResponseNotAllowed
 from django.shortcuts import render_to_response
-from django.http import HttpResponse, HttpResponseForbidden, HttpResponseNotFound
+from django.http import HttpResponse, HttpResponseForbidden, HttpResponseNotFound, HttpResponseServerError
 from django.utils.http import urlencode
 from django.shortcuts import redirect
 
@@ -1226,3 +1227,19 @@ def ownRedirect(request, url, permanent=False, queryString=True):
     redirectView.request = request
 
     return redirectView.get(request)
+
+# Utility method to download a file locally from a URL
+def download_url(file_url, work_dir, fname):
+    try:
+        u = urllib2.urlopen(file_url)
+        f = open(join(work_dir, fname), 'wb')
+        block_sz = 8192
+        while True:
+            buffer = u.read(block_sz)
+            if not buffer:
+                break
+            f.write(buffer)
+        f.close()
+    except urllib2.HTTPError:
+        print "Error during file download, aborting..."
+        raise

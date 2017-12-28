@@ -67,7 +67,7 @@
 					//tabs
 					$("#tabs").tabs(
 						{"activate":function(event,ui){
-							if (ui.newTab.index() == 1) {
+							if (ui.newTab.index() == 2) {
 								updateListFiles()
 								}
 							}
@@ -88,8 +88,11 @@
 					<li>
 						<a href="#tabs-1">File Upload</a>
 					</li>
+										<li>
+						<a href="#tabs-2">VRE Upload</a>
+					</li>
 					<li>
-						<a href="#tabs-2">List Files</a>
+						<a href="#tabs-3">List Files</a>
 					</li>
 				</ul>
 
@@ -97,8 +100,12 @@
 				<div id="tabs-1">
 					{% include "upload/do_file_upload.html" %}
 				</div>
-				<!-- LIST FILES -->
+				<!-- VRE UPLOAD> -->
 				<div id="tabs-2">
+					{% include "upload/do_vre_upload.html" %}
+				</div>
+				<!-- LIST FILES -->
+				<div id="tabs-3">
 					{% include "upload/list_files_upload.html" %}
 				</div>
 			</div>

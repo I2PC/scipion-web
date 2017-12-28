@@ -1,0 +1,63 @@
+{% load staticfiles %}
+<style>
+/* Start by setting display:none to make this hidden.
+   Then we position it in relation to the viewport window
+   with position:fixed. Width, height, top and left speak
+   for themselves. Background we set to 80% white with
+   our animation centered, and no-repeating */
+.modal {
+    display:    none;
+    position:   fixed;
+    z-index:    1000;
+    top:        0;
+    left:       0;
+    height:     100%;
+    width:      100%;
+    background: rgba( 255, 255, 255, .8 )
+                url({{loading}})
+                50% 50%
+                no-repeat;
+}
+/* When the body has the loading class, we turn
+   the scrollbar off with overflow:hidden */
+body.loading {
+    overflow: hidden;
+}
+
+/* Anytime the body has the loading class, our
+   modal element will be visible */
+body.loading .modal {
+    display: block;
+}
+</style>
+<script type="text/javascript">
+function openVRE() {
+    popup=window.open('https://portal.west-life.eu/virtualfolder/filepickercomponent.html', 'newwindow', 'width=640, height=480');
+}
+function receiveMessage(event) {
+   if (event.data != "") {
+      document.getElementById("file").value=event.data;
+      $('#'+target).trigger("change");
+   }
+}
+window.addEventListener("message", receiveMessage, false);
+</script>
+<div class="box">
+   {% csrf_token %}
+   <!--{{ form.as_p }}-->
+   <br/>
+   <form id="VREform" action="{{abs_url}}uploadFromUrl/" method="POST" data-mode="">{% csrf_token %}
+      <input name="file" id="file" value=""/>
+	   <button type="button" onclick="javascript:openVRE();">Choose VRE file</button>
+      <input type="hidden" id="project_folder" name="project_folder" value="{{project_folder}}"/>
+	   <br/>
+      <input type="button" value="Upload" onClick='submitForm()'/>
+   </form>
+</div>
+<div id="wait" class="modal"><!-- Place at bottom of page --></div>
+<script>
+function submitForm() {
+    $('#wait').show();
+    $("#VREform").submit();
+}
+</script>
