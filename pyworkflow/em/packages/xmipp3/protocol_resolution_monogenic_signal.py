@@ -86,7 +86,7 @@ class XmippProtMonoRes(ProtAnalysis3D):
 
         form.addParam('Mask', PointerParam, pointerClass='VolumeMask',
                       condition='(halfVolumes) or (not halfVolumes)',
-                      label="Binary Mask", important=True,
+                      label="BINARY Mask", important=True,
                       help='The mask determines which points are specimen and which ones not')
 
         group = form.addGroup('Extra parameters')
@@ -105,6 +105,13 @@ class XmippProtMonoRes(ProtAnalysis3D):
                        label="Significance",
                        help='Relution is computed using hipothesis tests, this value determines'
                             'the significance of that test')
+
+        group.addParam('maskthreshold', FloatParam, default=0.5, 
+                       expertLevel=LEVEL_ADVANCED,
+                      label="Mask threshold",
+                      help='If the provided mask is not binary. Then, MonoRes '
+                      'will binarize it. Mask values below the threshold '
+                      'will be changed to 0 and above the threshold will be 1')
 
         group.addParam('isPremasked', BooleanParam, default=False,
                        label="Is the original premasked?",
@@ -195,6 +202,13 @@ class XmippProtMonoRes(ProtAnalysis3D):
         if (extMask == '.mrc') or (extMask == '.map'):
             self.maskFn = self.maskFn + ':mrc'
 
+	params = ' -i %s' % self.maskFn
+        params += ' -o %s' % self._getExtraPath('binarized_mask.vol')
+        params += ' --select below %f' % self.maskthreshold.get()
+        params += ' --substitute binarize'
+        
+        self.runJob('xmipp_transform_threshold', params)
+
     def resolutionMonogenicSignalStep(self):
 
         # Number of frequencies
@@ -227,12 +241,12 @@ class XmippProtMonoRes(ProtAnalysis3D):
 
         if self.halfVolumes.get() is False:
             params = ' --vol %s' % self.vol0Fn
-            params += ' --mask %s' % self.maskFn
+	    params += ' --mask %s' % self._getExtraPath('binarized_mask.vol')
         else:
             params = ' --vol %s' % self.vol1Fn
             params += ' --vol2 %s' % self.vol2Fn
             params += ' --meanVol %s' % self._getExtraPath(FN_MEAN_VOL)
-            params += ' --mask %s' % self.maskFn
+	    params += ' --mask %s' % self._getExtraPath('binarized_mask.vol')
         params += ' --mask_out %s' % self._getExtraPath(OUTPUT_MASK_FILE)
         params += ' -o %s' % self._getExtraPath(OUTPUT_RESOLUTION_FILE)
         if (self.halfVolumes):
@@ -245,6 +259,7 @@ class XmippProtMonoRes(ProtAnalysis3D):
         params += ' --minRes %f' % self.minRes.get()
         params += ' --maxRes %f' % self.maxRes.get()
         params += ' --volumeRadius %f' % xdim
+        params += ' --exact'
         params += ' --chimera_volume %s' % self._getExtraPath(
             OUTPUT_RESOLUTION_FILE_CHIMERA)
         params += ' --sym %s' % self.symmetry.get()

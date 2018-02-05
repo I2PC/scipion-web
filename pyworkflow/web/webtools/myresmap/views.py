@@ -249,7 +249,11 @@ def setProtocolParams(protocol, key):
                 attrs = {"threshold": 0.047
                          }
             if key == "t20s_proteasome":
-                attrs = {"threshold": 0.008
+                attrs = {"threshold": 0.006,
+                "doSmall": True,
+                "doBig": True,
+                "doMorphological": True,
+                "morphologicalOperation": 0
                          }
 
         elif issubclass(cls, ProtResMap):

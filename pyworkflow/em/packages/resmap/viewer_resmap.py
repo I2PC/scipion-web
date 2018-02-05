@@ -71,8 +71,8 @@ class ResMapViewer(ProtocolViewer):
 
         form.addParam('doShowResHistogram', LabelParam,
                       label="Show resolution histogram")
-        form.addParam('doShowChimera', LabelParam,
-                      label="Show Chimera animation", default=True)
+        #form.addParam('doShowChimera', LabelParam,
+        #              label="Show Chimera animation", default=True)
         
         
     def _getVisualizeDict(self):

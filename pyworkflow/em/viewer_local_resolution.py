@@ -95,8 +95,8 @@ class localResolutionViewer(ProtocolViewer):
         form.addParam('doShowVolumeSlices', LabelParam,
                       label="Show resolution slices")
 
-        form.addParam('doShowOriginalVolumeSlices', LabelParam,
-                      label="Show original volume slices")
+        #form.addParam('doShowOriginalVolumeSlices', LabelParam,
+        #              label="Show original volume slices")
 
         form.addParam('doShowResHistogram', LabelParam,
                       label="Show resolution histogram")
@@ -123,8 +123,8 @@ class localResolutionViewer(ProtocolViewer):
         group.addParam('doShowVolumeColorSlices', LabelParam,
                        label="Show colored slices")
 
-        group.addParam('doShowChimera', LabelParam,
-                       label="Show Resolution map in Chimera")
+        #group.addParam('doShowChimera', LabelParam,
+        #               label="Show Resolution map in Chimera")
 
     def _getVisualizeDict(self):
         return {'doShowOriginalVolumeSlices': self._showOriginalVolumeSlices,
