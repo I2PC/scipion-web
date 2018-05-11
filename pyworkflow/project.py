@@ -409,7 +409,7 @@ class Project(object):
         """Clean all project data"""
         pwutils.path.cleanPath(*self.pathList)
 
-    def launchProtocol(self, protocol, wait=False):
+    def launchProtocol(self, protocol, wait=False, chdir=False):
         """ In this function the action of launching a protocol
         will be initiated. Actions done here are:
         1. Store the protocol and assign name and working dir
@@ -438,7 +438,7 @@ class Project(object):
         pwutils.path.copyFile(self.dbPath, self.getAbsPath(protocol.getDbPath()))
 
         # Launch the protocol, the jobId should be set after this call
-        pwprot.launch(protocol, wait)
+        pwprot.launch(protocol, wait, chdir)
 
         # Commit changes
         if wait:  # This is only useful for launching tests...
