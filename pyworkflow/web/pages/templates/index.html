@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Demo integration of Virtual folder</title>
+</head>
+<script>
+var popup;
+var target;
+//opens popup window in defined location, sets the target element id.
+function openwindow(_target,href) {
+  target = _target;
+  popup=window.open(href, 'newwindow', 'width=640, height=480');
+}
+//receives message from popup window, fills target element with the data received
+function receiveMessage(event) {
+  document.getElementById(target).innerHTML=event.data;
+  document.getElementById(target).setAttribute("href",event.data);
+}
+window.addEventListener("message", receiveMessage, false);
+</script>
+<body>
+<a href="enablejavascript"
+
+   onclick="openwindow('fileid',
+   'http://portal.west-life.eu/virtualfolder/filepickercomponent.html'
+   ); return false;">West-life File</a>
+
+<p>File:<a id="fileid" href=""></a></p>
+
+<a href="enablejavascript.html"
+   onclick="openwindow('uploaddirid',
+   'https://portal.west-life.eu/virtualfolder/uploaddirpickercomponent.html'
+   ); return false;"> West-life Upload Dir..</a>
+
+  <p>Directory URL:<a id="uploaddirid" href=""></a></p>
+</div>
+
+</body>
+</html>

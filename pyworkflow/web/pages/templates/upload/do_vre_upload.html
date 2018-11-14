@@ -1,0 +1,10 @@
+{% load staticfiles %}
+<div class="box">
+
+	{% csrf_token %}
+	<!--{{ form.as_p }}-->
+	<br/>
+	<input name="file"  value="Choose a url file"/>
+	<input type="hidden" id="project_folder" name="project_folder" value="{{project_folder}}"/>
+
+</div>
