@@ -39,7 +39,7 @@ from views_tree import loadProtTree
 from views_util import loadProject, getResourceCss, getResourceIcon, getResourceJs, \
     getServiceManager, PROJECT_NAME, SERVICE_NAME, \
     getVarFromRequest, CTX_PROJECT_PATH, CTX_PROJECT_NAME, WORKFLOW, MODE
-
+from workflowarchive.models import Workflow
 
 def projects(request):
     from pyworkflow.utils.utils import prettyDate
@@ -66,9 +66,7 @@ def projects(request):
 
 
 def workflows(request):
-
     workflows = getWorkflowsList()
-
     # Annotate existence of projects (hashed)
     manager = getServiceManager(None)
 

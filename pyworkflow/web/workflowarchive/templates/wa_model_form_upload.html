@@ -1,0 +1,40 @@
+{% extends 'base_grid.html'%}
+{% block content_head %}
+<!-- CSS -->
+<link href="{{projects_css}}" rel="stylesheet" type="text/css" xmlns="http://www.w3.org/1999/html">
+<style type="text/css">>
+kk {
+    margin-left: 40px;
+    }
+</style>
+<!-- JS -->
+{% endblock %}
+
+
+{% block content %}
+<div class="workFlowForm">
+
+    {% for error in form.non_field_errors %}
+            <strong>{{ error|escape }}</strong>
+    {% endfor %}
+    {% if done %}
+        workflow uploaded
+    {% else %}
+        <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+         <!-- category -->
+            {{ form.version.errors }}
+        {{ form.as_p }}
+
+
+
+
+
+        <button type="submit">Upload</button>
+        </form>
+    {% endif %}
+    <p><a href="/home/">Return to home</a></p>
+    <p><a href="/workflowarchive/list/">go to workflows</a></p>
+
+</div>
+{% endblock %}

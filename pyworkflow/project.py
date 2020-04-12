@@ -360,7 +360,9 @@ class Project(object):
 
         return self._protocolViews[viewKey]
 
-    def create(self, runsView=1, readOnly=False, hostsConf=None, protocolsConf=None, chdir=True, workflow=None):
+    def create(self, runsView=1, readOnly=False, hostsConf=None,
+               protocolsConf=None, chdir=True, workflow=None):
+
         """Prepare all required paths and files to create a new project.
         Params:
          hosts: a list of configuration hosts associated to this projects

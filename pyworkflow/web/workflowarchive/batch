@@ -1,0 +1,14 @@
+webservices
+    install tastypie django-tastypie==0.12.1 (use 1.13 if django >= 1.7)
+selenium tests:
+    install selenium selenium==3.0.2
+    exec files: chromedriver  geckodriver
+
+
+Oyther
+   pytz==2016.7 needs to be installed by hand
+
+------
+
+made urls and templates local
+
